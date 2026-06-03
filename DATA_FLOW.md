@@ -24,8 +24,9 @@ transcriptomic/  spatial/         genetics/                 │
    │                               │  enrichment
    └───────────────┬──────────────┘
                    ▼
-                figures/  = convergence panel (Fig 5), SEA-AD subclass axis;
-                           pulls curated outputs from all four components.
+                figures/  = INDEX of the paper's final figures (each component
+                           produces its own, e.g. the composite in
+                           transcriptomic/); no separate convergence figure.
                    ▲
 histology/ (standalone RNAscope FISH SST density) ──────────┘
 
@@ -42,7 +43,7 @@ External hub (~/Github/shared_data/, per ~/Github/DATA_LAYOUT.md):
 | `spatial/` | Xenium raw, DE + composition betas (← snrnaseq), SEA-AD/MERFISH ref (← shared_data) | Xenium DE, crumblr composition → transcriptomic, figures |
 | `transcriptomic/` | DE betas (← snrnaseq), GWAS set (← genetics), Xenium DE (← spatial) | composite figure, GSEA/pathway results → figures |
 | `histology/` | RNAscope FISH counts (self-contained) | SST density results → figures |
-| `figures/` | curated outputs from all four | convergence figure (Fig 5) |
+| `figures/` | — (index only) | pointers to each component's final paper figures |
 
 ## Internal seams (realized symlinks = the edges)
 
@@ -70,13 +71,14 @@ projects too) and are re-created when each pipeline is set up to run in place.
 2. `genetics/`, `spatial/` (need composition + refs; genetics also GWAS + taxonomy)
 3. `transcriptomic/` (needs DE + GWAS + Xenium DE)
 4. `histology/` (independent — any time)
-5. `figures/` (needs curated outputs from all four)
+5. `figures/` — index of the final figures each component already produces
 
-## Current state (honest)
+## Current state
 
-Code-complete; **data symlinks point back to the original `~/Github/` repos**
-(and `~/Downloads/`), so the monorepo is **not yet self-contained for data** —
-it depends on the source repos still being present. To make it standalone:
-move each dataset into the repo (or `shared/`) and repoint the symlinks above.
-The **single seam to repoint when `snrnaseq/` is added** is
-`shared/snrnaseq_de/` → her pipeline's outputs.
+Code-complete. **Data is symlinked to the original `~/Github/` repos** (and
+`~/Downloads/`) — the accepted setup: the monorepo holds the code, the source
+repos hold the data, exactly as data was always external + git-ignored. (Note:
+the symlinks resolve on this machine; sharing the repo elsewhere would need the
+data transferred separately, same as the source repos always did.) The **one
+seam to repoint when `snrnaseq/` is added** is `shared/snrnaseq_de/` → her
+pipeline's outputs.

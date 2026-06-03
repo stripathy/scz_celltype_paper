@@ -21,11 +21,11 @@ produces what, who consumes it) and the realized symlink seams.
 ## Status: SCAFFOLD (4 components in)
 All four downstream components are merged as **tracked code only** (`git archive`
 — no data, no git history; ~250 MB). The composite figure regenerates inside the
-repo (smoke-tested). **Data is git-ignored and currently symlinked back to the
-original `~/Github/` repos**, so the monorepo is code-complete but not yet
-self-contained for data (see DATA_FLOW.md → "Current state"). Pending: the
-`snrnaseq/` upstream pipeline, the convergence figure (`figures/`), and moving
-data in-repo.
+repo (smoke-tested). **Data is git-ignored and symlinked to the original
+`~/Github/` repos** — the accepted setup for now (data was always external).
+The paper's figures already exist within each component; there is **no separate
+convergence figure**. The one real pending dependency is the `snrnaseq/`
+upstream pipeline.
 
 ## The snRNA-seq dependency (root of the graph)
 The snRNA-seq DE + composition meta-analysis is produced by a separate
