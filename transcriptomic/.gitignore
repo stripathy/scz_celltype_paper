@@ -1,0 +1,31 @@
+# Data files (large, symlinked from external location)
+data/*.csv
+data/*.tsv
+data/*.h5ad
+data/*.gz
+
+# Cache files (regeneratable; large)
+**/*.rds
+
+# Smoke-test outputs at results/ root (curated snapshots live in results/figures/)
+results/*.png
+results/*.pdf
+results/*.csv
+
+# OS junk
+.DS_Store
+*.swp
+
+# R session files
+.Rhistory
+.RData
+.Rapp.history
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Editor
+.vscode/
+*.code-workspace

@@ -1,0 +1,42 @@
+
+### L2_3 IT (n_sig padj<0.1: 701 / 15879 tested)
+- Top DOWN genes: VWA5B2 (estimate=-0.26, padj=5.7e-06), PRDM10 (estimate=-0.14, padj=9.2e-05), ST6GAL2 (estimate=-0.24, padj=0.00027), CDC25B (estimate=-0.18, padj=0.00036), SOHLH1 (estimate=-0.26, padj=0.00045)
+- Top UP genes: ADAMTS9-AS2 (estimate=0.43, padj=1.2e-06), MAP3K20 (estimate=0.28, padj=0.00024), SLC5A8 (estimate=0.49, padj=0.00025), PAIP2B (estimate=0.21, padj=0.00033), SIX4 (estimate=0.32, padj=0.00067)
+- Top DOWN pathways: GOCC_NEURON_TO_NEURON_SYNAPSE (NES=-1.69, padj=0.00054); GOBP_REGULATION_OF_CELL_MORPHOGENESIS (NES=-1.82, padj=0.0017); GOBP_VOCALIZATION_BEHAVIOR (NES=-2.20, padj=0.0027)
+- Top UP pathways: GOBP_PROTEIN_FOLDING (NES=2.08, padj=9.1e-05); GOMF_PROTEIN_FOLDING_CHAPERONE (NES=2.36, padj=0.00013); REACTOME_CELL_CYCLE_MITOTIC (NES=1.72, padj=0.00013)
+
+### L4 IT (n_sig padj<0.1: 509 / 14335 tested)
+- Top DOWN genes: HES4 (estimate=-0.37, padj=0.0019), RPS6KL1 (estimate=-0.27, padj=0.002), BICDL1 (estimate=-0.14, padj=0.002), ATP2B2 (estimate=-0.14, padj=0.0026), VWA5B2 (estimate=-0.22, padj=0.0026)
+- Top UP genes: LGI1 (estimate=0.15, padj=0.0019), NUCB2 (estimate=0.15, padj=0.002), SMAD1 (estimate=0.17, padj=0.0028), MXD1 (estimate=0.14, padj=0.0047), TOB1 (estimate=0.21, padj=0.0047)
+- Top DOWN pathways: GOBP_GLYCOPROTEIN_METABOLIC_PROCESS (NES=-1.59, padj=0.025); GOBP_ORGANIC_ANION_TRANSPORT (NES=-1.56, padj=0.025); GOMF_ACTIVE_TRANSMEMBRANE_TRANSPORTER_ACTIVITY (NES=-1.56, padj=0.032)
+- Top UP pathways: HALLMARK_MYC_TARGETS_V1 (NES=1.93, padj=0.0041); GOCC_RIBONUCLEOPROTEIN_GRANULE (NES=1.81, padj=0.0093); REACTOME_ESR_MEDIATED_SIGNALING (NES=1.96, padj=0.0093)
+
+### L5 IT (n_sig padj<0.1: 805 / 13908 tested)
+- Top DOWN genes: RCSD1 (estimate=-0.33, padj=8e-05), LNX1 (estimate=-0.15, padj=8e-05), BICDL1 (estimate=-0.15, padj=0.00069), GASK1B (estimate=-0.36, padj=0.00075), ETS2 (estimate=-0.22, padj=0.00076)
+- Top UP genes: LINC00158 (estimate=0.39, padj=5.6e-06), CXXC4 (estimate=0.31, padj=8e-05), TTC29 (estimate=0.66, padj=0.00018), DUBR (estimate=0.20, padj=0.00018), NUCB2 (estimate=0.15, padj=0.00018)
+- Top DOWN pathways: REACTOME_CHOLESTEROL_BIOSYNTHESIS (NES=-2.43, padj=0.0012); GOMF_NOTCH_BINDING (NES=-2.28, padj=0.0083); GOBP_RESPONSE_TO_IMMOBILIZATION_STRESS (NES=-2.10, padj=0.12)
+- Top UP pathways: GOBP_MALE_GAMETE_GENERATION (NES=1.48, padj=0.12); GOBP_MRNA_3_END_PROCESSING (NES=2.09, padj=0.12); GOBP_REGULATION_OF_KIDNEY_DEVELOPMENT (NES=2.13, padj=0.12)
+
+### L6 IT (n_sig padj<0.1: 133 / 11174 tested)
+- Top DOWN genes: MAFK (estimate=-0.40, padj=0.0001), SYT12 (estimate=-0.35, padj=0.0001), ZFP64 (estimate=-0.26, padj=0.0017), HTR4 (estimate=-0.37, padj=0.0019), ADGRB1 (estimate=-0.22, padj=0.0031)
+- Top UP genes: SEMA6D (estimate=0.51, padj=3.6e-06), GAB1 (estimate=0.29, padj=0.00088), KIF13A (estimate=0.26, padj=0.0017), LMCD1-AS1 (estimate=0.30, padj=0.0019), SMAD1 (estimate=0.19, padj=0.0031)
+- Top DOWN pathways: REACTOME_CHOLESTEROL_BIOSYNTHESIS (NES=-2.35, padj=0.0011); GOBP_STEROL_BIOSYNTHETIC_PROCESS (NES=-2.12, padj=0.0053); GOBP_ISOPRENOID_BIOSYNTHETIC_PROCESS (NES=-2.05, padj=0.04)
+- Top UP pathways: GOBP_CYTOPLASMIC_TRANSLATION (NES=2.03, padj=0.00095); HALLMARK_MYC_TARGETS_V1 (NES=1.95, padj=0.0011); REACTOME_CELLULAR_RESPONSE_TO_STARVATION (NES=2.01, padj=0.002)
+
+### L6 CT (n_sig padj<0.1: 107 / 9693 tested)
+- Top DOWN genes: RXFP1 (estimate=-0.29, padj=0.0038), SYT12 (estimate=-0.34, padj=0.0072), WSB1 (estimate=-0.28, padj=0.0074), EFHD2 (estimate=-0.22, padj=0.012), TM7SF3 (estimate=-0.19, padj=0.012)
+- Top UP genes: MSC-AS1 (estimate=0.32, padj=0.012), GHR (estimate=0.39, padj=0.012), SUGT1 (estimate=0.23, padj=0.012), ZFHX4 (estimate=0.37, padj=0.012), CDC42EP3 (estimate=0.40, padj=0.012)
+- Top DOWN pathways: REACTOME_PLATELET_HOMEOSTASIS (NES=-2.04, padj=0.12); GOBP_METAL_ION_TRANSPORT (NES=-1.43, padj=0.32); GOBP_NEUROTRANSMITTER_TRANSPORT (NES=-1.61, padj=0.32)
+- Top UP pathways: GOBP_PROTEIN_FOLDING (NES=1.82, padj=0.092); REACTOME_HSF1_ACTIVATION (NES=2.22, padj=0.092); GOBP_CHAPERONE_MEDIATED_PROTEIN_FOLDING (NES=1.99, padj=0.24)
+
+### L6 IT Car3 (n_sig padj<0.1: 84 / 9400 tested)
+- Top DOWN genes: NTNG1 (estimate=-0.54, padj=8.3e-12), RGS12 (estimate=-0.27, padj=1.2e-05), MAML3 (estimate=-0.31, padj=0.0027), NFIB (estimate=-0.39, padj=0.0035), CELF4 (estimate=-0.20, padj=0.012)
+- Top UP genes: ZHX2 (estimate=0.42, padj=0.0043), PARP8 (estimate=0.28, padj=0.015), ARHGAP5 (estimate=0.17, padj=0.019), MLLT3 (estimate=0.20, padj=0.019), DPY19L3 (estimate=0.29, padj=0.019)
+- Top DOWN pathways: GOCC_SYNAPTIC_MEMBRANE (NES=-2.13, padj=2e-08); GOCC_POSTSYNAPTIC_MEMBRANE (NES=-2.15, padj=3.3e-07); GOBP_CELL_PROJECTION_MORPHOGENESIS (NES=-1.82, padj=2.2e-06)
+- Top UP pathways: GOBP_MALE_GAMETE_GENERATION (NES=1.72, padj=0.00083); GOBP_GAMETE_GENERATION (NES=1.64, padj=0.0012); GOBP_SEXUAL_REPRODUCTION (NES=1.57, padj=0.0013)
+
+### L6b (n_sig padj<0.1: 256 / 9501 tested)
+- Top DOWN genes: SLC39A11 (estimate=-0.41, padj=0.00012), OLFML2B (estimate=-0.37, padj=0.0019), VWA5B2 (estimate=-0.30, padj=0.0019), CHKA (estimate=-0.24, padj=0.0061), PKNOX2 (estimate=-0.23, padj=0.0062)
+- Top UP genes: FAM161A (estimate=0.33, padj=0.0019), GNAS (estimate=0.29, padj=0.0035), MXD1 (estimate=0.22, padj=0.0057), FCHO2 (estimate=0.20, padj=0.0061), PCBP3 (estimate=0.35, padj=0.0062)
+- Top DOWN pathways: GOMF_HYDROLASE_ACTIVITY_ACTING_ON_GLYCOSYL_BONDS (NES=-2.10, padj=0.0053); GOMF_HYDROLASE_ACTIVITY_HYDROLYZING_O_GLYCOSYL_COMPOUNDS (NES=-1.97, padj=0.014); GOBP_GLYCOPROTEIN_METABOLIC_PROCESS (NES=-1.54, padj=0.016)
+- Top UP pathways: REACTOME_ESR_MEDIATED_SIGNALING (NES=2.09, padj=0.001); REACTOME_INNATE_IMMUNE_SYSTEM (NES=1.69, padj=0.001); REACTOME_ATTENUATION_PHASE (NES=2.29, padj=0.0019)

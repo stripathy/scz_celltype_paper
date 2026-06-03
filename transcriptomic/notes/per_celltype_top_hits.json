@@ -1,0 +1,2578 @@
+{
+  "Astro": {
+    "n_genes_tested": 11465,
+    "n_sig_padj_0.1": 943,
+    "top_up_genes": [
+      {
+        "genes": "RUFY4",
+        "estimate": 0.529407220591585,
+        "padj": 9.55172466473238e-05
+      },
+      {
+        "genes": "SPTLC3",
+        "estimate": 0.400283481059914,
+        "padj": 0.0001063254787709
+      },
+      {
+        "genes": "HMGCLL1",
+        "estimate": 0.36029874286268,
+        "padj": 0.0001063254787709
+      },
+      {
+        "genes": "FOXP1",
+        "estimate": 0.279107809417742,
+        "padj": 0.0001073482822239
+      },
+      {
+        "genes": "SP110",
+        "estimate": 0.276094854213121,
+        "padj": 0.0005256961202221
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "D2HGDH",
+        "estimate": -0.300892274681936,
+        "padj": 1.84522531309503e-06
+      },
+      {
+        "genes": "PYGM",
+        "estimate": -0.487488467044477,
+        "padj": 6.52873673856067e-05
+      },
+      {
+        "genes": "CASKIN1",
+        "estimate": -0.329032940569861,
+        "padj": 9.73649979473807e-05
+      },
+      {
+        "genes": "LRRC4B",
+        "estimate": -0.273949648699069,
+        "padj": 9.79113567872326e-05
+      },
+      {
+        "genes": "SUGP2",
+        "estimate": -0.196414356703953,
+        "padj": 0.0001017683792358
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOBP_REGULATION_OF_TRANS_SYNAPTIC_SIGNALING",
+        "NES": -1.9621478124602825,
+        "padj": 2.2001728262699287e-07
+      },
+      {
+        "pathway": "GOMF_MONOATOMIC_ION_TRANSMEMBRANE_TRANSPORTER_ACTIVITY",
+        "NES": -1.7577650588213227,
+        "padj": 1.2583884361327782e-05
+      },
+      {
+        "pathway": "GOCC_SYNAPTIC_MEMBRANE",
+        "NES": -1.8643167548376984,
+        "padj": 1.4552069627465584e-05
+      },
+      {
+        "pathway": "GOCC_TRANSPORTER_COMPLEX",
+        "NES": -1.87162853957488,
+        "padj": 2.2793387132795165e-05
+      },
+      {
+        "pathway": "GOMF_MONOATOMIC_CATION_TRANSMEMBRANE_TRANSPORTER_ACTIVITY",
+        "NES": -1.7693157933213837,
+        "padj": 3.383077795924982e-05
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "HALLMARK_INTERFERON_GAMMA_RESPONSE",
+        "NES": 2.731238753693162,
+        "padj": 6.06799633221534e-11
+      },
+      {
+        "pathway": "HALLMARK_INTERFERON_ALPHA_RESPONSE",
+        "NES": 2.8844987867443472,
+        "padj": 1.0356227892534492e-09
+      },
+      {
+        "pathway": "REACTOME_CYTOKINE_SIGNALING_IN_IMMUNE_SYSTEM",
+        "NES": 1.8133311913344257,
+        "padj": 2.2001728262699287e-07
+      },
+      {
+        "pathway": "GOBP_DEFENSE_RESPONSE_TO_VIRUS",
+        "NES": 2.1930753176923328,
+        "padj": 3.357050991818018e-07
+      },
+      {
+        "pathway": "GOBP_RESPONSE_TO_VIRUS",
+        "NES": 1.9329691968605616,
+        "padj": 1.0169979760920276e-05
+      }
+    ]
+  },
+  "Chandelier": {
+    "n_genes_tested": 9843,
+    "n_sig_padj_0.1": 164,
+    "top_up_genes": [
+      {
+        "genes": "ADCY10",
+        "estimate": 0.458330531528544,
+        "padj": 0.0020458341639626
+      },
+      {
+        "genes": "LRRTM2",
+        "estimate": 0.312888985208771,
+        "padj": 0.0020458341639626
+      },
+      {
+        "genes": "EIF2S2",
+        "estimate": 0.247461943583893,
+        "padj": 0.0025083573545364
+      },
+      {
+        "genes": "MBOAT2",
+        "estimate": 0.218459577755923,
+        "padj": 0.0051339131997242
+      },
+      {
+        "genes": "ZNF680",
+        "estimate": 0.263611474128076,
+        "padj": 0.0055769388552701
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "FBLN7",
+        "estimate": -0.284350075530429,
+        "padj": 1.33474562559306e-06
+      },
+      {
+        "genes": "KCNC1",
+        "estimate": -0.197514673615964,
+        "padj": 0.0002066760287308
+      },
+      {
+        "genes": "VGF",
+        "estimate": -1.04241772228702,
+        "padj": 0.0020458341639626
+      },
+      {
+        "genes": "MICAL2",
+        "estimate": -0.158840132164208,
+        "padj": 0.0020458341639626
+      },
+      {
+        "genes": "KLHL5",
+        "estimate": -0.157260008219012,
+        "padj": 0.0025083573545364
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOCC_SYNAPTIC_MEMBRANE",
+        "NES": -1.8269600634932228,
+        "padj": 0.00015850864849047624
+      },
+      {
+        "pathway": "GOCC_POSTSYNAPTIC_MEMBRANE",
+        "NES": -1.8785874015511776,
+        "padj": 0.000626923059427434
+      },
+      {
+        "pathway": "GOMF_GATED_CHANNEL_ACTIVITY",
+        "NES": -1.8914482870376863,
+        "padj": 0.0040442607422605
+      },
+      {
+        "pathway": "REACTOME_NEURONAL_SYSTEM",
+        "NES": -1.6963236629238956,
+        "padj": 0.0041689061758115
+      },
+      {
+        "pathway": "GOBP_CELL_PROJECTION_MORPHOGENESIS",
+        "NES": -1.5405798125587085,
+        "padj": 0.0047952418098592
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "HALLMARK_MTORC1_SIGNALING",
+        "NES": 2.114492054222762,
+        "padj": 0.00015850864849047624
+      },
+      {
+        "pathway": "REACTOME_DOWNSTREAM_TCR_SIGNALING",
+        "NES": 2.1830357118783073,
+        "padj": 0.0019884292834155
+      },
+      {
+        "pathway": "HALLMARK_MYC_TARGETS_V1",
+        "NES": 1.891180473097611,
+        "padj": 0.0040442607422605
+      },
+      {
+        "pathway": "GOCC_CHROMOSOMAL_REGION",
+        "NES": 1.7567840969821924,
+        "padj": 0.0041689061758115
+      },
+      {
+        "pathway": "REACTOME_REGULATION_OF_MRNA_STABILITY_BY_PROTEINS_THAT_BIND_AU_RICH_ELEMENTS",
+        "NES": 2.0696289271642225,
+        "padj": 0.0047952418098592
+      }
+    ]
+  },
+  "Endo": {
+    "n_genes_tested": 4473,
+    "n_sig_padj_0.1": 139,
+    "top_up_genes": [
+      {
+        "genes": "TNFRSF1A",
+        "estimate": 0.422658685123201,
+        "padj": 0.0016414881138867
+      },
+      {
+        "genes": "KANSL1L",
+        "estimate": 0.207315476965515,
+        "padj": 0.0294402367659606
+      },
+      {
+        "genes": "SULF2",
+        "estimate": 0.421469060246249,
+        "padj": 0.0294402367659606
+      },
+      {
+        "genes": "PIBF1",
+        "estimate": 0.179897257498138,
+        "padj": 0.0294402367659606
+      },
+      {
+        "genes": "CFH",
+        "estimate": 0.400962125637091,
+        "padj": 0.0294402367659606
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "GPCPD1",
+        "estimate": -0.513891034998205,
+        "padj": 0.0016414881138867
+      },
+      {
+        "genes": "PLPPR4",
+        "estimate": -0.523087397911985,
+        "padj": 0.0016414881138867
+      },
+      {
+        "genes": "TNFSF10",
+        "estimate": -0.633742366347256,
+        "padj": 0.0016414881138867
+      },
+      {
+        "genes": "SLCO1A2",
+        "estimate": -0.909242986515832,
+        "padj": 0.0016414881138867
+      },
+      {
+        "genes": "ABCG2",
+        "estimate": -0.481613966493963,
+        "padj": 0.0026646345524991
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOBP_NEURON_DEVELOPMENT",
+        "NES": -1.7417760272285792,
+        "padj": 4.488925115131682e-05
+      },
+      {
+        "pathway": "GOCC_PLASMA_MEMBRANE_REGION",
+        "NES": -1.686557201880029,
+        "padj": 0.00018527055360414524
+      },
+      {
+        "pathway": "GOBP_AXON_DEVELOPMENT",
+        "NES": -1.741422756989465,
+        "padj": 0.0078150897286305
+      },
+      {
+        "pathway": "GOBP_CELL_MORPHOGENESIS",
+        "NES": -1.5639340959854648,
+        "padj": 0.00806185554693
+      },
+      {
+        "pathway": "GOBP_CELL_PROJECTION_MORPHOGENESIS",
+        "NES": -1.6714816225865496,
+        "padj": 0.00806185554693
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOCC_RIBOSOME",
+        "NES": 2.061354863643802,
+        "padj": 0.001303742449656
+      },
+      {
+        "pathway": "REACTOME_EUKARYOTIC_TRANSLATION_INITIATION",
+        "NES": 1.950049444087661,
+        "padj": 0.00806185554693
+      },
+      {
+        "pathway": "REACTOME_TRANSLATION",
+        "NES": 1.844933596181206,
+        "padj": 0.0137728702592259
+      },
+      {
+        "pathway": "GOCC_CYTOSOLIC_RIBOSOME",
+        "NES": 1.8922856255460831,
+        "padj": 0.0212946607761252
+      },
+      {
+        "pathway": "REACTOME_ACTIVATION_OF_THE_MRNA_UPON_BINDING_OF_THE_CAP_BINDING_COMPLEX_AND_EIFS_AND_SUBSEQUENT_BINDING_TO_43S",
+        "NES": 2.0777752780667096,
+        "padj": 0.0270568361638998
+      }
+    ]
+  },
+  "L2_3 IT": {
+    "n_genes_tested": 15879,
+    "n_sig_padj_0.1": 701,
+    "top_up_genes": [
+      {
+        "genes": "ADAMTS9-AS2",
+        "estimate": 0.426654847648828,
+        "padj": 1.16901123724534e-06
+      },
+      {
+        "genes": "MAP3K20",
+        "estimate": 0.277398171632706,
+        "padj": 0.000242498369093
+      },
+      {
+        "genes": "SLC5A8",
+        "estimate": 0.490103877038537,
+        "padj": 0.0002468204594598
+      },
+      {
+        "genes": "PAIP2B",
+        "estimate": 0.207927823216012,
+        "padj": 0.0003320666067592
+      },
+      {
+        "genes": "SIX4",
+        "estimate": 0.321743453275648,
+        "padj": 0.0006665976595851
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "VWA5B2",
+        "estimate": -0.258367230637743,
+        "padj": 5.739450534616e-06
+      },
+      {
+        "genes": "PRDM10",
+        "estimate": -0.142452767252156,
+        "padj": 9.20615499770133e-05
+      },
+      {
+        "genes": "ST6GAL2",
+        "estimate": -0.237654984989387,
+        "padj": 0.0002715272756193
+      },
+      {
+        "genes": "CDC25B",
+        "estimate": -0.182445662552441,
+        "padj": 0.0003624211160876
+      },
+      {
+        "genes": "SOHLH1",
+        "estimate": -0.261420837368084,
+        "padj": 0.0004493921427519
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOCC_NEURON_TO_NEURON_SYNAPSE",
+        "NES": -1.691501580624334,
+        "padj": 0.000541287119366194
+      },
+      {
+        "pathway": "GOBP_REGULATION_OF_CELL_MORPHOGENESIS",
+        "NES": -1.8217404254666807,
+        "padj": 0.0016687481945665
+      },
+      {
+        "pathway": "GOBP_VOCALIZATION_BEHAVIOR",
+        "NES": -2.198496028796264,
+        "padj": 0.0027106435844605
+      },
+      {
+        "pathway": "GOCC_SYNAPTIC_MEMBRANE",
+        "NES": -1.6060970094553937,
+        "padj": 0.0030230970881194
+      },
+      {
+        "pathway": "GOMF_METAL_ION_TRANSMEMBRANE_TRANSPORTER_ACTIVITY",
+        "NES": -1.5996222416710864,
+        "padj": 0.0037857024647364
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_PROTEIN_FOLDING",
+        "NES": 2.0771772131339996,
+        "padj": 9.053792355708326e-05
+      },
+      {
+        "pathway": "GOMF_PROTEIN_FOLDING_CHAPERONE",
+        "NES": 2.3551187379159093,
+        "padj": 0.00012802043244080347
+      },
+      {
+        "pathway": "REACTOME_CELL_CYCLE_MITOTIC",
+        "NES": 1.7173583298878083,
+        "padj": 0.00012802043244080347
+      },
+      {
+        "pathway": "REACTOME_ATTENUATION_PHASE",
+        "NES": 2.439002496989005,
+        "padj": 0.00030150147848414193
+      },
+      {
+        "pathway": "GOBP_CHAPERONE_MEDIATED_PROTEIN_FOLDING",
+        "NES": 2.289335390449337,
+        "padj": 0.000357683348561223
+      }
+    ]
+  },
+  "L4 IT": {
+    "n_genes_tested": 14335,
+    "n_sig_padj_0.1": 509,
+    "top_up_genes": [
+      {
+        "genes": "LGI1",
+        "estimate": 0.153379635972245,
+        "padj": 0.0018790558801721
+      },
+      {
+        "genes": "NUCB2",
+        "estimate": 0.154594288077227,
+        "padj": 0.0019893417394769
+      },
+      {
+        "genes": "SMAD1",
+        "estimate": 0.165391669492325,
+        "padj": 0.0028360293587167
+      },
+      {
+        "genes": "MXD1",
+        "estimate": 0.136353441525229,
+        "padj": 0.004698853226459
+      },
+      {
+        "genes": "TOB1",
+        "estimate": 0.206084502180769,
+        "padj": 0.004698853226459
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "HES4",
+        "estimate": -0.373382593543085,
+        "padj": 0.0018790558801721
+      },
+      {
+        "genes": "RPS6KL1",
+        "estimate": -0.266358385632865,
+        "padj": 0.0019893417394769
+      },
+      {
+        "genes": "BICDL1",
+        "estimate": -0.139513908357169,
+        "padj": 0.0020163157664338
+      },
+      {
+        "genes": "ATP2B2",
+        "estimate": -0.140532018453627,
+        "padj": 0.0025898517206334
+      },
+      {
+        "genes": "VWA5B2",
+        "estimate": -0.224831927903623,
+        "padj": 0.0025898517206334
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOBP_GLYCOPROTEIN_METABOLIC_PROCESS",
+        "NES": -1.5943969277761263,
+        "padj": 0.0249785304127191
+      },
+      {
+        "pathway": "GOBP_ORGANIC_ANION_TRANSPORT",
+        "NES": -1.563384602406256,
+        "padj": 0.0249785304127191
+      },
+      {
+        "pathway": "GOMF_ACTIVE_TRANSMEMBRANE_TRANSPORTER_ACTIVITY",
+        "NES": -1.5623879698214922,
+        "padj": 0.0321137686046078
+      },
+      {
+        "pathway": "GOBP_REGULATION_OF_NOTCH_SIGNALING_PATHWAY",
+        "NES": -1.8839824538124468,
+        "padj": 0.0396496329478574
+      },
+      {
+        "pathway": "GOBP_PHOSPHOLIPID_METABOLIC_PROCESS",
+        "NES": -1.5400208649530185,
+        "padj": 0.0411783862556936
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "HALLMARK_MYC_TARGETS_V1",
+        "NES": 1.9284697783761595,
+        "padj": 0.0040817056304868
+      },
+      {
+        "pathway": "GOCC_RIBONUCLEOPROTEIN_GRANULE",
+        "NES": 1.8051176537516969,
+        "padj": 0.0093443383157444
+      },
+      {
+        "pathway": "REACTOME_ESR_MEDIATED_SIGNALING",
+        "NES": 1.9553831810913256,
+        "padj": 0.0093443383157444
+      },
+      {
+        "pathway": "GOBP_POSITIVE_REGULATION_OF_MRNA_CATABOLIC_PROCESS",
+        "NES": 2.00244242574638,
+        "padj": 0.0093604555673308
+      },
+      {
+        "pathway": "GOMF_MRNA_BINDING",
+        "NES": 1.6567920863145311,
+        "padj": 0.0093604555673308
+      }
+    ]
+  },
+  "L5 ET": {
+    "n_genes_tested": 4162,
+    "n_sig_padj_0.1": 3,
+    "top_up_genes": [
+      {
+        "genes": "ALDH3A2",
+        "estimate": 0.426069131339093,
+        "padj": 0.001357058865191
+      },
+      {
+        "genes": "ANKDD1A",
+        "estimate": 0.30750171394069,
+        "padj": 0.11246345718054
+      },
+      {
+        "genes": "RIPOR2",
+        "estimate": 0.327805995412895,
+        "padj": 0.151379420526835
+      },
+      {
+        "genes": "PANTR1",
+        "estimate": 0.339704491809336,
+        "padj": 0.151379420526835
+      },
+      {
+        "genes": "DNAH9",
+        "estimate": 0.32699077477395,
+        "padj": 0.151379420526835
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "PDE4B",
+        "estimate": -0.353631611918857,
+        "padj": 0.0294374932592569
+      },
+      {
+        "genes": "MFN1",
+        "estimate": -0.321777929859653,
+        "padj": 0.0322916825264042
+      },
+      {
+        "genes": "SPRY4-AS1",
+        "estimate": -0.540055682283993,
+        "padj": 0.130126554337163
+      },
+      {
+        "genes": "COL12A1",
+        "estimate": -0.484372725115129,
+        "padj": 0.151379420526835
+      },
+      {
+        "genes": "ANKRD28",
+        "estimate": -0.216834924293533,
+        "padj": 0.151379420526835
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOCC_PRESYNAPSE",
+        "NES": -1.6221030309852051,
+        "padj": 0.1888793988192458
+      },
+      {
+        "pathway": "GOBP_NEGATIVE_REGULATION_OF_RESPONSE_TO_STIMULUS",
+        "NES": -1.502790609901229,
+        "padj": 0.2074284773652344
+      },
+      {
+        "pathway": "REACTOME_ADAPTIVE_IMMUNE_SYSTEM",
+        "NES": -1.6448491620768988,
+        "padj": 0.2074284773652344
+      },
+      {
+        "pathway": "GOBP_SECRETORY_GRANULE_ORGANIZATION",
+        "NES": -1.9674391519459271,
+        "padj": 0.2401464621950967
+      },
+      {
+        "pathway": "REACTOME_BETA_CATENIN_INDEPENDENT_WNT_SIGNALING",
+        "NES": -1.9089012435887849,
+        "padj": 0.2401464621950967
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "HALLMARK_ESTROGEN_RESPONSE_LATE",
+        "NES": 1.824686149768306,
+        "padj": 0.4331143137183722
+      },
+      {
+        "pathway": "REACTOME_BRANCHED_CHAIN_AMINO_ACID_CATABOLISM",
+        "NES": 1.787484760343374,
+        "padj": 0.4331143137183722
+      },
+      {
+        "pathway": "REACTOME_RND2_GTPASE_CYCLE",
+        "NES": 1.86373476492531,
+        "padj": 0.4331143137183722
+      },
+      {
+        "pathway": "GOBP_BRANCHED_CHAIN_AMINO_ACID_METABOLIC_PROCESS",
+        "NES": 1.727897125775723,
+        "padj": 0.4556423602736157
+      },
+      {
+        "pathway": "GOBP_POSITIVE_REGULATION_OF_BINDING",
+        "NES": 1.7004467493280775,
+        "padj": 0.4556423602736157
+      }
+    ]
+  },
+  "L5 IT": {
+    "n_genes_tested": 13908,
+    "n_sig_padj_0.1": 805,
+    "top_up_genes": [
+      {
+        "genes": "LINC00158",
+        "estimate": 0.389597720747798,
+        "padj": 5.63447108892265e-06
+      },
+      {
+        "genes": "CXXC4",
+        "estimate": 0.306672971026837,
+        "padj": 7.97362295688734e-05
+      },
+      {
+        "genes": "TTC29",
+        "estimate": 0.663055261517598,
+        "padj": 0.0001755283278366
+      },
+      {
+        "genes": "DUBR",
+        "estimate": 0.199069123307025,
+        "padj": 0.0001755283278366
+      },
+      {
+        "genes": "NUCB2",
+        "estimate": 0.152019242814188,
+        "padj": 0.0001755283278366
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "RCSD1",
+        "estimate": -0.327171624650179,
+        "padj": 7.97362295688734e-05
+      },
+      {
+        "genes": "LNX1",
+        "estimate": -0.147889440311336,
+        "padj": 7.97362295688734e-05
+      },
+      {
+        "genes": "BICDL1",
+        "estimate": -0.150484310757158,
+        "padj": 0.0006920849424752
+      },
+      {
+        "genes": "GASK1B",
+        "estimate": -0.355489008298246,
+        "padj": 0.0007479203985114
+      },
+      {
+        "genes": "ETS2",
+        "estimate": -0.220092568786346,
+        "padj": 0.0007617039598457
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "REACTOME_CHOLESTEROL_BIOSYNTHESIS",
+        "NES": -2.434136290057483,
+        "padj": 0.0012223672697329
+      },
+      {
+        "pathway": "GOMF_NOTCH_BINDING",
+        "NES": -2.2839333988568797,
+        "padj": 0.0082603115947119
+      },
+      {
+        "pathway": "GOBP_RESPONSE_TO_IMMOBILIZATION_STRESS",
+        "NES": -2.103506625990518,
+        "padj": 0.1173481407098774
+      },
+      {
+        "pathway": "GOBP_STEROL_BIOSYNTHETIC_PROCESS",
+        "NES": -1.9413350219819243,
+        "padj": 0.1173481407098774
+      },
+      {
+        "pathway": "GOBP_AXON_DEVELOPMENT",
+        "NES": -1.5009079035020003,
+        "padj": 0.1731099284425125
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_MALE_GAMETE_GENERATION",
+        "NES": 1.4761698679005963,
+        "padj": 0.1173481407098774
+      },
+      {
+        "pathway": "GOBP_MRNA_3_END_PROCESSING",
+        "NES": 2.09167593136537,
+        "padj": 0.1173481407098774
+      },
+      {
+        "pathway": "GOBP_REGULATION_OF_KIDNEY_DEVELOPMENT",
+        "NES": 2.133172186356362,
+        "padj": 0.1173481407098774
+      },
+      {
+        "pathway": "GOCC_CONTRACTILE_MUSCLE_FIBER",
+        "NES": 1.6792218458941068,
+        "padj": 0.1173481407098774
+      },
+      {
+        "pathway": "GOBP_CHAPERONE_MEDIATED_PROTEIN_COMPLEX_ASSEMBLY",
+        "NES": 1.988814473580625,
+        "padj": 0.20555885191213
+      }
+    ]
+  },
+  "L5_6 NP": {
+    "n_genes_tested": 9789,
+    "n_sig_padj_0.1": 15,
+    "top_up_genes": [
+      {
+        "genes": "RAB3IP",
+        "estimate": 0.221520652697431,
+        "padj": 0.0266581703255963
+      },
+      {
+        "genes": "VWA3A",
+        "estimate": 0.30501577052069,
+        "padj": 0.0266581703255963
+      },
+      {
+        "genes": "PAPOLA",
+        "estimate": 0.196642778419676,
+        "padj": 0.0325451046530061
+      },
+      {
+        "genes": "ZNF345",
+        "estimate": 0.214482636932619,
+        "padj": 0.0388879513558755
+      },
+      {
+        "genes": "HOOK1",
+        "estimate": 0.200427709011014,
+        "padj": 0.0437751452436303
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "BICDL1",
+        "estimate": -0.199839592619301,
+        "padj": 0.0482425420791908
+      },
+      {
+        "genes": "GPC1",
+        "estimate": -0.203622820033227,
+        "padj": 0.0633796056020077
+      },
+      {
+        "genes": "CDK9",
+        "estimate": -0.22706267830916,
+        "padj": 0.0860102529122518
+      },
+      {
+        "genes": "RAB26",
+        "estimate": -0.200266905801811,
+        "padj": 0.0860102529122518
+      },
+      {
+        "genes": "TRPM2",
+        "estimate": -0.152514627989183,
+        "padj": 0.0860102529122518
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "REACTOME_CHOLESTEROL_BIOSYNTHESIS",
+        "NES": -2.3557074197442827,
+        "padj": 0.0051285301135923
+      },
+      {
+        "pathway": "GOBP_STEROL_BIOSYNTHETIC_PROCESS",
+        "NES": -2.1763679352131615,
+        "padj": 0.0386908075633822
+      },
+      {
+        "pathway": "GOBP_SECONDARY_ALCOHOL_METABOLIC_PROCESS",
+        "NES": -1.9029205178330653,
+        "padj": 0.1025965494583323
+      },
+      {
+        "pathway": "GOBP_STEROID_BIOSYNTHETIC_PROCESS",
+        "NES": -1.883463771209514,
+        "padj": 0.1040682639684303
+      },
+      {
+        "pathway": "REACTOME_METABOLISM_OF_STEROIDS",
+        "NES": -1.776577972964123,
+        "padj": 0.1616656563264324
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_REGULATION_OF_CARDIAC_MUSCLE_CONTRACTION_BY_REGULATION_OF_THE_RELEASE_OF_SEQUESTERED_CALCIUM_ION",
+        "NES": 2.091746836548131,
+        "padj": 0.1294050656888933
+      },
+      {
+        "pathway": "GOBP_REGULATION_OF_RELEASE_OF_SEQUESTERED_CALCIUM_ION_INTO_CYTOSOL_BY_SARCOPLASMIC_RETICULUM",
+        "NES": 2.0475326236065077,
+        "padj": 0.1616656563264324
+      },
+      {
+        "pathway": "GOBP_RELEASE_OF_SEQUESTERED_CALCIUM_ION_INTO_CYTOSOL_BY_ENDOPLASMIC_RETICULUM",
+        "NES": 1.978125799473986,
+        "padj": 0.2798415334512419
+      },
+      {
+        "pathway": "GOBP_SARCOPLASMIC_RETICULUM_CALCIUM_ION_TRANSPORT",
+        "NES": 1.9671879203775464,
+        "padj": 0.3369010194097243
+      },
+      {
+        "pathway": "GOBP_AMP_METABOLIC_PROCESS",
+        "NES": 1.7747900975504385,
+        "padj": 0.6408613025378084
+      }
+    ]
+  },
+  "L6 CT": {
+    "n_genes_tested": 9693,
+    "n_sig_padj_0.1": 107,
+    "top_up_genes": [
+      {
+        "genes": "MSC-AS1",
+        "estimate": 0.323889551185081,
+        "padj": 0.012075657426996
+      },
+      {
+        "genes": "GHR",
+        "estimate": 0.390359124141517,
+        "padj": 0.012075657426996
+      },
+      {
+        "genes": "SUGT1",
+        "estimate": 0.232263887329533,
+        "padj": 0.012075657426996
+      },
+      {
+        "genes": "ZFHX4",
+        "estimate": 0.371194448846286,
+        "padj": 0.012075657426996
+      },
+      {
+        "genes": "CDC42EP3",
+        "estimate": 0.401496200353497,
+        "padj": 0.012075657426996
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "RXFP1",
+        "estimate": -0.289863414817751,
+        "padj": 0.0037665888350403
+      },
+      {
+        "genes": "SYT12",
+        "estimate": -0.340712393338267,
+        "padj": 0.0071684864966117
+      },
+      {
+        "genes": "WSB1",
+        "estimate": -0.278676221664878,
+        "padj": 0.0074143586728144
+      },
+      {
+        "genes": "EFHD2",
+        "estimate": -0.22290703741049,
+        "padj": 0.012075657426996
+      },
+      {
+        "genes": "TM7SF3",
+        "estimate": -0.185086064425317,
+        "padj": 0.012075657426996
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "REACTOME_PLATELET_HOMEOSTASIS",
+        "NES": -2.0391525496255296,
+        "padj": 0.116132524427632
+      },
+      {
+        "pathway": "GOBP_METAL_ION_TRANSPORT",
+        "NES": -1.4278261775274892,
+        "padj": 0.3204794757504879
+      },
+      {
+        "pathway": "GOBP_NEUROTRANSMITTER_TRANSPORT",
+        "NES": -1.6111052966713857,
+        "padj": 0.3204794757504879
+      },
+      {
+        "pathway": "GOCC_VACUOLAR_MEMBRANE",
+        "NES": -1.4974577000826823,
+        "padj": 0.3204794757504879
+      },
+      {
+        "pathway": "GOMF_CYCLIC_NUCLEOTIDE_PHOSPHODIESTERASE_ACTIVITY",
+        "NES": -1.9199768172617535,
+        "padj": 0.3204794757504879
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_PROTEIN_FOLDING",
+        "NES": 1.82482390389492,
+        "padj": 0.0919950312100622
+      },
+      {
+        "pathway": "REACTOME_HSF1_ACTIVATION",
+        "NES": 2.2160807670703293,
+        "padj": 0.0919950312100622
+      },
+      {
+        "pathway": "GOBP_CHAPERONE_MEDIATED_PROTEIN_FOLDING",
+        "NES": 1.9857897397138051,
+        "padj": 0.2431953204936532
+      },
+      {
+        "pathway": "GOBP_PROTEIN_LOCALIZATION_TO_MICROTUBULE",
+        "NES": 2.013035468685671,
+        "padj": 0.3204794757504879
+      },
+      {
+        "pathway": "GOCC_CONDENSED_CHROMOSOME",
+        "NES": 1.60022498972849,
+        "padj": 0.3204794757504879
+      }
+    ]
+  },
+  "L6 IT": {
+    "n_genes_tested": 11174,
+    "n_sig_padj_0.1": 133,
+    "top_up_genes": [
+      {
+        "genes": "SEMA6D",
+        "estimate": 0.510223842356277,
+        "padj": 3.60289182859275e-06
+      },
+      {
+        "genes": "GAB1",
+        "estimate": 0.288480104800744,
+        "padj": 0.0008847255557069
+      },
+      {
+        "genes": "KIF13A",
+        "estimate": 0.255831508007301,
+        "padj": 0.0016521870332903
+      },
+      {
+        "genes": "LMCD1-AS1",
+        "estimate": 0.295799826703557,
+        "padj": 0.0018976443721493
+      },
+      {
+        "genes": "SMAD1",
+        "estimate": 0.192419617476897,
+        "padj": 0.0031015333872534
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "MAFK",
+        "estimate": -0.396582360866132,
+        "padj": 0.0001048791828708
+      },
+      {
+        "genes": "SYT12",
+        "estimate": -0.349782955732272,
+        "padj": 0.0001048791828708
+      },
+      {
+        "genes": "ZFP64",
+        "estimate": -0.255145863661491,
+        "padj": 0.0016521870332903
+      },
+      {
+        "genes": "HTR4",
+        "estimate": -0.36717351655003,
+        "padj": 0.0018976443721493
+      },
+      {
+        "genes": "ADGRB1",
+        "estimate": -0.215202260622058,
+        "padj": 0.0031015333872534
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "REACTOME_CHOLESTEROL_BIOSYNTHESIS",
+        "NES": -2.350468883392322,
+        "padj": 0.0010632174000891
+      },
+      {
+        "pathway": "GOBP_STEROL_BIOSYNTHETIC_PROCESS",
+        "NES": -2.120344967513861,
+        "padj": 0.0053339218234441
+      },
+      {
+        "pathway": "GOBP_ISOPRENOID_BIOSYNTHETIC_PROCESS",
+        "NES": -2.0485516714053853,
+        "padj": 0.0403166326046201
+      },
+      {
+        "pathway": "GOBP_ALCOHOL_BIOSYNTHETIC_PROCESS",
+        "NES": -1.844826107943493,
+        "padj": 0.0523654346711007
+      },
+      {
+        "pathway": "GOBP_SECONDARY_ALCOHOL_METABOLIC_PROCESS",
+        "NES": -1.800085716992845,
+        "padj": 0.0523654346711007
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_CYTOPLASMIC_TRANSLATION",
+        "NES": 2.03182074572271,
+        "padj": 0.000952694623804177
+      },
+      {
+        "pathway": "HALLMARK_MYC_TARGETS_V1",
+        "NES": 1.950465835643595,
+        "padj": 0.0010632174000891
+      },
+      {
+        "pathway": "REACTOME_CELLULAR_RESPONSE_TO_STARVATION",
+        "NES": 2.008374043511276,
+        "padj": 0.0019510488872872
+      },
+      {
+        "pathway": "REACTOME_EUKARYOTIC_TRANSLATION_INITIATION",
+        "NES": 2.0386001840859564,
+        "padj": 0.0024522303986924
+      },
+      {
+        "pathway": "GOBP_REGULATION_OF_VIRAL_PROCESS",
+        "NES": 2.0780515204909733,
+        "padj": 0.0053339218234441
+      }
+    ]
+  },
+  "L6 IT Car3": {
+    "n_genes_tested": 9400,
+    "n_sig_padj_0.1": 84,
+    "top_up_genes": [
+      {
+        "genes": "ZHX2",
+        "estimate": 0.415898380010463,
+        "padj": 0.004253179387046
+      },
+      {
+        "genes": "PARP8",
+        "estimate": 0.275011848945119,
+        "padj": 0.0147342867141074
+      },
+      {
+        "genes": "ARHGAP5",
+        "estimate": 0.169938907134166,
+        "padj": 0.01929017637475
+      },
+      {
+        "genes": "MLLT3",
+        "estimate": 0.195630063655975,
+        "padj": 0.01929017637475
+      },
+      {
+        "genes": "DPY19L3",
+        "estimate": 0.286098674850286,
+        "padj": 0.01929017637475
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "NTNG1",
+        "estimate": -0.543925123228447,
+        "padj": 8.256635664210319e-12
+      },
+      {
+        "genes": "RGS12",
+        "estimate": -0.269689841596061,
+        "padj": 1.22923977796998e-05
+      },
+      {
+        "genes": "MAML3",
+        "estimate": -0.310200122263406,
+        "padj": 0.0027254906102684
+      },
+      {
+        "genes": "NFIB",
+        "estimate": -0.39433137328122,
+        "padj": 0.0035137040389993
+      },
+      {
+        "genes": "CELF4",
+        "estimate": -0.203627849771504,
+        "padj": 0.0122174213900571
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOCC_SYNAPTIC_MEMBRANE",
+        "NES": -2.128982374387409,
+        "padj": 2.0393845705546824e-08
+      },
+      {
+        "pathway": "GOCC_POSTSYNAPTIC_MEMBRANE",
+        "NES": -2.1506750725586907,
+        "padj": 3.281399524058431e-07
+      },
+      {
+        "pathway": "GOBP_CELL_PROJECTION_MORPHOGENESIS",
+        "NES": -1.8237127107619675,
+        "padj": 2.150958577576763e-06
+      },
+      {
+        "pathway": "REACTOME_EUKARYOTIC_TRANSLATION_ELONGATION",
+        "NES": -2.4002150381517176,
+        "padj": 2.150958577576763e-06
+      },
+      {
+        "pathway": "GOBP_CELL_MORPHOGENESIS_INVOLVED_IN_NEURON_DIFFERENTIATION",
+        "NES": -1.846442779314273,
+        "padj": 4.0302300293673315e-06
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_MALE_GAMETE_GENERATION",
+        "NES": 1.7167689238936923,
+        "padj": 0.000825255714784603
+      },
+      {
+        "pathway": "GOBP_GAMETE_GENERATION",
+        "NES": 1.6376178173154587,
+        "padj": 0.0012294075587219
+      },
+      {
+        "pathway": "GOBP_SEXUAL_REPRODUCTION",
+        "NES": 1.572663203952667,
+        "padj": 0.0012796487492767
+      },
+      {
+        "pathway": "GOBP_MULTICELLULAR_ORGANISMAL_REPRODUCTIVE_PROCESS",
+        "NES": 1.5631926133463656,
+        "padj": 0.0021146045250701
+      },
+      {
+        "pathway": "GOBP_DEVELOPMENTAL_PROCESS_INVOLVED_IN_REPRODUCTION",
+        "NES": 1.549311500913955,
+        "padj": 0.0055110090669578
+      }
+    ]
+  },
+  "L6b": {
+    "n_genes_tested": 9501,
+    "n_sig_padj_0.1": 256,
+    "top_up_genes": [
+      {
+        "genes": "FAM161A",
+        "estimate": 0.330890975174494,
+        "padj": 0.0019069323455225
+      },
+      {
+        "genes": "GNAS",
+        "estimate": 0.290913456620072,
+        "padj": 0.0034559439526407
+      },
+      {
+        "genes": "MXD1",
+        "estimate": 0.217055467613483,
+        "padj": 0.0057404985820001
+      },
+      {
+        "genes": "FCHO2",
+        "estimate": 0.202321000022476,
+        "padj": 0.0060779360754084
+      },
+      {
+        "genes": "PCBP3",
+        "estimate": 0.347302106707468,
+        "padj": 0.0061871850074349
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "SLC39A11",
+        "estimate": -0.407043577115567,
+        "padj": 0.000122241741578
+      },
+      {
+        "genes": "OLFML2B",
+        "estimate": -0.371052707324278,
+        "padj": 0.0019069323455225
+      },
+      {
+        "genes": "VWA5B2",
+        "estimate": -0.298706911855978,
+        "padj": 0.0019069323455225
+      },
+      {
+        "genes": "CHKA",
+        "estimate": -0.24339637104672,
+        "padj": 0.0060779360754084
+      },
+      {
+        "genes": "PKNOX2",
+        "estimate": -0.232061921030475,
+        "padj": 0.0061871850074349
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOMF_HYDROLASE_ACTIVITY_ACTING_ON_GLYCOSYL_BONDS",
+        "NES": -2.104154367165147,
+        "padj": 0.0053336482945267
+      },
+      {
+        "pathway": "GOMF_HYDROLASE_ACTIVITY_HYDROLYZING_O_GLYCOSYL_COMPOUNDS",
+        "NES": -1.9734464703861292,
+        "padj": 0.0141425408274373
+      },
+      {
+        "pathway": "GOBP_GLYCOPROTEIN_METABOLIC_PROCESS",
+        "NES": -1.5384432571105229,
+        "padj": 0.0162677152111417
+      },
+      {
+        "pathway": "GOBP_GLYCOSYLATION",
+        "NES": -1.6060032087448708,
+        "padj": 0.0215868213772148
+      },
+      {
+        "pathway": "GOBP_MEMBRANE_LIPID_BIOSYNTHETIC_PROCESS",
+        "NES": -1.707963625844071,
+        "padj": 0.0222904444296522
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "REACTOME_ESR_MEDIATED_SIGNALING",
+        "NES": 2.089457374680618,
+        "padj": 0.0010297738675455
+      },
+      {
+        "pathway": "REACTOME_INNATE_IMMUNE_SYSTEM",
+        "NES": 1.69375619362801,
+        "padj": 0.0010297738675455
+      },
+      {
+        "pathway": "REACTOME_ATTENUATION_PHASE",
+        "NES": 2.290097751533987,
+        "padj": 0.0018643579888219
+      },
+      {
+        "pathway": "REACTOME_EXTRA_NUCLEAR_ESTROGEN_SIGNALING",
+        "NES": 2.235942395943053,
+        "padj": 0.0021457840097233
+      },
+      {
+        "pathway": "REACTOME_HSF1_ACTIVATION",
+        "NES": 2.2862034732765597,
+        "padj": 0.0025453723336235
+      }
+    ]
+  },
+  "Lamp5": {
+    "n_genes_tested": 12721,
+    "n_sig_padj_0.1": 400,
+    "top_up_genes": [
+      {
+        "genes": "MGAT4A",
+        "estimate": 0.218788796323587,
+        "padj": 0.000750485118381
+      },
+      {
+        "genes": "MXI1",
+        "estimate": 0.16204795797577,
+        "padj": 0.001284687181825
+      },
+      {
+        "genes": "MAP4K3",
+        "estimate": 0.132129489924108,
+        "padj": 0.0028849918347121
+      },
+      {
+        "genes": "ZNF516",
+        "estimate": 0.177255810253707,
+        "padj": 0.0028849918347121
+      },
+      {
+        "genes": "CRBN",
+        "estimate": 0.123770303405366,
+        "padj": 0.0040665753359608
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "SLC4A8",
+        "estimate": -0.202370028680129,
+        "padj": 2.78189637892798e-05
+      },
+      {
+        "genes": "TLE2",
+        "estimate": -0.198511024614265,
+        "padj": 3.54820973998014e-05
+      },
+      {
+        "genes": "PLD1",
+        "estimate": -0.37682444009091,
+        "padj": 0.0028849918347121
+      },
+      {
+        "genes": "KCNQ4",
+        "estimate": -0.175777450534296,
+        "padj": 0.0055964195377574
+      },
+      {
+        "genes": "ZNF75A",
+        "estimate": -0.182375952496338,
+        "padj": 0.0082816675236711
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOCC_ORGANELLE_INNER_MEMBRANE",
+        "NES": -1.8201607995526468,
+        "padj": 7.917830021641724e-05
+      },
+      {
+        "pathway": "GOCC_VACUOLAR_MEMBRANE",
+        "NES": -1.691430285503409,
+        "padj": 0.0069690412545399
+      },
+      {
+        "pathway": "REACTOME_METABOLISM_OF_CARBOHYDRATES_AND_CARBOHYDRATE_DERIVATIVES",
+        "NES": -1.7725681243544462,
+        "padj": 0.0105133980894534
+      },
+      {
+        "pathway": "GOBP_AEROBIC_RESPIRATION",
+        "NES": -1.852862526454421,
+        "padj": 0.0289260794058397
+      },
+      {
+        "pathway": "GOBP_CELLULAR_RESPIRATION",
+        "NES": -1.7939306411915694,
+        "padj": 0.0443106242220674
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "HALLMARK_UV_RESPONSE_DN",
+        "NES": 1.968870340642667,
+        "padj": 0.0105133980894534
+      },
+      {
+        "pathway": "GOBP_EMBRYONIC_AXIS_SPECIFICATION",
+        "NES": 2.1681718981662392,
+        "padj": 0.0529354184706141
+      },
+      {
+        "pathway": "GOBP_INTERLEUKIN_12_PRODUCTION",
+        "NES": 2.167800921023053,
+        "padj": 0.0548735152407406
+      },
+      {
+        "pathway": "GOBP_ANTERIOR_POSTERIOR_PATTERN_SPECIFICATION",
+        "NES": 1.8008549545192136,
+        "padj": 0.063993968498
+      },
+      {
+        "pathway": "GOBP_LIPOPROTEIN_METABOLIC_PROCESS",
+        "NES": 1.9426587270322877,
+        "padj": 0.063993968498
+      }
+    ]
+  },
+  "Micro-PVM": {
+    "n_genes_tested": 3788,
+    "n_sig_padj_0.1": 487,
+    "top_up_genes": [
+      {
+        "genes": "IGF2R",
+        "estimate": 0.384307064960795,
+        "padj": 0.0002705704545736
+      },
+      {
+        "genes": "PSTPIP2",
+        "estimate": 0.664149349476605,
+        "padj": 0.0002786175059968
+      },
+      {
+        "genes": "HPRT1",
+        "estimate": 0.252439092066981,
+        "padj": 0.0003708030585755
+      },
+      {
+        "genes": "FCGR1A",
+        "estimate": 0.481151051536456,
+        "padj": 0.000527236108437
+      },
+      {
+        "genes": "SNAP23",
+        "estimate": 0.338356896696867,
+        "padj": 0.0005847382472321
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "VASH1",
+        "estimate": -0.376624374445556,
+        "padj": 1.32848132211953e-05
+      },
+      {
+        "genes": "ZFP36L2",
+        "estimate": -0.529805819409863,
+        "padj": 4.29639272937535e-05
+      },
+      {
+        "genes": "HGSNAT",
+        "estimate": -0.337475901508542,
+        "padj": 4.29639272937535e-05
+      },
+      {
+        "genes": "RNF19B",
+        "estimate": -0.370137776788413,
+        "padj": 4.29639272937535e-05
+      },
+      {
+        "genes": "KCNQ1",
+        "estimate": -0.282224995654107,
+        "padj": 4.55431349160035e-05
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOBP_POSITIVE_REGULATION_OF_LOCOMOTION",
+        "NES": -1.6352115161324536,
+        "padj": 0.0124469953357098
+      },
+      {
+        "pathway": "GOBP_CELL_MOTILITY",
+        "NES": -1.445708793934472,
+        "padj": 0.0166799989564655
+      },
+      {
+        "pathway": "REACTOME_SIGNALING_BY_GPCR",
+        "NES": -1.6948105128934687,
+        "padj": 0.0215302417651256
+      },
+      {
+        "pathway": "GOBP_AXON_DEVELOPMENT",
+        "NES": -1.6635266535382216,
+        "padj": 0.0223263894962243
+      },
+      {
+        "pathway": "GOBP_NEUROGENESIS",
+        "NES": -1.4155363438292246,
+        "padj": 0.0232047937887253
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "REACTOME_TRANSLATION",
+        "NES": 3.1675615928486587,
+        "padj": 1.1687393944778641e-14
+      },
+      {
+        "pathway": "GOBP_CYTOPLASMIC_TRANSLATION",
+        "NES": 2.9568740402753177,
+        "padj": 1.2486339758778965e-12
+      },
+      {
+        "pathway": "REACTOME_EUKARYOTIC_TRANSLATION_INITIATION",
+        "NES": 3.075221478961853,
+        "padj": 1.2486339758778965e-12
+      },
+      {
+        "pathway": "GOCC_RIBOSOME",
+        "NES": 3.0124664608647653,
+        "padj": 2.1457900914753132e-12
+      },
+      {
+        "pathway": "REACTOME_SRP_DEPENDENT_COTRANSLATIONAL_PROTEIN_TARGETING_TO_MEMBRANE",
+        "NES": 3.0245939691647052,
+        "padj": 1.9600547205982773e-11
+      }
+    ]
+  },
+  "OPC": {
+    "n_genes_tested": 10040,
+    "n_sig_padj_0.1": 259,
+    "top_up_genes": [
+      {
+        "genes": "SLC26A2",
+        "estimate": 0.270108220809737,
+        "padj": 0.0016389449117894
+      },
+      {
+        "genes": "VWA5A",
+        "estimate": 0.307594042907119,
+        "padj": 0.0020921259421051
+      },
+      {
+        "genes": "HK2",
+        "estimate": 0.52935645113224,
+        "padj": 0.0042112736650583
+      },
+      {
+        "genes": "AZGP1",
+        "estimate": 0.480207160218794,
+        "padj": 0.0047368183162503
+      },
+      {
+        "genes": "CSF1",
+        "estimate": 0.42724771441464,
+        "padj": 0.0062803139395009
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "PREX2",
+        "estimate": -0.218144149073711,
+        "padj": 6.70297765920091e-05
+      },
+      {
+        "genes": "MIR9-3HG",
+        "estimate": -0.233135235464963,
+        "padj": 0.0001101565992196
+      },
+      {
+        "genes": "NKAIN3",
+        "estimate": -0.211696567982383,
+        "padj": 0.0016389449117894
+      },
+      {
+        "genes": "ITGB5",
+        "estimate": -0.278502409198287,
+        "padj": 0.0019307670131816
+      },
+      {
+        "genes": "CASK",
+        "estimate": -0.165135706107029,
+        "padj": 0.0019717495409974
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOBP_REGULATION_OF_TRANS_SYNAPTIC_SIGNALING",
+        "NES": -1.866257885149029,
+        "padj": 3.610081658791902e-05
+      },
+      {
+        "pathway": "GOCC_SYNAPTIC_MEMBRANE",
+        "NES": -1.897972664764901,
+        "padj": 3.610081658791902e-05
+      },
+      {
+        "pathway": "GOBP_CELL_PROJECTION_MORPHOGENESIS",
+        "NES": -1.7014942590589908,
+        "padj": 0.00010302660749730364
+      },
+      {
+        "pathway": "GOCC_AXON",
+        "NES": -1.7230084802919954,
+        "padj": 0.00014039604655214117
+      },
+      {
+        "pathway": "GOCC_PRESYNAPSE",
+        "NES": -1.7190517848157356,
+        "padj": 0.00016492984860566232
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "HALLMARK_MTORC1_SIGNALING",
+        "NES": 2.3713571603114225,
+        "padj": 8.79966301220346e-08
+      },
+      {
+        "pathway": "GOBP_RESPONSE_TO_PEPTIDE",
+        "NES": 1.757474766506154,
+        "padj": 2.7172288411131982e-05
+      },
+      {
+        "pathway": "REACTOME_EUKARYOTIC_TRANSLATION_INITIATION",
+        "NES": 2.2480491761408783,
+        "padj": 5.151591327476699e-05
+      },
+      {
+        "pathway": "HALLMARK_P53_PATHWAY",
+        "NES": 2.1363297172068285,
+        "padj": 0.00010302660749730364
+      },
+      {
+        "pathway": "HALLMARK_TNFA_SIGNALING_VIA_NFKB",
+        "NES": 2.2184668090738233,
+        "padj": 0.00012075538649624587
+      }
+    ]
+  },
+  "Oligo": {
+    "n_genes_tested": 10635,
+    "n_sig_padj_0.1": 453,
+    "top_up_genes": [
+      {
+        "genes": "PLB1",
+        "estimate": 0.552725243002814,
+        "padj": 9.39169264975768e-06
+      },
+      {
+        "genes": "NEXN",
+        "estimate": 0.295768101219281,
+        "padj": 4.09827482222482e-05
+      },
+      {
+        "genes": "SMAD9",
+        "estimate": 0.431915756562527,
+        "padj": 4.7033850819721e-05
+      },
+      {
+        "genes": "SEMA4B",
+        "estimate": 0.470120653658168,
+        "padj": 0.0006091164219005
+      },
+      {
+        "genes": "SUGT1",
+        "estimate": 0.156249342090333,
+        "padj": 0.0017546832513561
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "KCNA2",
+        "estimate": -0.401971951641549,
+        "padj": 9.06164294678615e-09
+      },
+      {
+        "genes": "PLD5",
+        "estimate": -0.361864197684579,
+        "padj": 1.3201638321168e-08
+      },
+      {
+        "genes": "CNDP1",
+        "estimate": -0.299630329549649,
+        "padj": 1.18779314663786e-06
+      },
+      {
+        "genes": "KIT",
+        "estimate": -0.559457149649506,
+        "padj": 1.18779314663786e-06
+      },
+      {
+        "genes": "CTNNA2",
+        "estimate": -0.444710071270606,
+        "padj": 9.39169264975768e-06
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOBP_SYNAPTIC_SIGNALING",
+        "NES": -2.319637713888672,
+        "padj": 2.359584581657777e-21
+      },
+      {
+        "pathway": "GOCC_SYNAPTIC_MEMBRANE",
+        "NES": -2.410989127597344,
+        "padj": 3.4673926706067144e-17
+      },
+      {
+        "pathway": "GOCC_AXON",
+        "NES": -2.1776833475087747,
+        "padj": 1.3853855265508497e-15
+      },
+      {
+        "pathway": "GOBP_REGULATION_OF_TRANS_SYNAPTIC_SIGNALING",
+        "NES": -2.2730111845864505,
+        "padj": 1.6903997874108754e-14
+      },
+      {
+        "pathway": "GOCC_PRESYNAPSE",
+        "NES": -2.143790443168456,
+        "padj": 1.9358723263297425e-14
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "REACTOME_PHASE_I_FUNCTIONALIZATION_OF_COMPOUNDS",
+        "NES": 2.184660068101038,
+        "padj": 0.0013644557594951
+      },
+      {
+        "pathway": "REACTOME_BIOLOGICAL_OXIDATIONS",
+        "NES": 1.8913620994858236,
+        "padj": 0.0032111519746814
+      },
+      {
+        "pathway": "GOBP_MEIOSIS_I_CELL_CYCLE_PROCESS",
+        "NES": 1.8289575495805557,
+        "padj": 0.0067685395659483
+      },
+      {
+        "pathway": "REACTOME_METABOLIC_DISORDERS_OF_BIOLOGICAL_OXIDATION_ENZYMES",
+        "NES": 2.121662484907199,
+        "padj": 0.0109373620950945
+      },
+      {
+        "pathway": "HALLMARK_XENOBIOTIC_METABOLISM",
+        "NES": 1.6721160133912494,
+        "padj": 0.0164071461242295
+      }
+    ]
+  },
+  "Pax6": {
+    "n_genes_tested": 7161,
+    "n_sig_padj_0.1": 5,
+    "top_up_genes": [
+      {
+        "genes": "ANKMY2",
+        "estimate": 0.263498991232437,
+        "padj": 0.0767278207339178
+      },
+      {
+        "genes": "TSHZ1",
+        "estimate": 0.267671078640841,
+        "padj": 0.0767278207339178
+      },
+      {
+        "genes": "CXXC4",
+        "estimate": 0.270342007336919,
+        "padj": 0.0767278207339178
+      },
+      {
+        "genes": "VAT1L",
+        "estimate": 0.263851872167302,
+        "padj": 0.115328931604861
+      },
+      {
+        "genes": "TRIM14",
+        "estimate": 0.298871965185122,
+        "padj": 0.183097813149437
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "COL16A1",
+        "estimate": -0.285476866460171,
+        "padj": 0.0767278207339178
+      },
+      {
+        "genes": "EPM2A",
+        "estimate": -0.256594951024929,
+        "padj": 0.0922249192922059
+      },
+      {
+        "genes": "TXNDC15",
+        "estimate": -0.246824920435558,
+        "padj": 0.115328931604861
+      },
+      {
+        "genes": "PTBP1",
+        "estimate": -0.363590075731664,
+        "padj": 0.115328931604861
+      },
+      {
+        "genes": "CCNL2",
+        "estimate": -0.197219201809347,
+        "padj": 0.183097813149437
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOMF_GATED_CHANNEL_ACTIVITY",
+        "NES": -2.014462490735318,
+        "padj": 0.0053851086493686
+      },
+      {
+        "pathway": "GOMF_MONOATOMIC_CATION_TRANSMEMBRANE_TRANSPORTER_ACTIVITY",
+        "NES": -1.701979437393366,
+        "padj": 0.0053851086493686
+      },
+      {
+        "pathway": "GOBP_MONOATOMIC_CATION_TRANSMEMBRANE_TRANSPORT",
+        "NES": -1.6625843821711834,
+        "padj": 0.013286287463854
+      },
+      {
+        "pathway": "GOBP_SYNAPTIC_SIGNALING",
+        "NES": -1.583590572233368,
+        "padj": 0.013286287463854
+      },
+      {
+        "pathway": "GOBP_REGULATION_OF_MEMBRANE_POTENTIAL",
+        "NES": -1.756332979330744,
+        "padj": 0.0138672464743633
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_MALE_GAMETE_GENERATION",
+        "NES": 1.69218269853166,
+        "padj": 0.016021039430361
+      },
+      {
+        "pathway": "GOMF_DNA_BINDING_TRANSCRIPTION_FACTOR_ACTIVITY",
+        "NES": 1.5099520290802524,
+        "padj": 0.039660057995567
+      },
+      {
+        "pathway": "GOMF_CYTOKINE_BINDING",
+        "NES": 1.9668548990601944,
+        "padj": 0.0937774720360944
+      },
+      {
+        "pathway": "GOBP_GAMETE_GENERATION",
+        "NES": 1.505795316631558,
+        "padj": 0.0972410491730784
+      },
+      {
+        "pathway": "GOBP_DEVELOPMENTAL_PROCESS_INVOLVED_IN_REPRODUCTION",
+        "NES": 1.4671413727396303,
+        "padj": 0.1265732183477519
+      }
+    ]
+  },
+  "Pvalb": {
+    "n_genes_tested": 13399,
+    "n_sig_padj_0.1": 398,
+    "top_up_genes": [
+      {
+        "genes": "SMAD1",
+        "estimate": 0.185779341639527,
+        "padj": 0.0007528423437192
+      },
+      {
+        "genes": "SCN3A",
+        "estimate": 0.172019728473156,
+        "padj": 0.0007528423437192
+      },
+      {
+        "genes": "FANCL",
+        "estimate": 0.202628873669712,
+        "padj": 0.0062599710729905
+      },
+      {
+        "genes": "DCDC1",
+        "estimate": 0.295801028282114,
+        "padj": 0.0068406454720551
+      },
+      {
+        "genes": "NDST4",
+        "estimate": 0.279287733390354,
+        "padj": 0.0071881638856154
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "GALNT11",
+        "estimate": -0.144407430608995,
+        "padj": 0.0005756960646728
+      },
+      {
+        "genes": "CHRD",
+        "estimate": -0.221452565951785,
+        "padj": 0.0007528423437192
+      },
+      {
+        "genes": "MAN2C1",
+        "estimate": -0.156376579310527,
+        "padj": 0.0032129599975868
+      },
+      {
+        "genes": "MIR9-3HG",
+        "estimate": -0.158063315418569,
+        "padj": 0.0060224570385296
+      },
+      {
+        "genes": "EML1",
+        "estimate": -0.176950532133752,
+        "padj": 0.0060224570385296
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOMF_STRUCTURAL_CONSTITUENT_OF_RIBOSOME",
+        "NES": -2.0198257520104876,
+        "padj": 0.0023283412358991
+      },
+      {
+        "pathway": "GOCC_RIBOSOMAL_SUBUNIT",
+        "NES": -1.9511747436039075,
+        "padj": 0.0024698235738343
+      },
+      {
+        "pathway": "REACTOME_REGULATION_OF_EXPRESSION_OF_SLITS_AND_ROBOS",
+        "NES": -1.901895663016574,
+        "padj": 0.0047119102898277
+      },
+      {
+        "pathway": "REACTOME_METABOLISM_OF_CARBOHYDRATES_AND_CARBOHYDRATE_DERIVATIVES",
+        "NES": -1.8031638777979864,
+        "padj": 0.0056084893302684
+      },
+      {
+        "pathway": "REACTOME_NONSENSE_MEDIATED_DECAY_NMD",
+        "NES": -1.982714946362685,
+        "padj": 0.0056084893302684
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_MALE_GAMETE_GENERATION",
+        "NES": 1.5037982195523902,
+        "padj": 0.0159721893129234
+      },
+      {
+        "pathway": "GOBP_SPERMATID_DIFFERENTIATION",
+        "NES": 1.6828507399362078,
+        "padj": 0.0295563775215646
+      },
+      {
+        "pathway": "GOMF_TRANSMEMBRANE_RECEPTOR_PROTEIN_SERINE_THREONINE_KINASE_ACTIVITY",
+        "NES": 2.085986682714223,
+        "padj": 0.0463258393118977
+      },
+      {
+        "pathway": "REACTOME_SIGNALING_BY_BMP",
+        "NES": 1.9892277243806955,
+        "padj": 0.0645206956498465
+      },
+      {
+        "pathway": "GOBP_CARDIAC_MUSCLE_CELL_CONTRACTION",
+        "NES": 1.7915327868134805,
+        "padj": 0.0921431270347198
+      }
+    ]
+  },
+  "Sncg": {
+    "n_genes_tested": 9920,
+    "n_sig_padj_0.1": 54,
+    "top_up_genes": [
+      {
+        "genes": "C4orf33",
+        "estimate": 0.22946834526549,
+        "padj": 0.0304570834828841
+      },
+      {
+        "genes": "NEK7",
+        "estimate": 0.23486047545408,
+        "padj": 0.0463613838602223
+      },
+      {
+        "genes": "CRB1",
+        "estimate": 0.248909041286014,
+        "padj": 0.0463613838602223
+      },
+      {
+        "genes": "FXR1",
+        "estimate": 0.167478216526124,
+        "padj": 0.0463613838602223
+      },
+      {
+        "genes": "KIZ",
+        "estimate": 0.169464395532173,
+        "padj": 0.0472788479994339
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "RGS8",
+        "estimate": -0.289342309744327,
+        "padj": 0.0002273332905339
+      },
+      {
+        "genes": "ATP1B3",
+        "estimate": -0.184780431585751,
+        "padj": 0.0463613838602223
+      },
+      {
+        "genes": "CHRNA4",
+        "estimate": -0.209473084787992,
+        "padj": 0.0463613838602223
+      },
+      {
+        "genes": "CHCHD6",
+        "estimate": -0.152153389311093,
+        "padj": 0.0463613838602223
+      },
+      {
+        "genes": "USP31",
+        "estimate": -0.185778379412296,
+        "padj": 0.0472788479994339
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "REACTOME_EUKARYOTIC_TRANSLATION_ELONGATION",
+        "NES": -2.2435660600079905,
+        "padj": 0.0003660399115565107
+      },
+      {
+        "pathway": "REACTOME_EUKARYOTIC_TRANSLATION_INITIATION",
+        "NES": -2.1658380050311674,
+        "padj": 0.0003660399115565107
+      },
+      {
+        "pathway": "REACTOME_SELENOAMINO_ACID_METABOLISM",
+        "NES": -2.180706137821922,
+        "padj": 0.0003660399115565107
+      },
+      {
+        "pathway": "REACTOME_SRP_DEPENDENT_COTRANSLATIONAL_PROTEIN_TARGETING_TO_MEMBRANE",
+        "NES": -2.1216029642412972,
+        "padj": 0.0003660399115565107
+      },
+      {
+        "pathway": "REACTOME_REGULATION_OF_EXPRESSION_OF_SLITS_AND_ROBOS",
+        "NES": -2.011816563318699,
+        "padj": 0.000523387164489242
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_SEX_DIFFERENTIATION",
+        "NES": 1.8379527599267815,
+        "padj": 0.0081135845954301
+      },
+      {
+        "pathway": "GOMF_IMMUNE_RECEPTOR_ACTIVITY",
+        "NES": 2.1334111603929844,
+        "padj": 0.0160791818731554
+      },
+      {
+        "pathway": "REACTOME_SIGNALING_BY_BMP",
+        "NES": 2.113379700954425,
+        "padj": 0.0160791818731554
+      },
+      {
+        "pathway": "GOMF_CYTOKINE_RECEPTOR_ACTIVITY",
+        "NES": 2.0469738450752306,
+        "padj": 0.0282528849651876
+      },
+      {
+        "pathway": "GOCC_RNA_POLYMERASE_II_TRANSCRIPTION_REGULATOR_COMPLEX",
+        "NES": 1.6653775317037591,
+        "padj": 0.0440469112100693
+      }
+    ]
+  },
+  "Sst": {
+    "n_genes_tested": 12492,
+    "n_sig_padj_0.1": 345,
+    "top_up_genes": [
+      {
+        "genes": "SMAD1",
+        "estimate": 0.224349332712827,
+        "padj": 6.58343348742902e-05
+      },
+      {
+        "genes": "GALNT13",
+        "estimate": 0.230027342378998,
+        "padj": 0.0009012414872681
+      },
+      {
+        "genes": "DUBR",
+        "estimate": 0.190772577865346,
+        "padj": 0.0018153176811544
+      },
+      {
+        "genes": "DCDC1",
+        "estimate": 0.341383078563271,
+        "padj": 0.002467313651843
+      },
+      {
+        "genes": "CEP126",
+        "estimate": 0.149513884239795,
+        "padj": 0.0025298589073432
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "NAT16",
+        "estimate": -0.809701787211901,
+        "padj": 4.5549237485256e-05
+      },
+      {
+        "genes": "SLC27A4",
+        "estimate": -0.186151034678532,
+        "padj": 0.0018565972043325
+      },
+      {
+        "genes": "CCDC136",
+        "estimate": -0.14297262280243,
+        "padj": 0.0018565972043325
+      },
+      {
+        "genes": "TRAPPC9",
+        "estimate": -0.160800764854524,
+        "padj": 0.003531995294003
+      },
+      {
+        "genes": "VAV2",
+        "estimate": -0.165600578525627,
+        "padj": 0.0040241001570827
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "HALLMARK_OXIDATIVE_PHOSPHORYLATION",
+        "NES": -2.141722940573028,
+        "padj": 3.0304440919495163e-05
+      },
+      {
+        "pathway": "REACTOME_SELENOAMINO_ACID_METABOLISM",
+        "NES": -2.23919174011428,
+        "padj": 3.0304440919495163e-05
+      },
+      {
+        "pathway": "REACTOME_SRP_DEPENDENT_COTRANSLATIONAL_PROTEIN_TARGETING_TO_MEMBRANE",
+        "NES": -2.1748427838682103,
+        "padj": 3.68612055226586e-05
+      },
+      {
+        "pathway": "REACTOME_EUKARYOTIC_TRANSLATION_ELONGATION",
+        "NES": -2.287835152188216,
+        "padj": 4.052552477678442e-05
+      },
+      {
+        "pathway": "REACTOME_REGULATION_OF_EXPRESSION_OF_SLITS_AND_ROBOS",
+        "NES": -2.0520710881190114,
+        "padj": 0.00010951116955274156
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_MALE_GAMETE_GENERATION",
+        "NES": 1.6192817053941793,
+        "padj": 0.0017559506678146
+      },
+      {
+        "pathway": "GOBP_GAMETE_GENERATION",
+        "NES": 1.500038208686696,
+        "padj": 0.005845057729062
+      },
+      {
+        "pathway": "GOBP_SEX_DIFFERENTIATION",
+        "NES": 1.7265521972417337,
+        "padj": 0.0131332350378986
+      },
+      {
+        "pathway": "GOBP_DEVELOPMENT_OF_PRIMARY_SEXUAL_CHARACTERISTICS",
+        "NES": 1.7338370936850014,
+        "padj": 0.0232301617231071
+      },
+      {
+        "pathway": "GOBP_REPRODUCTIVE_SYSTEM_DEVELOPMENT",
+        "NES": 1.639660717353212,
+        "padj": 0.0240302301402802
+      }
+    ]
+  },
+  "Sst Chodl": {
+    "n_genes_tested": 2730,
+    "n_sig_padj_0.1": 0,
+    "top_up_genes": [
+      {
+        "genes": "SPATA6L",
+        "estimate": 0.46430310250866,
+        "padj": 0.517306582864255
+      },
+      {
+        "genes": "DNAH6",
+        "estimate": 0.298567231536166,
+        "padj": 0.998125008822678
+      },
+      {
+        "genes": "DNAH14",
+        "estimate": 0.122263805307472,
+        "padj": 0.998125008822678
+      },
+      {
+        "genes": "ANKRD34C-AS1",
+        "estimate": 0.233165714356009,
+        "padj": 0.998125008822678
+      },
+      {
+        "genes": "ALCAM",
+        "estimate": 0.329241006757651,
+        "padj": 0.998125008822678
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "ENOX1",
+        "estimate": -0.280963432641855,
+        "padj": 0.517306582864255
+      },
+      {
+        "genes": "MAP3K13",
+        "estimate": -0.315668146373488,
+        "padj": 0.517306582864255
+      },
+      {
+        "genes": "CMTM8",
+        "estimate": -0.371254626134003,
+        "padj": 0.850695466218952
+      },
+      {
+        "genes": "RABGAP1",
+        "estimate": -0.252872847670887,
+        "padj": 0.850695466218952
+      },
+      {
+        "genes": "ATXN1",
+        "estimate": -0.199315545162139,
+        "padj": 0.850695466218952
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOBP_NEGATIVE_REGULATION_OF_SYNAPTIC_TRANSMISSION",
+        "NES": -2.179604292245036,
+        "padj": 0.0305890199064274
+      },
+      {
+        "pathway": "GOCC_POSTSYNAPSE",
+        "NES": -1.6399638272217,
+        "padj": 0.0305890199064274
+      },
+      {
+        "pathway": "REACTOME_PKMTS_METHYLATE_HISTONE_LYSINES",
+        "NES": -2.0258306586579997,
+        "padj": 0.1291893965794492
+      },
+      {
+        "pathway": "GOBP_SYNAPTIC_SIGNALING",
+        "NES": -1.6028927210092203,
+        "padj": 0.149809707546204
+      },
+      {
+        "pathway": "GOCC_POSTSYNAPTIC_SPECIALIZATION",
+        "NES": -1.6920609673375446,
+        "padj": 0.149809707546204
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_ESTABLISHMENT_OF_RNA_LOCALIZATION",
+        "NES": 1.7999171600539898,
+        "padj": 0.2412672188862397
+      },
+      {
+        "pathway": "GOBP_RNA_LOCALIZATION",
+        "NES": 1.7538126752311272,
+        "padj": 0.2412672188862397
+      },
+      {
+        "pathway": "REACTOME_CYTOKINE_SIGNALING_IN_IMMUNE_SYSTEM",
+        "NES": 1.6766652585873114,
+        "padj": 0.2412672188862397
+      },
+      {
+        "pathway": "REACTOME_REGULATION_OF_PTEN_STABILITY_AND_ACTIVITY",
+        "NES": 1.9499103080757905,
+        "padj": 0.2412672188862397
+      },
+      {
+        "pathway": "REACTOME_INTERLEUKIN_1_SIGNALING",
+        "NES": 1.9699206517199457,
+        "padj": 0.2617359600205509
+      }
+    ]
+  },
+  "VLMC": {
+    "n_genes_tested": 1678,
+    "n_sig_padj_0.1": 40,
+    "top_up_genes": [
+      {
+        "genes": "P4HA1",
+        "estimate": 0.352725389756045,
+        "padj": 0.007681636977837
+      },
+      {
+        "genes": "XPO1",
+        "estimate": 0.215575073944256,
+        "padj": 0.0391198786958878
+      },
+      {
+        "genes": "KANSL1L",
+        "estimate": 0.165403356556242,
+        "padj": 0.048534896719723
+      },
+      {
+        "genes": "MKLN1",
+        "estimate": 0.169424126079171,
+        "padj": 0.0612003011825728
+      },
+      {
+        "genes": "CERS6",
+        "estimate": 0.180066580227022,
+        "padj": 0.0612003011825728
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "RERGL",
+        "estimate": -0.642948859397535,
+        "padj": 0.0008412654576364
+      },
+      {
+        "genes": "PTN",
+        "estimate": -0.313581334746248,
+        "padj": 0.0052865525369949
+      },
+      {
+        "genes": "SEMA5A",
+        "estimate": -0.293313370612025,
+        "padj": 0.0052865525369949
+      },
+      {
+        "genes": "KCNA2",
+        "estimate": -0.407844787256405,
+        "padj": 0.0053763013946553
+      },
+      {
+        "genes": "ARHGAP29",
+        "estimate": -0.252358575081718,
+        "padj": 0.0111755557854107
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOMF_MONOATOMIC_ION_TRANSMEMBRANE_TRANSPORTER_ACTIVITY",
+        "NES": -2.290077989814823,
+        "padj": 5.764696702646943e-06
+      },
+      {
+        "pathway": "GOBP_MONOATOMIC_ION_TRANSMEMBRANE_TRANSPORT",
+        "NES": -2.1221707139893247,
+        "padj": 2.9814531482536834e-05
+      },
+      {
+        "pathway": "GOMF_MONOATOMIC_CATION_TRANSMEMBRANE_TRANSPORTER_ACTIVITY",
+        "NES": -2.22183469999332,
+        "padj": 2.9814531482536834e-05
+      },
+      {
+        "pathway": "GOMF_TRANSPORTER_ACTIVITY",
+        "NES": -2.121659740426386,
+        "padj": 2.9814531482536834e-05
+      },
+      {
+        "pathway": "GOBP_MONOATOMIC_CATION_TRANSMEMBRANE_TRANSPORT",
+        "NES": -2.089391387226112,
+        "padj": 0.0001552481089137908
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOCC_RIBOSOME",
+        "NES": 2.3287295741873577,
+        "padj": 0.0026877286762243
+      },
+      {
+        "pathway": "REACTOME_CELLULAR_RESPONSES_TO_STIMULI",
+        "NES": 1.8419989494580795,
+        "padj": 0.0030076965033486
+      },
+      {
+        "pathway": "GOBP_MACROMOLECULE_CATABOLIC_PROCESS",
+        "NES": 1.6682366468857055,
+        "padj": 0.0040820680825233
+      },
+      {
+        "pathway": "GOBP_DEVELOPMENTAL_PROCESS_INVOLVED_IN_REPRODUCTION",
+        "NES": 1.8568511833943455,
+        "padj": 0.0069777455714745
+      },
+      {
+        "pathway": "GOBP_DNA_METABOLIC_PROCESS",
+        "NES": 1.782356620436854,
+        "padj": 0.0084967441501766
+      }
+    ]
+  },
+  "Vip": {
+    "n_genes_tested": 13842,
+    "n_sig_padj_0.1": 603,
+    "top_up_genes": [
+      {
+        "genes": "RAB3IP",
+        "estimate": 0.158892576953995,
+        "padj": 0.0004311324882671
+      },
+      {
+        "genes": "L3MBTL3",
+        "estimate": 0.217028191536646,
+        "padj": 0.0004311324882671
+      },
+      {
+        "genes": "MXI1",
+        "estimate": 0.149980637288897,
+        "padj": 0.0004311324882671
+      },
+      {
+        "genes": "NCOA2",
+        "estimate": 0.140864134224962,
+        "padj": 0.0004311324882671
+      },
+      {
+        "genes": "DNAH6",
+        "estimate": 0.180514505000314,
+        "padj": 0.0007990240172805
+      }
+    ],
+    "top_down_genes": [
+      {
+        "genes": "PRKCD",
+        "estimate": -0.287670058586982,
+        "padj": 0.0004311324882671
+      },
+      {
+        "genes": "COL9A1",
+        "estimate": -0.278735473975516,
+        "padj": 0.0004311324882671
+      },
+      {
+        "genes": "SLC27A4",
+        "estimate": -0.149386151277679,
+        "padj": 0.0007990240172805
+      },
+      {
+        "genes": "HRH2",
+        "estimate": -0.171238203325172,
+        "padj": 0.0008608193494825
+      },
+      {
+        "genes": "RGS8",
+        "estimate": -0.196618683388072,
+        "padj": 0.0008608193494825
+      }
+    ],
+    "top_down_pathways": [
+      {
+        "pathway": "GOCC_ORGANELLE_INNER_MEMBRANE",
+        "NES": -1.664773084082823,
+        "padj": 0.004657105569256
+      },
+      {
+        "pathway": "HALLMARK_OXIDATIVE_PHOSPHORYLATION",
+        "NES": -1.8044684373151925,
+        "padj": 0.0206012480404115
+      },
+      {
+        "pathway": "GOMF_PHOSPHATIDYLCHOLINE_TRANSPORTER_ACTIVITY",
+        "NES": -2.15816128420061,
+        "padj": 0.060167527770045
+      },
+      {
+        "pathway": "GOMF_OXIDOREDUCTION_DRIVEN_ACTIVE_TRANSMEMBRANE_TRANSPORTER_ACTIVITY",
+        "NES": -1.993888369828432,
+        "padj": 0.0717632673410806
+      },
+      {
+        "pathway": "GOCC_MITOCHONDRIAL_PROTEIN_CONTAINING_COMPLEX",
+        "NES": -1.6881931266061154,
+        "padj": 0.072622268889818
+      }
+    ],
+    "top_up_pathways": [
+      {
+        "pathway": "GOBP_POSITIVE_REGULATION_OF_MRNA_CATABOLIC_PROCESS",
+        "NES": 2.079670653859163,
+        "padj": 0.0065318695304004
+      },
+      {
+        "pathway": "REACTOME_SIGNALING_BY_BMP",
+        "NES": 2.2639822095424034,
+        "padj": 0.011300910393842
+      },
+      {
+        "pathway": "GOBP_NEGATIVE_REGULATION_OF_GENE_EXPRESSION_EPIGENETIC",
+        "NES": 1.8676823417055055,
+        "padj": 0.0206012480404115
+      },
+      {
+        "pathway": "GOCC_CONTRACTILE_MUSCLE_FIBER",
+        "NES": 1.7655966712276694,
+        "padj": 0.0206012480404115
+      },
+      {
+        "pathway": "GOBP_MALE_GAMETE_GENERATION",
+        "NES": 1.6180130693984869,
+        "padj": 0.0211533537639319
+      }
+    ]
+  }
+}

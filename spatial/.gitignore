@@ -1,0 +1,125 @@
+# ──────────────────────────────────────────────────────────────────────
+# Data files (see data/README.md for download instructions)
+# ──────────────────────────────────────────────────────────────────────
+
+# Raw Xenium data (download from GEO: GSE307404)
+data/raw/
+
+# Reference datasets (download from Allen Brain Cell Atlas)
+data/reference/*.h5ad
+data/reference/*.h5ad.bak
+data/reference/*.h5
+data/reference/nicole_sea_ad_reference/
+
+# Reference count summary CSVs (regenerate with benchmark scripts)
+data/reference/SEAAD_*.csv
+
+# External code dependencies
+code/scrattch.mapping-main/
+
+# Documentation PDFs (copyrighted; cite DOIs instead)
+docs/
+
+# ──────────────────────────────────────────────────────────────────────
+# Generated pipeline outputs (regenerate by running pipeline steps 00-05)
+# ──────────────────────────────────────────────────────────────────────
+
+# Annotated h5ad files
+output/h5ad/
+output/all_samples_annotated.h5ad
+output/Br8667_corr_annotated.h5ad
+
+# Trained models
+output/depth_model*.pkl
+
+# Viewer data (regenerate with step 07)
+output/viewer/*.json
+output/viewer/xenium_viewer_standalone.html
+output/viewer/boundaries/
+output/viewer/transcripts/
+
+# Netlify deployment (regenerate from viewer data)
+output/deploy/
+
+# Per-sample summary plots (regenerate with step 04)
+output/plots/
+
+# Benchmark h5ad and large JSON (regenerate with benchmark script)
+output/benchmark/*.h5ad
+output/benchmark/*.json
+
+# BANKSY intermediate outputs (regenerate with step 06)
+output/banksy/
+
+# Large generated analysis outputs (regenerate with analysis scripts)
+output/de/
+output/merfish_benchmark/*
+!output/merfish_benchmark/subclass_confusion_matrix.png
+output/crumblr_seaad/
+
+# MERSCOPE annotated h5ad files (regenerate with merscope pipeline)
+output/merscope_h5ad/
+
+# MERSCOPE viewer JSON (regenerate with merscope_export_viewer.py)
+output/merscope_viewer/
+
+# MERSCOPE raw data
+data/merscope_4k_probe_testing/
+
+# Correlation centroids (regenerate with step 02b)
+output/h5ad/correlation_centroids.pkl
+
+# Top-level plots directory
+plots/
+
+# ──────────────────────────────────────────────────────────────────────
+# Generated figures (regenerate by running analysis scripts)
+# ──────────────────────────────────────────────────────────────────────
+output/**/*.png
+output/*.png
+!output/presentation/*.png
+!output/crumblr/*.png
+!output/density_analysis/snrnaseq_vs_density_supertype.png
+!output/density_analysis/snrnaseq_vs_density_subclass.png
+!output/merfish_benchmark/subclass_confusion_matrix.png
+!output/xenium_vs_merfish_scatter.png
+!output/xenium_corr_control_vs_merfish_validation.png
+!output/depth_proportions/*.png
+output/**/*.pptx
+output/**/*.pdf
+
+# Archived presentation files (stale exploration outputs)
+output/presentation/_archived/
+
+# Empty/unused output dirs
+output/nsforest/
+output/sccoda/
+output/figures/
+
+# ──────────────────────────────────────────────────────────────────────
+# System / IDE / temporary files
+# ──────────────────────────────────────────────────────────────────────
+.DS_Store
+__pycache__/
+*.pyc
+~$*
+*.tmp
+
+# ──────────────────────────────────────────────────────────────────────
+# Project notes (not part of the codebase)
+# ──────────────────────────────────────────────────────────────────────
+plan.md
+PLAN.md
+presentation_storyboard.md
+GSE307404_series_matrix*
+
+# Claude Code artifacts
+.claude/
+
+# Local Netlify folder
+.netlify
+node_modules/
+
+# Large intermediate CSVs (>50MB)
+output/depth_proportions/cell_level_data.csv
+output/depth_proportions/cell_level_data_all_regions.csv

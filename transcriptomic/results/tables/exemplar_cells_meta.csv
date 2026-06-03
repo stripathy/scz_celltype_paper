@@ -1,0 +1,5 @@
+gene,subclass,dx,sample,cell_index,marker_count,n_dots_in_poly,total_counts,circularity,solidity,area_um2
+SST,Sst,Control,Br6432,5333,38,47,918,0.981,0.999,245.2
+SST,Sst,SCZ,Br2039,16251,10,10,1136,0.975,0.999,249.9
+RASGRF2,Pvalb,Control,Br6432,38643,23,24,1739,0.98,0.998,261.3
+RASGRF2,Pvalb,SCZ,Br2039,18952,5,5,1139,0.978,0.998,241.0

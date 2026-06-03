@@ -1,0 +1,9 @@
+theme,n_pathways,n_fisher_sig,n_stouffer_sig,mean_Z
+Axon guidance,2,2,0,-1.0592142751560454
+BMP / TGFb signaling (UP),3,3,2,5.851185616812217
+Cholesterol / lipid,3,3,3,-6.39706591292906
+Growth / stress (UP),4,4,4,10.208860223039387
+Ion channels / excitability,3,3,3,-10.125750623915552
+Mitochondrial / OxPhos,3,3,3,-6.322747934322682
+Synaptic / vesicle (DOWN),6,5,5,-10.302873111697204
+Translation / ribosome,3,3,1,0.8450488001485874

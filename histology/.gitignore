@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Environment
+.env
+/tmp/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Raw imaging data
+dwight data 2/
+
+# Exploratory/diagnostic outputs (not for version control)
+results/exploratory/
+results/excel_images/
+
+# Claude
+.claude/

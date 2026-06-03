@@ -1,0 +1,36 @@
+
+### Astro (n_sig padj<0.1: 943 / 11465 tested)
+- Top DOWN genes: D2HGDH (estimate=-0.30, padj=1.8e-06), PYGM (estimate=-0.49, padj=6.5e-05), CASKIN1 (estimate=-0.33, padj=9.7e-05), LRRC4B (estimate=-0.27, padj=9.8e-05), SUGP2 (estimate=-0.20, padj=0.0001)
+- Top UP genes: RUFY4 (estimate=0.53, padj=9.6e-05), SPTLC3 (estimate=0.40, padj=0.00011), HMGCLL1 (estimate=0.36, padj=0.00011), FOXP1 (estimate=0.28, padj=0.00011), SP110 (estimate=0.28, padj=0.00053)
+- Top DOWN pathways: GOBP_REGULATION_OF_TRANS_SYNAPTIC_SIGNALING (NES=-1.96, padj=2.2e-07); GOMF_MONOATOMIC_ION_TRANSMEMBRANE_TRANSPORTER_ACTIVITY (NES=-1.76, padj=1.3e-05); GOCC_SYNAPTIC_MEMBRANE (NES=-1.86, padj=1.5e-05)
+- Top UP pathways: HALLMARK_INTERFERON_GAMMA_RESPONSE (NES=2.73, padj=6.1e-11); HALLMARK_INTERFERON_ALPHA_RESPONSE (NES=2.88, padj=1e-09); REACTOME_CYTOKINE_SIGNALING_IN_IMMUNE_SYSTEM (NES=1.81, padj=2.2e-07)
+
+### Oligo (n_sig padj<0.1: 453 / 10635 tested)
+- Top DOWN genes: KCNA2 (estimate=-0.40, padj=9.1e-09), PLD5 (estimate=-0.36, padj=1.3e-08), CNDP1 (estimate=-0.30, padj=1.2e-06), KIT (estimate=-0.56, padj=1.2e-06), CTNNA2 (estimate=-0.44, padj=9.4e-06)
+- Top UP genes: PLB1 (estimate=0.55, padj=9.4e-06), NEXN (estimate=0.30, padj=4.1e-05), SMAD9 (estimate=0.43, padj=4.7e-05), SEMA4B (estimate=0.47, padj=0.00061), SUGT1 (estimate=0.16, padj=0.0018)
+- Top DOWN pathways: GOBP_SYNAPTIC_SIGNALING (NES=-2.32, padj=2.4e-21); GOCC_SYNAPTIC_MEMBRANE (NES=-2.41, padj=3.5e-17); GOCC_AXON (NES=-2.18, padj=1.4e-15)
+- Top UP pathways: REACTOME_PHASE_I_FUNCTIONALIZATION_OF_COMPOUNDS (NES=2.18, padj=0.0014); REACTOME_BIOLOGICAL_OXIDATIONS (NES=1.89, padj=0.0032); GOBP_MEIOSIS_I_CELL_CYCLE_PROCESS (NES=1.83, padj=0.0068)
+
+### OPC (n_sig padj<0.1: 259 / 10040 tested)
+- Top DOWN genes: PREX2 (estimate=-0.22, padj=6.7e-05), MIR9-3HG (estimate=-0.23, padj=0.00011), NKAIN3 (estimate=-0.21, padj=0.0016), ITGB5 (estimate=-0.28, padj=0.0019), CASK (estimate=-0.17, padj=0.002)
+- Top UP genes: SLC26A2 (estimate=0.27, padj=0.0016), VWA5A (estimate=0.31, padj=0.0021), HK2 (estimate=0.53, padj=0.0042), AZGP1 (estimate=0.48, padj=0.0047), CSF1 (estimate=0.43, padj=0.0063)
+- Top DOWN pathways: GOBP_REGULATION_OF_TRANS_SYNAPTIC_SIGNALING (NES=-1.87, padj=3.6e-05); GOCC_SYNAPTIC_MEMBRANE (NES=-1.90, padj=3.6e-05); GOBP_CELL_PROJECTION_MORPHOGENESIS (NES=-1.70, padj=0.0001)
+- Top UP pathways: HALLMARK_MTORC1_SIGNALING (NES=2.37, padj=8.8e-08); GOBP_RESPONSE_TO_PEPTIDE (NES=1.76, padj=2.7e-05); REACTOME_EUKARYOTIC_TRANSLATION_INITIATION (NES=2.25, padj=5.2e-05)
+
+### Micro-PVM (n_sig padj<0.1: 487 / 3788 tested)
+- Top DOWN genes: VASH1 (estimate=-0.38, padj=1.3e-05), ZFP36L2 (estimate=-0.53, padj=4.3e-05), HGSNAT (estimate=-0.34, padj=4.3e-05), RNF19B (estimate=-0.37, padj=4.3e-05), KCNQ1 (estimate=-0.28, padj=4.6e-05)
+- Top UP genes: IGF2R (estimate=0.38, padj=0.00027), PSTPIP2 (estimate=0.66, padj=0.00028), HPRT1 (estimate=0.25, padj=0.00037), FCGR1A (estimate=0.48, padj=0.00053), SNAP23 (estimate=0.34, padj=0.00058)
+- Top DOWN pathways: GOBP_POSITIVE_REGULATION_OF_LOCOMOTION (NES=-1.64, padj=0.012); GOBP_CELL_MOTILITY (NES=-1.45, padj=0.017); REACTOME_SIGNALING_BY_GPCR (NES=-1.69, padj=0.022)
+- Top UP pathways: REACTOME_TRANSLATION (NES=3.17, padj=1.2e-14); GOBP_CYTOPLASMIC_TRANSLATION (NES=2.96, padj=1.2e-12); REACTOME_EUKARYOTIC_TRANSLATION_INITIATION (NES=3.08, padj=1.2e-12)
+
+### Endo (n_sig padj<0.1: 139 / 4473 tested)
+- Top DOWN genes: GPCPD1 (estimate=-0.51, padj=0.0016), PLPPR4 (estimate=-0.52, padj=0.0016), TNFSF10 (estimate=-0.63, padj=0.0016), SLCO1A2 (estimate=-0.91, padj=0.0016), ABCG2 (estimate=-0.48, padj=0.0027)
+- Top UP genes: TNFRSF1A (estimate=0.42, padj=0.0016), KANSL1L (estimate=0.21, padj=0.029), SULF2 (estimate=0.42, padj=0.029), PIBF1 (estimate=0.18, padj=0.029), CFH (estimate=0.40, padj=0.029)
+- Top DOWN pathways: GOBP_NEURON_DEVELOPMENT (NES=-1.74, padj=4.5e-05); GOCC_PLASMA_MEMBRANE_REGION (NES=-1.69, padj=0.00019); GOBP_AXON_DEVELOPMENT (NES=-1.74, padj=0.0078)
+- Top UP pathways: GOCC_RIBOSOME (NES=2.06, padj=0.0013); REACTOME_EUKARYOTIC_TRANSLATION_INITIATION (NES=1.95, padj=0.0081); REACTOME_TRANSLATION (NES=1.84, padj=0.014)
+
+### VLMC (n_sig padj<0.1: 40 / 1678 tested)
+- Top DOWN genes: RERGL (estimate=-0.64, padj=0.00084), PTN (estimate=-0.31, padj=0.0053), SEMA5A (estimate=-0.29, padj=0.0053), KCNA2 (estimate=-0.41, padj=0.0054), ARHGAP29 (estimate=-0.25, padj=0.011)
+- Top UP genes: P4HA1 (estimate=0.35, padj=0.0077), XPO1 (estimate=0.22, padj=0.039), KANSL1L (estimate=0.17, padj=0.049), MKLN1 (estimate=0.17, padj=0.061), CERS6 (estimate=0.18, padj=0.061)
+- Top DOWN pathways: GOMF_MONOATOMIC_ION_TRANSMEMBRANE_TRANSPORTER_ACTIVITY (NES=-2.29, padj=5.8e-06); GOBP_MONOATOMIC_ION_TRANSMEMBRANE_TRANSPORT (NES=-2.12, padj=3e-05); GOMF_MONOATOMIC_CATION_TRANSMEMBRANE_TRANSPORTER_ACTIVITY (NES=-2.22, padj=3e-05)
+- Top UP pathways: GOCC_RIBOSOME (NES=2.33, padj=0.0027); REACTOME_CELLULAR_RESPONSES_TO_STIMULI (NES=1.84, padj=0.003); GOBP_MACROMOLECULE_CATABOLIC_PROCESS (NES=1.67, padj=0.0041)

@@ -1,0 +1,21 @@
+source,term_name,p_value,term_size,intersection_size,intersection,query_set,correction
+GO:MF,"dolichyl pyrophosphate Glc2Man9GlcNAc2 alpha-1,2-glucosyltransferase activity",0.07053754505169495,2,2,"ALG10B,ALG10",up,fdr
+GO:MF,I-SMAD binding,0.10746846270047497,13,3,"SMAD1,SMAD9,ACVR1B",up,fdr
+GO:MF,dolichyl-phosphate-glucose-glycolipid alpha-glucosyltransferase activity,0.13889890517019768,4,2,"ALG10B,ALG10",up,fdr
+GO:MF,quinone reductase (NADPH) activity,0.18843001511896063,1,1,CRYZ,up,fdr
+GO:MF,complement receptor activity,0.18843001511896063,1,1,C5AR1,up,fdr
+GO:MF,complement component C5a receptor activity,0.18843001511896063,1,1,C5AR1,up,fdr
+GO:MF,prolactin receptor activity,0.18843001511896063,1,1,PRLR,up,fdr
+GO:MF,opsonin receptor activity,0.18843001511896063,1,1,C5AR1,up,fdr
+GO:MF,metal ion transmembrane transporter activity,0.18843001511896063,295,9,"SLC38A1,ATP2B4,CACHD1,SLC9A9,MRS2,RYR1,ATP2C1,TRPM3,SCN3A",up,fdr
+GO:MF,bicarbonate binding,0.18843001511896063,1,1,ADCY10,up,fdr
+GO:MF,2-iminobutanoate deaminase activity,0.18843001511896063,1,1,RIDA,up,fdr
+GO:MF,2-iminopropanoate deaminase activity,0.18843001511896063,1,1,RIDA,up,fdr
+GO:MF,nitric-oxide synthase inhibitor activity,0.18843001511896063,1,1,ATP2B4,up,fdr
+GO:MF,2-iminobutanoate/2-iminopropanoate deaminase activity,0.18843001511896063,1,1,RIDA,up,fdr
+GO:MF,neurexin family protein binding,0.18843001511896063,11,2,"LRRTM2,SYTL2",up,fdr
+GO:MF,3-hydroxyisobutyryl-CoA hydrolase activity,0.18843001511896063,1,1,HIBCH,up,fdr
+GO:MF,P-type calcium transporter activity,0.18843001511896063,6,2,"ATP2B4,ATP2C1",up,fdr
+GO:MF,steroid binding,0.18843001511896063,71,4,"AR,ERLIN1,TMEM97,OSBPL9",up,fdr
+GO:MF,immune receptor activity,0.18843001511896063,36,3,"C5AR1,PRLR,GHR",up,fdr
+GO:MF,"glucan 1,4-alpha-glucosidase activity",0.18843001511896063,1,1,MGAM,up,fdr

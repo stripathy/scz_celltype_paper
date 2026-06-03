@@ -1,0 +1,16 @@
+{
+  "name": "scz_xenium",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static viewer for the Kwon et al. SCZ Xenium DLPFC dataset. Test harness for the viewer.",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:update": "playwright test --update-snapshots",
+    "test:report": "playwright show-report"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}

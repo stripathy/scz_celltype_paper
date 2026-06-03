@@ -1,0 +1,22 @@
+# This monorepo tracks CODE only. Data is wired via symlinks (see
+# shared/snrnaseq_de/ and ~/Github/DATA_LAYOUT.md). Each subdir also carries its
+# own .gitignore (inherited from its source repo), which governs that subtree.
+
+# snRNA-seq DE interface — symlinked data, never committed
+shared/snrnaseq_de/*.csv
+shared/snrnaseq_de/*.tsv
+shared/snrnaseq_de/nicole_scz_snrnaseq_betas
+
+# cross-component data seams (symlinks -> originals/shared; see DATA_FLOW.md)
+transcriptomic/data/*.csv
+spatial/output/
+spatial/data/nicole_scz_snrnaseq_betas
+genetics/data/gwas/*.csv
+histology/coordinates
+
+# generic safety net
+**/data/*.h5ad
+**/*.rds
+.DS_Store
+__pycache__/
+*.pyc

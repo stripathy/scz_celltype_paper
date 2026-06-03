@@ -1,0 +1,11 @@
+[build]
+  publish = "site"
+  command = "python3 build_static.py"
+
+# Headers for all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Cache-Control = "public, max-age=3600"
