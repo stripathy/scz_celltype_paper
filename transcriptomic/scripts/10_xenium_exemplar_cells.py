@@ -1,33 +1,44 @@
 """
-Extract exemplar Xenium cells illustrating marker downregulation in SCZ:
-  - SST  in Sst        cells: one Control vs one SCZ
-  - BDNF in L2/3 IT    cells: one Control vs one SCZ
+Extract exemplar Xenium cells illustrating marker downregulation in SCZ, for the
+exemplar panel of the composite (scripts/09_composite_figure.R):
+  - SST   in Sst   cells: one Control vs one SCZ
+  - FGFR3 in Astrocytes : one Control vs one SCZ
 
-For each chosen cell we save (in micron coordinates, recentred on the cell):
-  - the cell boundary polygon
-  - the marker-gene transcript molecules that fall INSIDE that polygon
-plus a metadata row (sample, marker count, total counts).
+Each exemplar is chosen to be REPRESENTATIVE — its raw marker count is as close
+as possible to the POOLED group median for that diagnosis (median across all
+qc-pass cells of the subclass in all 24 Xenium donors, not one section). Among
+cells that hit the group median we then require a typical, capture-matched
+library size and pick the roundest, most convex cell (clean segmentation for a
+representative image). Cortical depth/layer is reported but NOT used for
+selection (circular morphology is prioritised over laminar matching).
 
-These small CSVs are read by scripts/09_composite_figure.R to draw the
-exemplar-cell panels.
+For each chosen cell we save (micron coords, recentred on the cell centroid):
+  - the cell boundary polygon            exemplar_<gene>_<dx>_boundary.csv
+  - the nucleus boundary polygon         exemplar_<gene>_<dx>_nucleus.csv
+  - the marker-gene transcript molecules INSIDE the cell polygon
+                                         exemplar_<gene>_<dx>_dots.csv
+plus a metadata row (exemplar_cells_meta.csv).
 
 DATA PROVENANCE (SCZ_Xenium repo, Kwon 2026):
-  ~/Github/SCZ_Xenium/output/h5ad/<sample>_annotated.h5ad
-        cells x 300 genes; .X = raw integer counts; obs.subclass_label,
-        obs.qc_pass, obs.total_counts; obsm['spatial'] = centroids.
-  ~/Github/SCZ_Xenium/output/deploy/boundaries/<sample>.json
-        cell polygons in obs order (25 verts/cell); decode:
-        micron = quant * x_scale + x_offset.
-  ~/Github/SCZ_Xenium/output/deploy/transcripts/<sample>/<GENE>.json (+ gene_index.json)
-        per-gene molecule coords; decode with gene_index offsets.
+  output/h5ad/<sample>_annotated.h5ad      cells x 300 genes; .X = raw counts;
+        obs.subclass_label, obs.qc_pass, obs.total_counts, obs.predicted_norm_depth,
+        obs.layer.
+  output/deploy/boundaries/<sample>.json          cell polygons (25 verts), obs order
+  output/deploy/boundaries/<sample>_nucleus.json  nucleus polygons, same indexing
+  output/deploy/transcripts/<sample>/<GENE>.json (+ gene_index.json)  molecules
   Diagnosis per sample: SCZ_Xenium code/analysis/config.py SAMPLE_TO_DX.
 
-Output: results/tables/exemplar_<gene>_<dx>_{boundary,dots}.csv
-        results/tables/exemplar_cells_meta.csv
+Drawing sections are chosen PER PAIR (see PAIRS) as the donor whose canonical
+grain-density median is closest to the diagnosis group median: SST uses
+Br6432 / Br5973; FGFR3 uses Br5400 (control) / Br5973 (SCZ) — Br6432 is
+atypically LOW in FGFR3, so a better-matched control section is used.
+
+Output: results/tables/exemplar_*.csv
 """
 
 import json
 import os
+import sys
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
@@ -38,53 +49,61 @@ from scipy.spatial import ConvexHull
 XEN  = os.path.expanduser("~/Github/SCZ_Xenium")
 H5AD = os.path.join(XEN, "output/h5ad/{s}_annotated.h5ad")
 BND  = os.path.join(XEN, "output/deploy/boundaries/{s}.json")
+NUC  = os.path.join(XEN, "output/deploy/boundaries/{s}_nucleus.json")  # same indexing as BND
 TXG  = os.path.join(XEN, "output/deploy/transcripts/{s}/{g}.json")
 TXI  = os.path.join(XEN, "output/deploy/transcripts/{s}/gene_index.json")
 OUT  = "results/tables"
 
-CONTROL_SAMPLE = "Br6432"   # control sample with transcript export
-SCZ_SAMPLE     = "Br2039"   # SCZ sample with transcript export
-# (gene, Xenium subclass_label). Chosen to be (1) strongly DE-down in the
-# snRNA-seq meta-analysis, (2) highly enough expressed per cell in Xenium to
-# show as molecule dots, and (3) depth-matchable between Control/SCZ cells:
-#   SST in Sst interneurons  (meta padj 0.049; 42 vs 8 dots)
-#   RASGRF2 in Pvalb interneurons (meta padj 0.022; 14 vs 8 dots)
-# Genes like SMAD1/BDNF (strong meta-DE but ~1 dot/cell) and CX3CR1/TF
-# (depth-confounded) were rejected — see notes.
-PAIRS = [("SST", "Sst"), ("RASGRF2", "Pvalb")]
+sys.path.insert(0, os.path.join(XEN, "code/analysis"))
+from config import SAMPLE_TO_DX                       # noqa: E402
 
-_adata_cache = {}
-def load(sample):
-    if sample not in _adata_cache:
-        _adata_cache[sample] = ad.read_h5ad(H5AD.format(s=sample))
-    return _adata_cache[sample]
+# (gene, subclass, {dx: drawing section}). Section per diagnosis = the donor whose
+# canonical-cell grain-density median is closest to that diagnosis's pooled group
+# median, chosen per pair. FGFR3 control = Br5400 (closest); Br6432 is atypically
+# low in FGFR3. SCZ = Br5973 for both (closest exported SCZ section).
+PAIRS = [
+    ("SST",   "Sst",       {"Control": "Br6432", "SCZ": "Br5973"}),
+    ("FGFR3", "Astrocyte",  {"Control": "Br5400", "SCZ": "Br5973"}),
+    ("PVALB", "Pvalb",      {"Control": "Br6432", "SCZ": "Br5973"}),  # supplemental fig (scripts/14)
+]
+ALL_SAMPLES = sorted(SAMPLE_TO_DX)
 
-def gene_counts(a, gene):
+# ── caches ──
+_adata, _bnd, _nuc, _tx = {}, {}, {}, {}
+def load(s):
+    if s not in _adata:
+        _adata[s] = ad.read_h5ad(H5AD.format(s=s))
+    return _adata[s]
+
+def xcount(a, gene):
     col = a.X[:, a.var_names.get_loc(gene)]
     return np.asarray(col.todense()).ravel() if sp.issparse(col) else np.asarray(col).ravel()
 
-_bnd_cache = {}
-def all_polys(sample):
-    """Decode every cell's boundary polygon (micron coords), vectorised.
-    Returns (X, Y) arrays of shape (n_cells, verts_per_cell)."""
-    if sample not in _bnd_cache:
-        b = json.load(open(BND.format(s=sample)))
-        V = b["verts_per_cell"]
-        X = np.asarray(b["bx"]).reshape(-1, V) * b["x_scale"] + b["x_offset"]
-        Y = np.asarray(b["by"]).reshape(-1, V) * b["y_scale"] + b["y_offset"]
-        _bnd_cache[sample] = (X, Y)
-    return _bnd_cache[sample]
+def _decode(path):
+    b = json.load(open(path))
+    V = b["verts_per_cell"]
+    X = np.asarray(b["bx"]).reshape(-1, V) * b["x_scale"] + b["x_offset"]
+    Y = np.asarray(b["by"]).reshape(-1, V) * b["y_scale"] + b["y_offset"]
+    return X, Y
 
-def cell_polygon(sample, idx):
-    X, Y = all_polys(sample)
-    return np.column_stack([X[idx], Y[idx]])
+def all_polys(s):
+    if s not in _bnd:
+        _bnd[s] = _decode(BND.format(s=s))
+    return _bnd[s]
+
+def all_nuc_polys(s):
+    if s not in _nuc:
+        _nuc[s] = _decode(NUC.format(s=s))
+        assert _nuc[s][0].shape[0] == all_polys(s)[0].shape[0], "nucleus/cell index mismatch"
+    return _nuc[s]
+
+def cell_polygon(s, idx):
+    X, Y = all_polys(s);     return np.column_stack([X[idx], Y[idx]])
+def nucleus_polygon(s, idx):
+    X, Y = all_nuc_polys(s); return np.column_stack([X[idx], Y[idx]])
 
 def poly_metrics(poly):
-    """Return (circularity, solidity, area) for a polygon.
-    circularity = 4*pi*A/P^2  (1 = circle; lower = elongated/jagged)
-    solidity    = A / convex_hull_A  (1 = convex; lower = concave 'bites'
-                  from neighbouring-cell segmentation)."""
-    # drop consecutive duplicate (padding) vertices
+    """(circularity 4*pi*A/P^2, solidity A/hullA, area) after dropping padding verts."""
     keep = np.insert(np.any(np.diff(poly, axis=0) != 0, axis=1), 0, True)
     u = poly[keep]
     if len(u) < 3:
@@ -99,99 +118,162 @@ def poly_metrics(poly):
         sol = 0.0
     return circ, sol, area
 
-def marker_dots_in_poly(sample, gene, poly):
-    gi = json.load(open(TXI.format(s=sample)))
-    g  = json.load(open(TXG.format(s=sample, g=gene)))
-    tx = np.asarray(g["x"]) * gi["x_scale"] + gi["x_offset"]
-    ty = np.asarray(g["y"]) * gi["y_scale"] + gi["y_offset"]
-    xmin, ymin = poly.min(0); xmax, ymax = poly.max(0)
-    win = (tx >= xmin - 1) & (tx <= xmax + 1) & (ty >= ymin - 1) & (ty <= ymax + 1)
-    pts = np.column_stack([tx[win], ty[win]])
-    if len(pts) == 0:
-        return pts
-    inside = Path(poly).contains_points(pts)
-    return pts[inside]
+def poly_eccentricity(poly):
+    """Eccentricity of the cell outline from its boundary-vertex covariance
+    (0 = circle, ->1 = elongated). sqrt(1 - lambda_min/lambda_max)."""
+    keep = np.insert(np.any(np.diff(poly, axis=0) != 0, axis=1), 0, True)
+    u = poly[keep]
+    if len(u) < 3:
+        return 1.0
+    c = u - u.mean(0)
+    ev = np.sort(np.linalg.eigvalsh((c.T @ c) / len(c)))   # [lambda_min, lambda_max]
+    return float(np.sqrt(max(0.0, 1.0 - ev[0] / ev[1]))) if ev[1] > 0 else 1.0
 
-def group_target(sample, gene, subclass):
-    """Median marker count for this subclass in this sample. If the group
-    median is 0 (lowly-expressed gene, e.g. BDNF), fall back to the median
-    among expressing cells so the exemplar still shows some molecules."""
-    a = load(sample)
-    sc = a.obs["subclass_label"].astype(str).values
-    qc = a.obs["qc_pass"].values if "qc_pass" in a.obs else np.ones(a.n_obs, bool)
-    vals = gene_counts(a, gene)[(sc == subclass) & qc]
-    med = float(np.median(vals))
-    if med < 1:                               # group median is 0
-        pos = vals[vals > 0]
-        med = float(np.median(pos)) if len(pos) else 1.0
-    return med
+def gene_tx(s, gene):
+    """Cached, decoded transcript-molecule coords (micron) for one gene/section."""
+    if (s, gene) not in _tx:
+        gi = json.load(open(TXI.format(s=s)))
+        g  = json.load(open(TXG.format(s=s, g=gene)))
+        tx = np.asarray(g["x"]) * gi["x_scale"] + gi["x_offset"]
+        ty = np.asarray(g["y"]) * gi["y_scale"] + gi["y_offset"]
+        _tx[(s, gene)] = (tx, ty)
+    return _tx[(s, gene)]
 
-def pick_cell(sample, gene, subclass, target):
-    """Return obs index of a REPRESENTATIVE, well-segmented exemplar cell:
-    marker count near the group target (>0), typical-sized, and as close to a
-    circle/oval as possible (high circularity + convex) to avoid segmentation
-    artifacts from neighbouring cells."""
-    a = load(sample)
-    sc = a.obs["subclass_label"].astype(str).values
-    qc = a.obs["qc_pass"].values if "qc_pass" in a.obs else np.ones(a.n_obs, bool)
-    tot = a.obs["total_counts"].values.astype(float)
-    mk  = gene_counts(a, gene)
-    mask = (sc == subclass) & qc & (mk > 0)            # require some expression
-    lo, hi = np.percentile(tot[mask], [20, 90])         # typical-sized cells
-    band = mask & (tot >= lo) & (tot <= hi)
-    # pool of cells with marker count near the group target (representative)
-    near = band & (mk >= 0.5 * target) & (mk <= 1.8 * target)
-    pool = np.where(near)[0]
-    if len(pool) < 5:
-        pool = np.where(band)[0]
-    # among the pool, pick the roundest convex cell
-    best, best_circ = None, -1.0
-    for i in pool:
-        circ, sol, area = poly_metrics(cell_polygon(sample, i))
-        if area < 40 or sol < 0.93:                     # require convex, sensible size
+def marker_dots_in_poly(s, gene, poly):
+    """Marker molecules geometrically inside the cell polygon (what panel K draws)."""
+    tx, ty = gene_tx(s, gene)
+    xmn, ymn = poly.min(0); xmx, ymx = poly.max(0)
+    w = (tx >= xmn - 1) & (tx <= xmx + 1) & (ty >= ymn - 1) & (ty <= ymx + 1)
+    pts = np.column_stack([tx[w], ty[w]])
+    return pts[Path(poly).contains_points(pts)] if len(pts) else pts.reshape(0, 2)
+
+
+def canonical_mask(a, subclass):
+    """Canonical cell set = corr_subclass + cortical + (qc_pass & corr_qc_pass),
+    matching the crumblr compositional analysis and the edgeR DE (load_cells /
+    load_sample_adata, qc_mode='corr'). corr_qc_pass is a subset of qc_pass."""
+    o = a.obs
+    sc = (o["corr_subclass"] if "corr_subclass" in o else o["subclass_label"]).astype(str).values
+    cort = (o["spatial_domain"].astype(str).values == "Cortical")
+    qc = o["qc_pass"].values.astype(bool) if "qc_pass" in o else np.ones(a.n_obs, bool)
+    cq = o["corr_qc_pass"].values.astype(bool) if "corr_qc_pass" in o else np.ones(a.n_obs, bool)
+    return (sc == subclass) & cort & qc & cq
+
+
+def cell_areas(s):
+    """Vectorised cell-polygon area (um^2) per cell; index = obs order (all_polys)."""
+    X, Y = all_polys(s)
+    return 0.5 * np.abs((X * np.roll(Y, -1, axis=1) - np.roll(X, -1, axis=1) * Y).sum(axis=1))
+
+def pooled_grain_median(gene, subclass, dx):
+    """Median GRAIN DENSITY (marker dots per cell area, grains/100 um^2) across ALL
+    `dx` donors on the canonical cell set -> the Dienel-style group target the
+    exemplar aims at (cell area from the deploy boundary polygons)."""
+    vals = []
+    for s in ALL_SAMPLES:
+        if SAMPLE_TO_DX[s] != dx:
             continue
-        if circ > best_circ:
-            best, best_circ = i, circ
-    if best is None:                                    # relax convexity if needed
-        for i in pool:
-            circ, sol, area = poly_metrics(cell_polygon(sample, i))
-            if area >= 40 and circ > best_circ:
-                best, best_circ = i, circ
-    return best if best is not None else pool[0]
+        a = load(s)
+        if gene not in a.var_names:
+            continue
+        m = canonical_mask(a, subclass)
+        gd = xcount(a, gene)[m] / cell_areas(s)[m] * 100.0
+        vals.append(gd[np.isfinite(gd)])
+    v = np.concatenate(vals)
+    return float(np.median(v)), len(v)
+
+def shape_anchors(subclass, sections):
+    """Shared typical cell SHAPE over the pair's two drawing sections' canonical
+    cells: median area (size-match, so displayed dots reflect density not size)
+    and median eccentricity (so exemplars have a representative outline rather
+    than being cherry-picked as the roundest cell)."""
+    areas, eccs = [], []
+    for s in sections.values():
+        a = load(s)
+        m = canonical_mask(a, subclass)
+        areas.append(cell_areas(s)[m])
+        for i in np.where(m)[0]:
+            eccs.append(poly_eccentricity(cell_polygon(s, i)))
+    return float(np.median(np.concatenate(areas))), float(np.median(eccs))
+
+def pick_cell(section, gene, subclass, gd_target, area_anc, ecc_target):
+    """Obs index of a REPRESENTATIVE exemplar in `section`: among canonical,
+    size-matched, convex (non-jagged) cells, the cell whose GRAIN DENSITY
+    (grains/100 um^2) is closest to the group target AND whose ECCENTRICITY is
+    closest to the median outline (a typical-shaped cell, not the roundest).
+    Stage 1 ranks by grain-density band then eccentricity-near-median; stage 2
+    picks, among the best, the cell whose DISPLAYED in-polygon grain density best
+    matches the target (so drawn dots are representative and Control>SCZ holds)."""
+    a = load(section)
+    tot = a.obs["total_counts"].values.astype(float)
+    dep = a.obs["predicted_norm_depth"].values.astype(float)
+    lay = a.obs["layer"].astype(str).values
+    mk  = xcount(a, gene)
+    cand = np.where(canonical_mask(a, subclass))[0]
+    a_lo, a_hi = 0.8 * area_anc, 1.2 * area_anc            # size-matched to the shared anchor
+
+    def collect(sol_min):
+        out = []
+        for i in cand:
+            circ, sol, area = poly_metrics(cell_polygon(section, i))
+            if area < a_lo or area > a_hi or sol < sol_min:   # size-matched + convex (no jagged bites)
+                continue
+            ecc = poly_eccentricity(cell_polygon(section, i))
+            gd  = mk[i] / area * 100.0                          # assigned-count grain density
+            gd_band = int(abs(gd - gd_target) // max(1e-6, 0.05 * gd_target))  # within 5% bands
+            out.append((gd_band, abs(ecc - ecc_target), i, circ, sol, area, ecc))
+        return out
+    scored = collect(0.93) or collect(0.90) or collect(0.0)
+    scored.sort()
+    # stage 2: among the best (grain-density band, then eccentricity-near-median),
+    # pick the cell whose DISPLAYED in-polygon grain density best matches the
+    # target, tie-broken again by eccentricity-near-median.
+    best = None
+    for _, _, i, circ, sol, area, ecc in scored[:50]:
+        nd = len(marker_dots_in_poly(section, gene, cell_polygon(section, i)))
+        key = (abs(nd / area * 100.0 - gd_target), abs(ecc - ecc_target))
+        if best is None or key < best[0]:
+            best = (key, i, circ, sol, area, ecc, nd)
+    _, i, circ, sol, area, ecc, nd = best
+    return i, dict(x_count=int(mk[i]), n_dots=int(nd), total_counts=int(tot[i]),
+                   grain_density=round(mk[i] / area * 100.0, 2),
+                   disp_grain_density=round(nd / area * 100.0, 2),
+                   eccentricity=round(ecc, 3), norm_depth=round(float(dep[i]), 3), layer=lay[i],
+                   circularity=round(circ, 3), solidity=round(sol, 3), area_um2=round(area, 1))
+
 
 os.makedirs(OUT, exist_ok=True)
 meta_rows = []
-for gene, subclass in PAIRS:
-    ct_tgt = group_target(CONTROL_SAMPLE, gene, subclass)
-    sz_tgt = group_target(SCZ_SAMPLE, gene, subclass)
-    print(f"[{gene}/{subclass}] group medians -> Control~{ct_tgt:.0f}, SCZ~{sz_tgt:.0f}")
-    ci = pick_cell(CONTROL_SAMPLE, gene, subclass, ct_tgt)
-    si = pick_cell(SCZ_SAMPLE, gene, subclass, sz_tgt)
+for gene, subclass, sections in PAIRS:
+    area_anc, ecc_tgt = shape_anchors(subclass, sections)
+    for dx in ["Control", "SCZ"]:
+        gd_tgt, n = pooled_grain_median(gene, subclass, dx)
+        section = sections[dx]
+        idx, diag = pick_cell(section, gene, subclass, gd_tgt, area_anc, ecc_tgt)
+        print(f"[{gene}/{subclass} {dx}] gd target={gd_tgt:.2f}/100um2, ecc target={ecc_tgt:.2f} (n={n}); "
+              f"{section} cell {idx}: dots={diag['n_dots']} gd={diag['disp_grain_density']} "
+              f"ecc={diag['eccentricity']} area={diag['area_um2']} depth={diag['norm_depth']} "
+              f"layer={diag['layer']} circ={diag['circularity']}")
 
-    for sample, idx, dx in [(CONTROL_SAMPLE, ci, "Control"), (SCZ_SAMPLE, si, "SCZ")]:
-        a = load(sample)
-        poly = cell_polygon(sample, idx)
-        ctr = poly.mean(0)                       # recentre on cell centroid
-        polyc = poly - ctr
-        dots = marker_dots_in_poly(sample, gene, poly)
-        dotsc = (dots - ctr) if len(dots) else dots.reshape(0, 2)
-        mk_count = int(gene_counts(a, gene)[idx])
-
-        circ, sol, area = poly_metrics(poly)
-        gslug = gene
-        pd.DataFrame(polyc, columns=["x", "y"]).to_csv(
-            f"{OUT}/exemplar_{gslug}_{dx}_boundary.csv", index=False)
-        pd.DataFrame(dotsc, columns=["x", "y"]).to_csv(
-            f"{OUT}/exemplar_{gslug}_{dx}_dots.csv", index=False)
-        meta_rows.append(dict(gene=gene, subclass=subclass, dx=dx, sample=sample,
-                              cell_index=int(idx), marker_count=mk_count,
-                              n_dots_in_poly=len(dotsc),
-                              total_counts=int(a.obs["total_counts"].values[idx]),
-                              circularity=round(circ, 3), solidity=round(sol, 3),
-                              area_um2=round(area, 1)))
-        print(f"{gene:7} {subclass:8} {dx:7} {sample}: cell {idx}  "
-              f"{gene}={mk_count}  dots={len(dotsc)}  total={meta_rows[-1]['total_counts']}  "
-              f"circ={circ:.2f} sol={sol:.2f}")
+        poly = cell_polygon(section, idx)
+        ctr  = poly.mean(0)                              # recentre everything on cell centroid
+        nuc  = nucleus_polygon(section, idx)
+        dots = marker_dots_in_poly(section, gene, poly)
+        pd.DataFrame(poly - ctr, columns=["x", "y"]).to_csv(
+            f"{OUT}/exemplar_{gene}_{dx}_boundary.csv", index=False)
+        pd.DataFrame(nuc - ctr, columns=["x", "y"]).to_csv(
+            f"{OUT}/exemplar_{gene}_{dx}_nucleus.csv", index=False)
+        pd.DataFrame((dots - ctr) if len(dots) else dots, columns=["x", "y"]).to_csv(
+            f"{OUT}/exemplar_{gene}_{dx}_dots.csv", index=False)
+        meta_rows.append(dict(gene=gene, subclass=subclass, dx=dx, sample=section,
+                              cell_index=int(idx), grain_density_target=round(gd_tgt, 2),
+                              ecc_target=round(ecc_tgt, 3),
+                              marker_count=diag["x_count"], n_dots_in_poly=len(dots),
+                              grain_density=diag["grain_density"], disp_grain_density=diag["disp_grain_density"],
+                              eccentricity=diag["eccentricity"], total_counts=diag["total_counts"],
+                              norm_depth=diag["norm_depth"], layer=diag["layer"],
+                              circularity=diag["circularity"], solidity=diag["solidity"],
+                              area_um2=diag["area_um2"]))
 
 pd.DataFrame(meta_rows).to_csv(f"{OUT}/exemplar_cells_meta.csv", index=False)
-print(f"\nSaved exemplar CSVs + {OUT}/exemplar_cells_meta.csv")
+print(f"\nSaved exemplar CSVs (boundary/nucleus/dots) + {OUT}/exemplar_cells_meta.csv")

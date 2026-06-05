@@ -334,7 +334,32 @@ The same top hits persist regardless of:
 
 ---
 
-## 9. Related Documents
+## 9. Cell-type differential expression (SCZ vs Control)
+
+Cell-type-resolved DE uses the **same cell/donor set as the compositional
+analysis** (cortical, `corr_qc_pass`, `corr_subclass` / `corr_supertype`, all 24
+donors). For each cell type, raw counts are summed across that donor's cells of
+the type into a genes × donors **pseudobulk** matrix (`build_de_input.py`;
+`min_cells = 10` per donor × cell type). edgeR then fits, per cell type
+(`run_de.R`): `DGEList → filterByExpr → calcNormFactors(TMM) →
+estimateDisp(robust) → glmQLFit(robust) → glmQLFTest` for the SCZ coefficient,
+design `~ diagnosis + sex + age` (age centred); run at subclass and supertype
+level → `output/de/de_results_{subclass,supertype}.csv`. This is the expression
+analogue of the crumblr abundance analysis and provides independent spatial
+replication of the snRNA-seq meta-analysis (the `transcriptomic/` composite,
+panels f–l). Native-R `run_de.R` supersedes the archived `edgepython`
+implementation; **re-run it whenever the annotations are regenerated** (it reads
+`corr_subclass` from the current h5ads).
+
+A complementary per-cell **grain-density** readout — marker transcripts per cell
+area (grains/100 µm², the Dienel et al. 2023 per-neuron mRNA measure) — is
+produced by `transcriptomic/scripts/11_grain_density.py`; it selects the
+composite's exemplar cells (panel l) and is shown across normalisations for
+SST/PVALB in Supplementary Fig. S_percell.
+
+---
+
+## 10. Related Documents
 
 | Document | Focus |
 |----------|-------|

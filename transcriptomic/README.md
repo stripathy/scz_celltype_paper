@@ -31,7 +31,11 @@ See [`notes/findings.md`](notes/findings.md) for the full take-stock with caveat
 │   ├── 07_forest_plots.R                 # Per-gene cohort + meta + Xenium forest plots
 │   ├── 08_meta_vs_xenium_scatter.R       # snRNA-seq vs Xenium concordance scatter
 │   ├── 09_composite_figure.R             # Publication composite (butterfly+volcano+forest+scatter+exemplars)
-│   └── 10_xenium_exemplar_cells.py       # Xenium exemplar-cell extraction (panel K inputs)
+│   ├── 10_xenium_exemplar_cells.py       # Xenium exemplar-cell extraction (panel l inputs)
+│   ├── 11_grain_density.py               # Per-cell grain density, 24 donors → exemplar selection + suppl.
+│   ├── 12_marker_norm_expr.R             # Per-donor CP1K + edgeR p (panel k; SST/FGFR3 + PVALB suppl.)
+│   ├── 13_supp_percell_metrics.R         # Suppl.: per-cell SST/PVALB across normalisations
+│   └── 14_supp_pvalb.R                   # Suppl.: PVALB forest + CP1K + exemplar cells
 ├── exploratory/                          # Deep-dives and archived early work
 │   ├── story_oxphos_inhibitory.R         # 5-panel OxPhos figure
 │   ├── story_cholesterol_glia_exc.R      # 5-panel cholesterol figure
@@ -50,11 +54,11 @@ See [`notes/findings.md`](notes/findings.md) for the full take-stock with caveat
     ├── findings.md                       # Full annotated findings
     ├── literature_context.md             # OxPhos / cholesterol novelty vs literature
     ├── literature_per_celltype.md        # Per-cell-type DE replication vs literature
-    ├── figures_crossplatform_validation.md  # Docs + data provenance for figure scripts 07–10
+    ├── figures_crossplatform_validation.md  # Docs + data provenance for figure scripts 07–14
     └── figure_composite_legend.md        # Nature Neuroscience legend + per-value provenance (fig 09)
 ```
 
-> **Figures & cross-platform validation (scripts 07–10)**: the standalone forest
+> **Figures & cross-platform validation (scripts 07–14)**: the standalone forest
 > plots and concordance scatter, the publication composite (script 09), and the
 > Xenium exemplar-cell extraction (script 10) are documented with full data
 > provenance and an update checklist in
@@ -67,7 +71,7 @@ See [`notes/findings.md`](notes/findings.md) for the full take-stock with caveat
 All scripts assume `pwd` is the repo root. Order:
 
 ```bash
-cd ~/Github/scz_pathway_enrichment
+cd ~/Github/scz_celltype_paper/transcriptomic
 Rscript scripts/02_gsea_pipeline.R          # builds results/gsea_cache.rds (~10 min)
 Rscript scripts/03_pathway_summary_heatmap.R # uses cache
 Rscript scripts/04_gwas_overlap_and_leading_edge.R
@@ -82,8 +86,8 @@ Cross-platform validation figures + the publication composite (see
 ```bash
 Rscript scripts/07_forest_plots.R            # standalone forest composite
 Rscript scripts/08_meta_vs_xenium_scatter.R  # standalone concordance scatter
-python  scripts/10_xenium_exemplar_cells.py  # panel-K exemplar tables (run BEFORE 09)
-Rscript scripts/09_composite_figure.R        # publication composite (6.5 x 9.2 in)
+python  scripts/10_xenium_exemplar_cells.py  # panel-l exemplar tables (run BEFORE 09)
+Rscript scripts/09_composite_figure.R        # publication composite (7.1 x 6.7 in)
 ```
 
 Exploratory deep-dives (reuse the cached GSEA):

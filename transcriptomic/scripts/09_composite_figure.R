@@ -1,40 +1,45 @@
 #!/usr/bin/env Rscript
 # ============================================================================
-# 09_composite_figure.R — Publication composite (total width = 6.5 inches)
+# 09_composite_figure.R — Publication composite (7.1 x 6.7 in, 400 dpi)
 # ============================================================================
 # Assembles, in one figure, the cross-platform SCZ DE story:
-#   A  Butterfly: up/down DE counts per cell type, FDR<0.10 (light) vs
+#   a  Butterfly: up/down DE counts per cell type, FDR<0.10 (light) vs
 #      FDR<0.05 (dark overlay)
-#   B  Volcano, Sst                (select genes labelled)
-#   C  Volcano, L2/3 IT            (select genes labelled)
-#   D-I Forest plots for 6 (gene, cell) pairs: 7 snRNA-seq cohorts + pooled
-#      meta + Xenium replication
-#   J  Concordance scatter: snRNA-seq meta logFC vs Xenium logFC
-#   K  Xenium exemplar cells: boundary + marker molecules for one Control and
-#      one SCZ cell each for SST (Sst) and RASGRF2 (Pvalb) -- both strongly
-#      meta-DE-down genes with enough per-cell expression to show as dots
+#   b-e Volcanoes: Sst (b), L2/3 IT (c), Astro (d), Micro-PVM (e); select genes
+#      labelled; each on tight, data-driven axes (limits NOT shared across panels)
+#   f-i Forest plots for 4 (gene, cell) pairs (SST/Sst, BDNF/L2_3 IT,
+#      FGFR3/Astro, FKBP5/OPC): 7 snRNA-seq cohorts + pooled meta + Xenium repl.
+#   j  Concordance scatter: snRNA-seq meta logFC vs Xenium logFC
+#   k  Library-normalised expression (CP1K, counts/1,000 tx) per donor, Ctrl vs
+#      SCZ, for SST-in-Sst and FGFR3-in-Astro, titled per row, edgeR p (scripts/12)
+#   l  Xenium exemplar cells: cell boundary + dashed nucleus + marker molecules
+#      for one Control and one SCZ cell each for SST (Sst) and FGFR3 (Astro).
+#      Each exemplar is the representative cell at the pooled group-median grain
+#      density (size-matched, typical eccentricity); see scripts/10.
 #
 # DATA PROVENANCE (see notes/figures_crossplatform_validation.md for detail):
 #   data/DE_genes_all_cells_scz.csv          meta-analytic snRNA-seq DE
 #   data/meta_results_cohorts_subclass.csv   per-cohort snRNA-seq DE (7 cohorts)
-#   ~/Github/SCZ_Xenium/output/de/de_results_subclass.csv   Xenium spatial DE
-#   results/tables/exemplar_*.csv            panel K inputs — produced by
+#   ../spatial/output/de/de_results_subclass.csv   Xenium spatial DE (symlink to
+#      ~/Github/SCZ_Xenium/output/de/; set INPUT_XENIUM if it moves)
+#   results/tables/marker_norm_expr.csv      panel k input — scripts/12
+#   results/tables/exemplar_*.csv            panel l inputs — produced by
 #      scripts/10_xenium_exemplar_cells.py (run that FIRST; it reads the
 #      Xenium h5ad + boundary + transcript exports).
 #
-# Output: results/09_composite.{png,pdf}   (6.5 in wide)
+# Output: results/09_composite.{png,pdf}   (7.1 x 6.7 in)
 # ============================================================================
 
 suppressPackageStartupMessages({
   library(readr); library(dplyr); library(tidyr); library(ggplot2)
-  library(cowplot); library(ggrepel); library(metafor)
+  library(cowplot); library(ggrepel); library(metafor); library(ggsignif)
 })
 
 INPUT_META   <- "data/DE_genes_all_cells_scz.csv"
 INPUT_COH    <- "data/meta_results_cohorts_subclass.csv"
 INPUT_XENIUM <- "../spatial/output/de/de_results_subclass.csv"  # internal cross-ref (was ~/Github/SCZ_Xenium/...)
 
-FIG_W <- 6.5    # required total width (inches)
+FIG_W <- 7.1    # max total width (inches)
 
 # ---- palette / groupings ---------------------------------------------------
 UP_DARK   <- "#D55E00"; UP_LIGHT   <- "#F2B58C"
@@ -49,7 +54,9 @@ class_of <- function(ct) dplyr::case_when(
   ct %in% GLI ~ "Glia",       TRUE        ~ NA_character_)
 CLASS_COL <- c(Excitatory = "#117733", Inhibitory = "#882255", Glia = "#DDCC77")
 
-BASE <- 9   # base font size for the whole composite (most text sized relative to this)
+BASE <- 7   # base font size (Nature/NN: all figure text 5–7 pt). Most text is
+            # sized relative to this; geom_text multipliers tuned so nothing
+            # exceeds 7 pt or drops below 5 pt at the 7.1 × 6.7 in print size.
 
 # significance helpers (shared)
 ast    <- function(fdr) dplyr::case_when(
@@ -66,11 +73,9 @@ meta_tbl <- read_csv(INPUT_META, show_col_types = FALSE)
 FOREST <- tibble::tribble(
   ~gene,    ~cell,        ~lab,
   "SST",    "Sst",        "SST / Sst",
-  "PVALB",  "Pvalb",      "PVALB / Pvalb",
   "BDNF",   "L2_3 IT",    "BDNF / L2/3 IT",
-  "FKBP5",  "OPC",        "FKBP5 / OPC",
-  "CX3CR1", "Micro-PVM",  "CX3CR1 / Micro-PVM",
-  "RASGRF2","Pvalb",      "RASGRF2 / Pvalb"
+  "FGFR3",  "Astro",      "FGFR3 / Astro",
+  "FKBP5",  "OPC",        "FKBP5 / OPC"
 )
 
 cat("Loading per-cohort table (large) and filtering to forest genes...\n")
@@ -120,9 +125,9 @@ build_butterfly <- function() {
     geom_col(aes(y = cell_type, x = -down05, fill = "Down, FDR < 0.05"), width = 0.78) +
     geom_vline(xintercept = 0, linewidth = 0.3, colour = "black") +
     geom_text(aes(y = cell_type, x =  up10,   label = up10),
-              hjust = -0.15, size = BASE*0.20) +
+              hjust = -0.15, size = BASE*0.26) +
     geom_text(aes(y = cell_type, x = -down10, label = down10),
-              hjust = 1.15, size = BASE*0.20) +
+              hjust = 1.15, size = BASE*0.26) +
     scale_fill_manual(
       values = c("Up, FDR < 0.10" = UP_LIGHT, "Down, FDR < 0.10" = DOWN_LIGHT,
                  "Up, FDR < 0.05" = UP_DARK,  "Down, FDR < 0.05" = DOWN_DARK),
@@ -138,14 +143,14 @@ build_butterfly <- function() {
           axis.ticks.y = element_blank(),
           axis.line.y  = element_blank(),
           legend.position = c(0.70, 0.16),
-          legend.text  = element_text(size = BASE - 2.5),
+          legend.text  = element_text(size = BASE - 1.5),
           legend.key.size = unit(9, "pt"),
           legend.spacing.y = unit(0, "pt"),
           plot.margin  = margin(2, 4, 2, 2))
 }
 
 # ============================================================================
-# Panels B/C — volcano for one cell type
+# Panels B-E — volcano for one cell type (Sst, L2/3 IT, Astro, Micro-PVM)
 # ============================================================================
 build_volcano <- function(cell, highlight) {
   # colour by the same FDR tiers as the butterfly (panel A): up/down x
@@ -160,9 +165,13 @@ build_volcano <- function(cell, highlight) {
              TRUE                       ~ "NS") |>
              factor(levels = c("Down, FDR < 0.05","Down, FDR < 0.10","NS",
                                "Up, FDR < 0.10","Up, FDR < 0.05")))
-  xm  <- max(abs(d$estimate), na.rm = TRUE)
   lab <- d |> filter(genes %in% highlight)
-  ymax <- max(d$nlp, na.rm = TRUE)
+  # Tight, data-driven limits PER PANEL (not symmetric, not shared across the four
+  # volcanoes); gene labels are kept inside the panel via ggrepel xlim/ylim +
+  # coord_cartesian, so the axes crop close to the data without clipping a label.
+  xr  <- range(d$estimate, na.rm = TRUE); xpad <- diff(xr) * 0.07
+  xlo <- xr[1] - xpad; xhi <- xr[2] + xpad
+  yhi <- max(d$nlp, na.rm = TRUE) * 1.08
   tier_cols <- c("Up, FDR < 0.05" = UP_DARK,  "Up, FDR < 0.10" = UP_LIGHT,
                  "Down, FDR < 0.05" = DOWN_DARK, "Down, FDR < 0.10" = DOWN_LIGHT,
                  "NS" = COL_NS)
@@ -179,12 +188,12 @@ build_volcano <- function(cell, highlight) {
     geom_text_repel(data = lab, aes(label = genes), size = BASE*0.32,
                     fontface = "italic", min.segment.length = 0,
                     segment.size = 0.25, segment.colour = "grey55",
-                    box.padding = 0.5, point.padding = 0.3, force = 5,
-                    max.overlaps = Inf, seed = 2, colour = "grey10") +
+                    box.padding = 0.4, point.padding = 0.3, force = 4,
+                    max.overlaps = Inf, seed = 2, colour = "grey10",
+                    xlim = c(xlo, xhi), ylim = c(0, yhi)) +
     scale_colour_manual(values = tier_cols, guide = "none") +
-    # roomy limits so edge/top labels are not clipped
-    scale_x_continuous(limits = c(-xm*1.30, xm*1.30)) +
-    scale_y_continuous(limits = c(0, ymax*1.18)) +
+    scale_x_continuous(breaks = scales::pretty_breaks(3)) +
+    coord_cartesian(xlim = c(xlo, xhi), ylim = c(0, yhi), clip = "on") +
     labs(x = expression("SCZ log"[2]~"FC"),
          y = expression(-log[10]~"FDR"),
          subtitle = gsub("_", "/", cell)) +
@@ -197,7 +206,7 @@ build_volcano <- function(cell, highlight) {
 }
 
 # ============================================================================
-# Panels D-I — compact forest
+# Panels F-H — compact forest
 # ============================================================================
 build_forest <- function(gene_sym, cell, ttl, show_xlab = FALSE) {
   sub    <- coh |> filter(genes == gene_sym, cell_type == cell)
@@ -252,7 +261,7 @@ build_forest <- function(gene_sym, cell, ttl, show_xlab = FALSE) {
     {if (has_xen) geom_point(data = xen_row, aes(est, y), shape = 17,
                              size = 1.8, colour = COL_XEN)} +
     geom_text(data = pd, aes(label = sig, x = ast_x, hjust = ast_h),
-              size = BASE*0.42, vjust = 0.75, colour = "grey15", fontface = "bold") +
+              size = BASE*0.34, vjust = 0.75, colour = "grey15", fontface = "bold") +
     geom_point(data = dplyr::filter(pd, dot), aes(ast_x, y), shape = 16,
                size = 0.8, colour = "grey15", inherit.aes = FALSE) +
     geom_text(data = dplyr::filter(pd, role=="pool" & sig==""),
@@ -265,7 +274,7 @@ build_forest <- function(gene_sym, cell, ttl, show_xlab = FALSE) {
     labs(x = if (show_xlab) expression("SCZ log"[2]~"FC") else NULL,
          y = NULL, subtitle = ttl) +
     theme_cowplot(font_size = BASE) +
-    theme(plot.subtitle = element_text(size = BASE - 0.5, face = "bold",
+    theme(plot.subtitle = element_text(size = BASE, face = "plain",
                                        margin = margin(b = 1)),
           axis.text.y = element_text(size = BASE - 2),
           axis.text.x = element_text(size = BASE - 2),
@@ -276,7 +285,7 @@ build_forest <- function(gene_sym, cell, ttl, show_xlab = FALSE) {
 }
 
 # ============================================================================
-# Panel J — concordance scatter
+# Panel I — concordance scatter
 # ============================================================================
 build_scatter <- function() {
   meta <- meta_tbl |> filter(padj < 0.10) |>
@@ -291,28 +300,17 @@ build_scatter <- function() {
   pc <- round(100*mean(pr$concordant))
   lab_pairs <- tibble::tribble(~genes,~cell_type,
     "SST","Sst","BDNF","L2_3 IT","FKBP5","OPC","CX3CR1","Micro-PVM",
-    "SMAD1","Pvalb","SERPING1","Astro","RASGRF2","Pvalb")
+    "SMAD1","Pvalb","SERPING1","Astro","FGFR3","Astro")
   lab_keys <- paste(lab_pairs$genes, lab_pairs$cell_type)
   lab <- pr |> inner_join(lab_pairs, by = c("genes","cell_type"))
   lim <- max(as.numeric(quantile(abs(c(pr$meta_est, pr$xen_logFC)), 0.97)),
              max(abs(c(lab$meta_est, lab$xen_logFC)))) * 1.08
-  # Labels are placed manually (low repel force + explicit per-gene nudges) so
-  # the crowded scatter is deterministic: nudges below are (desired_label_pos -
-  # point) for each gene. SERPING1/FKBP5 (top-right points) label into the freed
-  # top-left; CX3CR1/BDNF are stacked vertically in the sparse lower area.
+  # Labels via ggrepel auto-placement (robust to panel resizing); seed fixed for
+  # determinism. Constrained to the panel; r / % concordant sit in the sparse
+  # bottom-right corner.
   pr <- pr |> mutate(
     tag = sprintf("%s (%s)", genes, gsub("_", "/", cell_type)),
-    rep_label = ifelse(paste(genes, cell_type) %in% lab_keys, tag, ""),
-    nx = dplyr::case_when(rep_label == "" ~ 0,
-                          genes == "SERPING1" ~ -0.56, genes == "FKBP5" ~ -0.26,
-                          genes == "SMAD1" ~  0.27, genes == "SST" ~ -0.16,
-                          genes == "CX3CR1" ~  0.24, genes == "BDNF" ~ -0.09,
-                          genes == "RASGRF2" ~ -0.10, TRUE ~ 0),
-    ny = dplyr::case_when(rep_label == "" ~ 0,
-                          genes == "SERPING1" ~  0.01, genes == "FKBP5" ~  0.01,
-                          genes == "SMAD1" ~  0.20, genes == "SST" ~  0.33,
-                          genes == "CX3CR1" ~ -0.21, genes == "BDNF" ~ -0.20,
-                          genes == "RASGRF2" ~  0.36, TRUE ~ 0))
+    rep_label = ifelse(paste(genes, cell_type) %in% lab_keys, tag, ""))
 
   ggplot(pr, aes(meta_est, xen_logFC)) +
     geom_vline(xintercept = 0, colour = "grey75", linewidth = 0.25) +
@@ -324,37 +322,28 @@ build_scatter <- function() {
     geom_point(aes(colour = class, size = fdr_bin), shape = 16, alpha = 0.8) +
     geom_point(data = lab, shape = 21, fill = NA, colour = "black",
                size = 1.8, stroke = 0.5) +
-    geom_text_repel(data = pr, aes(label = rep_label), size = BASE*0.30,
-                    nudge_x = pr$nx, nudge_y = pr$ny,
+    geom_text_repel(data = pr, aes(label = rep_label), size = BASE*0.28,
                     min.segment.length = 0, segment.size = 0.25,
-                    segment.colour = "grey55", box.padding = 0.5,
-                    point.padding = 0.3, force = 1, force_pull = 0.1,
+                    segment.colour = "grey55", box.padding = 0.45,
+                    point.padding = 0.3, force = 2.5, force_pull = 0.15,
                     xlim = c(-lim, lim), ylim = c(-lim, lim),
                     max.overlaps = Inf, seed = 7, colour = "grey10") +
-    annotate("text", x = lim*0.98, y = -lim*0.56,
+    annotate("text", x = lim*0.97, y = -lim*0.80,
              label = sprintf("italic(r)=='%.2f'", rr), parse = TRUE,
-             hjust = 1, size = BASE*0.42) +
-    annotate("text", x = lim*0.98, y = -lim*0.71,
-             label = sprintf("'%d%% concordant'", pc), parse = TRUE,
              hjust = 1, size = BASE*0.34) +
+    annotate("text", x = lim*0.97, y = -lim*0.93,
+             label = sprintf("'%d%% concordant'", pc), parse = TRUE,
+             hjust = 1, size = BASE*0.30) +
     scale_colour_manual(values = CLASS_COL, name = NULL) +
     scale_size_manual(values = c("< 0.05" = 1.8, "0.05-0.10" = 0.7),
                       name = "meta FDR") +
     coord_cartesian(xlim = c(-lim, lim), ylim = c(-lim, lim)) +
     labs(x = expression("snRNA-seq meta  log"[2]~"FC"),
          y = expression("Xenium  log"[2]~"FC")) +
-    guides(colour = guide_legend(override.aes = list(size = 1.8), order = 1, nrow = 1),
-           size = guide_legend(order = 2, nrow = 1)) +
     theme_cowplot(font_size = BASE) +
-    # legend moved OUT of the plot (to the bottom): the top-left corner is the
-    # only place the wide top-right labels (SERPING1, FKBP5) can extend into.
-    theme(legend.position = "bottom", legend.box = "vertical",
-          legend.margin = margin(t = 0, b = 0), legend.box.spacing = unit(2, "pt"),
-          legend.box.margin = margin(0, 0, 0, 0), legend.spacing.y = unit(1, "pt"),
-          legend.text = element_text(size = BASE - 2),
-          legend.title = element_text(size = BASE - 1.5),
-          legend.key.height = unit(8, "pt"), legend.key.width = unit(8, "pt"),
-          legend.spacing.x = unit(3, "pt"),
+    # cell-class (colour) and meta-FDR (size) legends removed from the panel;
+    # the encoding is described in the figure legend instead.
+    theme(legend.position = "none",
           axis.text = element_text(size = BASE - 1.5),
           axis.title = element_text(size = BASE - 1),
           aspect.ratio = 1,            # keep the concordance scatter square
@@ -374,6 +363,8 @@ DOT_COL <- "#B2182B"   # marker-molecule dots
 build_exemplar <- function(gene, dx, lim, scalebar_lab = FALSE) {
   bd <- read_csv(sprintf("%s/exemplar_%s_%s_boundary.csv", TAB, gene, dx),
                  show_col_types = FALSE)
+  nu <- read_csv(sprintf("%s/exemplar_%s_%s_nucleus.csv", TAB, gene, dx),
+                 show_col_types = FALSE)
   dt <- read_csv(sprintf("%s/exemplar_%s_%s_dots.csv", TAB, gene, dx),
                  show_col_types = FALSE)
   nd  <- nrow(dt)
@@ -381,6 +372,8 @@ build_exemplar <- function(gene, dx, lim, scalebar_lab = FALSE) {
   ggplot() +
     geom_polygon(data = bd, aes(x, y), fill = "grey93", colour = "grey45",
                  linewidth = 0.3) +
+    geom_polygon(data = nu, aes(x, y), fill = NA, colour = "grey30",
+                 linewidth = 0.25, linetype = "22") +     # nucleus = dashed
     {if (nd > 0) geom_point(data = dt, aes(x, y), colour = DOT_COL,
                             size = 0.5, alpha = 0.85)} +
     annotate("text", x = -lim*0.98, y = lim*0.98, label = nd,
@@ -397,54 +390,107 @@ build_exemplar <- function(gene, dx, lim, scalebar_lab = FALSE) {
 }
 
 # ============================================================================
+# Panel J — library-normalised expression (CP1K = counts per 1,000 transcripts)
+# with the edgeR DE p-value. Same Xenium edgeR DE as the forests (F–H) and
+# scatter (I): per-donor CP1K (TMM) from scripts/12_marker_norm_expr.R, p-value =
+# edgeR glmQLFTest (exactly the value driving the forest/scatter significance).
+# ============================================================================
+NEXPR <- read_csv(sprintf("%s/marker_norm_expr.csv", TAB), show_col_types = FALSE)
+NEXPR$dx <- factor(NEXPR$dx, levels = c("Control", "SCZ"))
+NSTAT <- read_csv(sprintf("%s/marker_norm_expr_stats.csv", TAB), show_col_types = FALSE)
+NEXPR_COL <- c(Control = DOWN_DARK, SCZ = UP_DARK)
+
+build_normexpr <- function(gene, title, show_x = FALSE) {
+  df <- NEXPR[NEXPR$gene == gene, ]
+  p  <- NSTAT$p[NSTAT$gene == gene]
+  yr <- range(df$cp1k)
+  ggplot(df, aes(dx, cp1k)) +
+    geom_boxplot(aes(fill = dx), width = 0.62, outlier.shape = NA, alpha = 0.55, linewidth = 0.4) +
+    geom_jitter(aes(fill = dx), shape = 21, colour = "grey25", size = 1.4, stroke = 0.3,
+                width = 0.13, height = 0, alpha = 0.9) +
+    geom_signif(comparisons = list(c("Control", "SCZ")),
+                annotations = sprintf("italic(p)=='%.3f'", p), parse = TRUE,
+                y_position = yr[2] + 0.06 * diff(yr), tip_length = 0.02,
+                textsize = BASE * 0.32, vjust = -0.1) +
+    scale_fill_manual(values = NEXPR_COL) +
+    scale_y_continuous(expand = expansion(mult = c(0.05, 0.22)), n.breaks = 4) +
+    labs(x = NULL, y = "counts / 1,000 tx", subtitle = title) +
+    theme_cowplot(font_size = BASE) +
+    theme(legend.position = "none",
+          plot.subtitle = element_text(size = BASE - 1, face = "plain", hjust = 0.5,
+                                       margin = margin(b = 1)),
+          axis.text.x  = if (show_x) element_text(size = BASE - 1.5) else element_blank(),
+          axis.ticks.x = if (show_x) element_line() else element_blank(),
+          axis.line.x  = if (show_x) element_line() else element_blank(),
+          axis.title.y = element_text(size = BASE - 1.5),
+          axis.text.y  = element_text(size = BASE - 1.5),
+          plot.margin = margin(2, 3, 2, 3))
+}
+
+# ============================================================================
 # Assemble
 # ============================================================================
 cat("Building panels...\n")
 pA <- build_butterfly()
-pB <- build_volcano("Sst",    c("SST","NAT16","SMAD1","AFG3L2"))
-pC <- build_volcano("L2_3 IT", c("BDNF","SMAD1","VWA5B2","ADAMTS9-AS2","ST6GAL2"))
-# x-axis label ("SCZ log2 FC") only on the bottom row of the 3x2 forest grid (G,H,I)
+pB <- build_volcano("Sst",       c("SST","NAT16","SMAD1","AFG3L2"))
+pC <- build_volcano("L2_3 IT",   c("BDNF","SMAD1","VWA5B2","ADAMTS9-AS2","ST6GAL2"))
+pD <- build_volcano("Astro",     c("SERPING1","CHI3L1","FGFR3","NOTCH1"))
+pE <- build_volcano("Micro-PVM", c("C1QA","C1QB","CX3CR1","P2RY12","SORL1"))
+# 3 forests in a single row -> all carry the "SCZ log2 FC" x-axis label
 forests <- Map(build_forest, FOREST$gene, FOREST$cell, FOREST$lab,
-               show_xlab = c(FALSE, FALSE, FALSE, TRUE, TRUE, TRUE))
+               show_xlab = c(TRUE, TRUE, TRUE, TRUE))
 pJ <- build_scatter()
 # shared coordinate limit -> consistent zoom + identical 5 um scale bar across all 4 cells
 ex_lim <- 1.15 * max(vapply(
-  list(c("SST","Control"), c("SST","SCZ"), c("RASGRF2","Control"), c("RASGRF2","SCZ")),
+  list(c("SST","Control"), c("SST","SCZ"), c("FGFR3","Control"), c("FGFR3","SCZ")),
   function(p) { bd <- read_csv(sprintf("%s/exemplar_%s_%s_boundary.csv", TAB, p[1], p[2]),
                                show_col_types = FALSE); max(abs(c(bd$x, bd$y))) },
   numeric(1)))
 ex <- list(build_exemplar("SST","Control", ex_lim), build_exemplar("SST","SCZ", ex_lim),
-           build_exemplar("RASGRF2","Control", ex_lim),
-           build_exemplar("RASGRF2","SCZ", ex_lim, scalebar_lab = TRUE))
+           build_exemplar("FGFR3","Control", ex_lim),
+           build_exemplar("FGFR3","SCZ", ex_lim, scalebar_lab = TRUE))
 
-# Row 1: butterfly (~65% width) | (volcano Sst over volcano L2/3)
-volc_col <- plot_grid(pB, pC, ncol = 1, labels = c("B","C"),
-                      label_size = 12, label_fontface = "bold")
-row1 <- plot_grid(pA, volc_col, ncol = 2, rel_widths = c(1.85, 1),
-                  labels = c("A",""), label_size = 12, label_fontface = "bold")
+# Row 1: butterfly (a, ~40% width) | 2x2 volcano grid (~60% width)
+#   b Sst       | c L2/3 IT
+#   d Astro     | e Micro-PVM
+volc_grid <- plot_grid(pB, pC, pD, pE, ncol = 2, labels = c("b","c","d","e"),
+                       label_size = 8, label_fontface = "bold")
+row1 <- plot_grid(pA, volc_grid, ncol = 2, rel_widths = c(2, 3),
+                  labels = c("a",""), label_size = 8, label_fontface = "bold")
 
-# Row 2: 6 forest panels (3 cols x 2 rows)
-row2 <- plot_grid(plotlist = forests, ncol = 3,
-                  labels = c("D","E","F","G","H","I"),
-                  label_size = 12, label_fontface = "bold")
+# Row 2: 4 forest panels in one row (f = SST/Sst, g = BDNF/L2/3 IT,
+#        h = FGFR3/Astro, i = FKBP5/OPC)
+row2 <- plot_grid(plotlist = forests, ncol = 4,
+                  labels = c("f","g","h","i"),
+                  label_size = 8, label_fontface = "bold")
 
-# Row 3: scatter (J) | exemplar-cell matrix (K)
-# K as a labelled matrix: columns = condition (Control / SCZ), rows = the
-# marker gene shown in its cell type (SST in Sst, RASGRF2 in Pvalb).
+# Row 3: scatter (i) | CP1K boxplots (j, titled per row) | exemplar matrix (k)
+# Exemplar matrix (k): columns = condition (Control / SCZ), rows = the marker gene
+# shown in its cell type (SST in Sst, FGFR3 in astrocytes). Panel j now carries the
+# per-row title (replacing the old rotated shared label), aligned with k's rows.
+# Each k cell: solid grey = cell boundary, dashed = nucleus, red dots = marker mRNA.
 ex_hdr  <- function(t) ggdraw() + draw_label(t, size = BASE - 0.5)
-ex_rlab <- function(t) ggdraw() + draw_label(t, size = BASE - 1, angle = 90,
-                                             fontface = "italic")
-RW <- c(0.13, 1, 1)   # row-label | Control | SCZ  (shared so columns align)
-ex_cols <- plot_grid(NULL, ex_hdr("Control"), ex_hdr("SCZ"), ncol = 3, rel_widths = RW)
-ex_r1 <- plot_grid(ex_rlab("SST in Sst"),       ex[[1]], ex[[2]], ncol = 3, rel_widths = RW)
-ex_r2 <- plot_grid(ex_rlab("RASGRF2 in Pvalb"), ex[[3]], ex[[4]], ncol = 3, rel_widths = RW)
-ex_block <- plot_grid(ex_cols, ex_r1, ex_r2, ncol = 1, rel_heights = c(0.14, 1, 1))
-row3 <- plot_grid(pJ, ex_block, ncol = 2, rel_widths = c(1, 1),
-                  labels = c("J","K"), label_size = 12, label_fontface = "bold")
+RH <- c(0.14, 1, 1)   # header | SST row | FGFR3 row (shared across J / K)
 
-full <- plot_grid(row1, row2, row3, ncol = 1, rel_heights = c(1.15, 1.05, 1.0))
+# J — library-normalised expression boxplots, each TITLED (the title also names
+# the aligned exemplar row in k, so no separate left label is needed)
+k_col <- plot_grid(NULL,
+                   build_normexpr("SST",   "SST mRNA in Sst cells"),
+                   build_normexpr("FGFR3", "FGFR3 mRNA in Astrocytes", show_x = TRUE),
+                   ncol = 1, rel_heights = RH)
+# K — Xenium exemplar cells (Control / SCZ headers + two cell rows)
+l_col <- plot_grid(plot_grid(ex_hdr("Control"), ex_hdr("SCZ"), ncol = 2),
+                   plot_grid(ex[[1]], ex[[2]], ncol = 2),
+                   plot_grid(ex[[3]], ex[[4]], ncol = 2),
+                   ncol = 1, rel_heights = RH)
+row3 <- plot_grid(pJ, k_col, l_col, ncol = 3,
+                  rel_widths = c(1.0, 0.62, 0.85),
+                  labels = c("j", "k", "l"), label_size = 8, label_fontface = "bold")
 
-FIG_H <- 9.2   # width is locked at 6.5"; grow height to give the larger text room
+full <- plot_grid(row1, row2, row3, ncol = 1, rel_heights = c(1.0, 0.55, 1.05))
+
+FIG_H <- 6.7   # max height (in); width 7.1. Forests in one row (f–i); scatter (j)
+               # column sized so the square scatter fills it (minimal dead space)
 ggsave("results/09_composite.png", full, width = FIG_W, height = FIG_H,
        dpi = 400, bg = "white")
 ggsave("results/09_composite.pdf", full, width = FIG_W, height = FIG_H, bg = "white")

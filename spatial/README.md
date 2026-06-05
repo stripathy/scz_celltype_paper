@@ -69,6 +69,37 @@ Raw .h5 + boundaries --> [00] --> initial h5ad
 
 **Output:** `output/h5ad/{sample}_annotated.h5ad` (24 files), `output/all_samples_annotated.h5ad` (merged), `output/viewer/xenium_viewer_standalone.html`
 
+## Downstream disease analyses (composition & differential expression)
+
+Disease comparisons run **downstream of the pipeline** on the annotated h5ads,
+all using one shared cell definition: **cortical cells passing `corr_qc_pass`,
+typed by `corr_subclass` / `corr_supertype`, across all 24 donors**
+(`load_cells` / `load_sample_adata`, `qc_mode='corr'`). Composition and DE
+therefore operate on the *same cells and donors*.
+
+- **Composition** — `code/analysis/build_crumblr_input.py` → `run_crumblr.R`
+  (crumblr: linear mixed models on centred-log-ratio cell-type proportions).
+- **Differential expression** — pseudobulk edgeR, the DE analogue of crumblr:
+  - `code/analysis/build_de_input.py` — sums raw counts per (donor × cell type)
+    into genes × donors pseudobulk matrices at subclass **and** supertype level
+    (`min_cells = 10` per pseudobulk).
+  - `code/analysis/run_de.R` — per cell type: `DGEList → filterByExpr →
+    calcNormFactors(TMM) → estimateDisp(robust) → glmQLFit(robust) →
+    glmQLFTest`, design `~ diagnosis + sex + age`; writes
+    `output/de/de_results_{subclass,supertype}.csv`.
+
+```bash
+python3 code/analysis/build_de_input.py     # pseudobulk inputs (both levels)
+Rscript  code/analysis/run_de.R subclass    # -> output/de/de_results_subclass.csv
+Rscript  code/analysis/run_de.R supertype   # -> output/de/de_results_supertype.csv
+```
+
+The Xenium DE provides independent spatial replication of the snRNA-seq
+meta-analysis (consumed by the `transcriptomic/` composite figure). **Rerun it
+whenever the annotations are regenerated** — it must use the current
+`corr_subclass` labels. (Replaces the archived `run_de_edgepython.py`, which used
+the `edgepython` port; `run_de.R` is the maintained native-R edgeR version.)
+
 ## Key Design Decisions
 
 ### Two-stage cell typing: MapMyCells followed by correlation classifier

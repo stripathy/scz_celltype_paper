@@ -1,5 +1,7 @@
-gene,subclass,dx,sample,cell_index,marker_count,n_dots_in_poly,total_counts,circularity,solidity,area_um2
-SST,Sst,Control,Br6432,5333,38,47,918,0.981,0.999,245.2
-SST,Sst,SCZ,Br2039,16251,10,10,1136,0.975,0.999,249.9
-RASGRF2,Pvalb,Control,Br6432,38643,23,24,1739,0.98,0.998,261.3
-RASGRF2,Pvalb,SCZ,Br2039,18952,5,5,1139,0.978,0.998,241.0
+gene,subclass,dx,sample,cell_index,grain_density_target,ecc_target,marker_count,n_dots_in_poly,grain_density,disp_grain_density,eccentricity,total_counts,norm_depth,layer,circularity,solidity,area_um2
+SST,Sst,Control,Br6432,5389,18.74,0.568,31,35,16.54,18.67,0.583,1068,0.687,L6,0.882,0.983,187.4
+SST,Sst,SCZ,Br5973,30255,12.66,0.568,23,28,10.81,13.16,0.511,786,0.531,L5,0.96,0.997,212.8
+FGFR3,Astrocyte,Control,Br5400,25209,7.33,0.572,14,14,7.06,7.06,0.569,625,0.058,L1,0.96,0.996,198.3
+FGFR3,Astrocyte,SCZ,Br5973,8892,6.28,0.572,11,12,5.99,6.53,0.515,367,0.889,L6,0.954,0.995,183.8
+PVALB,Pvalb,Control,Br6432,18368,5.18,0.594,8,10,4.16,5.2,0.603,1088,0.385,L2/3,0.917,0.987,192.3
+PVALB,Pvalb,SCZ,Br5973,20269,4.26,0.594,8,9,3.69,4.15,0.623,851,0.562,L5,0.91,0.981,217.0

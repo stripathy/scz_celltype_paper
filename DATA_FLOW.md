@@ -20,7 +20,7 @@ snRNA-seq pipeline — is not in the repo yet; its outputs are symlinked into
    ▼             ▼                  ▼                        │
 transcriptomic/  spatial/         genetics/                 │
    ▲   ▲         │  Xenium DE ──►  │  GWAS set ──► transcriptomic/ (script 04)
-   │   └─────────┘  (script 09)    │  franken_taxonomy/ (canonical cell-type axis)
+   │   └─────────┘  (run_de.R→09)  │  franken_taxonomy/ (canonical cell-type axis)
    │                               │  enrichment
    └───────────────┬──────────────┘
                    ▼
@@ -40,7 +40,7 @@ External hub (~/Github/shared_data/, per ~/Github/DATA_LAYOUT.md):
 |---|---|---|
 | `snrnaseq/` *(TBD)* | raw 7-cohort snRNA-seq | DE betas, composition betas → everyone downstream |
 | `genetics/` | composition betas (← snrnaseq), GWAS set (owns), taxonomy (owns), SEA-AD ref (← shared_data) | cell-type enrichment, `franken_taxonomy/`, GWAS set → transcriptomic, figures |
-| `spatial/` | Xenium raw, DE + composition betas (← snrnaseq), SEA-AD/MERFISH ref (← shared_data) | Xenium DE, crumblr composition → transcriptomic, figures |
+| `spatial/` | Xenium raw, DE + composition betas (← snrnaseq), SEA-AD/MERFISH ref (← shared_data) | Xenium DE (`build_de_input.py` + `run_de.R`, pseudobulk edgeR), crumblr composition → transcriptomic, figures |
 | `transcriptomic/` | DE betas (← snrnaseq), GWAS set (← genetics), Xenium DE (← spatial) | composite figure, GSEA/pathway results → figures |
 | `histology/` | RNAscope FISH counts (self-contained) | SST density results → figures |
 | `figures/` | — (index only) | pointers to each component's final paper figures |
