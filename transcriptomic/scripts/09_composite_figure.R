@@ -1,33 +1,30 @@
 #!/usr/bin/env Rscript
 # ============================================================================
-# 09_composite_figure.R — Publication composite (7.1 x 6.7 in, 400 dpi)
+# 09_composite_figure.R — Publication composite (7.1 x 6.625 in, 400 dpi)
 # ============================================================================
-# Assembles, in one figure, the cross-platform SCZ DE story:
-#   a  Butterfly: up/down DE counts per cell type, FDR<0.10 (light) vs
-#      FDR<0.05 (dark overlay)
-#   b-e Volcanoes: Sst (b), L2/3 IT (c), Astro (d), Micro-PVM (e); select genes
-#      labelled; each on tight, data-driven axes (limits NOT shared across panels)
-#   f-i Forest plots for 4 (gene, cell) pairs (SST/Sst, BDNF/L2_3 IT,
-#      FGFR3/Astro, FKBP5/OPC): 7 snRNA-seq cohorts + pooled meta + Xenium repl.
-#   j  Concordance scatter: snRNA-seq meta logFC vs Xenium logFC
-#   k  Library-normalised expression (CP1K, counts/1,000 tx) per donor, Ctrl vs
-#      SCZ, for SST-in-Sst and FGFR3-in-Astro, titled per row, edgeR p (scripts/12)
-#   l  Xenium exemplar cells: cell boundary + dashed nucleus + marker molecules
-#      for one Control and one SCZ cell each for SST (Sst) and FGFR3 (Astro).
-#      Each exemplar is the representative cell at the pooled group-median grain
-#      density (size-matched, typical eccentricity); see scripts/10.
+# Cross-platform SCZ DE story for the two canonical interneuron markers, one
+# marker PER ROW (volcano -> forest -> per-donor boxplot -> exemplar cells):
+#   Row 1  SST in Sst cells:    a volcano (Sst) | b forest (SST/Sst) |
+#                               c CP1K boxplot  | d exemplar cells (Control/SCZ)
+#   Row 2  PVALB in Pvalb cells: e volcano (Pvalb) | f forest (PVALB/Pvalb) |
+#                               g CP1K boxplot  | h exemplar cells (Control/SCZ)
+#   Row 3  i butterfly (up/down DE-gene counts per cell type) |
+#          j concordance scatter (snRNA-seq meta logFC vs Xenium logFC)
+# Volcanoes: tight, data-driven axes. Forests: 7 snRNA cohorts + pooled meta +
+# Xenium. Boxplots: per-donor CP1K (counts/1,000 tx) + edgeR p. Exemplars: the
+# representative cell at the pooled group-median grain density (scripts/10).
 #
 # DATA PROVENANCE (see notes/figures_crossplatform_validation.md for detail):
 #   data/DE_genes_all_cells_scz.csv          meta-analytic snRNA-seq DE
 #   data/meta_results_cohorts_subclass.csv   per-cohort snRNA-seq DE (7 cohorts)
 #   ../spatial/output/de/de_results_subclass.csv   Xenium spatial DE (symlink to
 #      ~/Github/SCZ_Xenium/output/de/; set INPUT_XENIUM if it moves)
-#   results/tables/marker_norm_expr.csv      panel k input — scripts/12
-#   results/tables/exemplar_*.csv            panel l inputs — produced by
+#   results/tables/marker_norm_expr.csv      boxplot input (c,g) — scripts/12
+#   results/tables/exemplar_*.csv            exemplar inputs (d,h) — produced by
 #      scripts/10_xenium_exemplar_cells.py (run that FIRST; it reads the
 #      Xenium h5ad + boundary + transcript exports).
 #
-# Output: results/09_composite.{png,pdf}   (7.1 x 6.7 in)
+# Output: results/09_composite.{png,pdf}
 # ============================================================================
 
 suppressPackageStartupMessages({
@@ -38,6 +35,7 @@ suppressPackageStartupMessages({
 INPUT_META   <- "data/DE_genes_all_cells_scz.csv"
 INPUT_COH    <- "data/meta_results_cohorts_subclass.csv"
 INPUT_XENIUM <- "../spatial/output/de/de_results_subclass.csv"  # internal cross-ref (was ~/Github/SCZ_Xenium/...)
+INPUT_CRUMBLR <- "../spatial/output/crumblr/crumblr_input_subclass_corr.csv"  # Xenium per-donor composition (panel i inset)
 
 FIG_W <- 7.1    # max total width (inches)
 
@@ -69,13 +67,11 @@ is_dot <- function(p, fdr) !is.na(p) & p < 0.05 & (is.na(fdr) | fdr >= 0.10)
 cat("Loading meta-analytic DE...\n")
 meta_tbl <- read_csv(INPUT_META, show_col_types = FALSE)
 
-# genes/cells needed for the 6 forest panels
+# the two marker (gene, cell) forests, one per figure row
 FOREST <- tibble::tribble(
-  ~gene,    ~cell,        ~lab,
-  "SST",    "Sst",        "SST / Sst",
-  "BDNF",   "L2_3 IT",    "BDNF / L2/3 IT",
-  "FGFR3",  "Astro",      "FGFR3 / Astro",
-  "FKBP5",  "OPC",        "FKBP5 / OPC"
+  ~gene,    ~cell,    ~lab,
+  "SST",    "Sst",    "SST / Sst",
+  "PVALB",  "Pvalb",  "PVALB / Pvalb"
 )
 
 cat("Loading per-cohort table (large) and filtering to forest genes...\n")
@@ -147,6 +143,50 @@ build_butterfly <- function() {
           legend.key.size = unit(9, "pt"),
           legend.spacing.y = unit(0, "pt"),
           plot.margin  = margin(2, 4, 2, 2))
+}
+
+# ----------------------------------------------------------------------------
+# Panel I inset — # meta DE genes (FDR<0.10) vs cell-type proportion (subclass).
+# Proportion = Xenium mean per-donor (proxy for the snRNA-seq proportion); the
+# DE-gene count scales with abundance (largely a power effect). Minimal styling:
+# no point labels, two log10 % stops, "DE genes (#)" / "Cell proportion (%)".
+# Standalone version with cell-type labels: scripts/16_de_vs_proportion.R.
+# ----------------------------------------------------------------------------
+build_de_prop_inset <- function() {
+  nde <- meta_tbl |> group_by(cell_type) |>
+    summarise(n_de = sum(padj < 0.10, na.rm = TRUE), .groups = "drop")
+  prop <- read_csv(INPUT_CRUMBLR, show_col_types = FALSE) |>
+    mutate(p = count / total,
+           cell_type = ifelse(celltype %in% names(ct_map), ct_map[celltype], celltype)) |>
+    group_by(cell_type) |> summarise(prop = mean(p), .groups = "drop")
+  d  <- inner_join(nde, prop, by = "cell_type") |>
+    filter(n_de >= 1) |> mutate(class = class_of(cell_type))
+  rs  <- cor(d$prop, d$n_de, method = "spearman")
+  lab <- d |> filter(cell_type %in% c("Astro", "L5 IT", "Vip", "L6b")) |>
+    mutate(lbl = gsub("_", "/", cell_type))
+  ggplot(d, aes(prop, n_de)) +
+    geom_smooth(method = "lm", se = FALSE, colour = scales::alpha("grey25", 0.3),
+                linewidth = 0.5, formula = y ~ x) +
+    geom_point(aes(colour = class), size = 0.7, alpha = 0.9) +
+    geom_text_repel(data = lab, aes(label = lbl), size = BASE * 0.28,
+                    min.segment.length = 0, segment.size = 0.2, segment.colour = "grey55",
+                    box.padding = 0.28, point.padding = 0.2, force = 2, max.overlaps = Inf,
+                    seed = 3, colour = "grey15") +
+    annotate("text", x = max(d$prop), y = 0, label = sprintf("rho == %.2f", rs),
+             parse = TRUE, hjust = 1, vjust = 0, size = BASE * 0.26, colour = "grey25") +
+    scale_colour_manual(values = CLASS_COL, guide = "none") +
+    scale_x_log10(breaks = c(0.01, 0.1), labels = c("1%", "10%")) +
+    scale_y_continuous(breaks = c(0, 400, 800), expand = expansion(mult = c(0.05, 0.16))) +
+    labs(x = "Cell proportion (%)", y = "DE genes (#)") +
+    theme_cowplot(font_size = BASE - 1) +
+    theme(legend.position = "none",
+          axis.title.x = element_text(size = BASE - 1.5, margin = margin(t = 1)),
+          axis.title.y = element_text(size = BASE - 1.5, margin = margin(r = 1)),
+          axis.text    = element_text(size = BASE - 2.5),
+          axis.line    = element_line(linewidth = 0.25),
+          axis.ticks   = element_line(linewidth = 0.25),
+          plot.background = element_rect(fill = "white", colour = "grey70", linewidth = 0.3),
+          plot.margin  = margin(2, 3, 1, 1))
 }
 
 # ============================================================================
@@ -317,8 +357,6 @@ build_scatter <- function() {
     geom_hline(yintercept = 0, colour = "grey75", linewidth = 0.25) +
     geom_abline(slope = 1, intercept = 0, linetype = "dashed",
                 colour = "grey80", linewidth = 0.3) +
-    geom_smooth(method = "lm", se = TRUE, colour = "black", fill = "grey85",
-                linewidth = 0.5, formula = y ~ x) +
     geom_point(aes(colour = class, size = fdr_bin), shape = 16, alpha = 0.8) +
     geom_point(data = lab, shape = 21, fill = NA, colour = "black",
                size = 1.8, stroke = 0.5) +
@@ -400,7 +438,7 @@ NEXPR$dx <- factor(NEXPR$dx, levels = c("Control", "SCZ"))
 NSTAT <- read_csv(sprintf("%s/marker_norm_expr_stats.csv", TAB), show_col_types = FALSE)
 NEXPR_COL <- c(Control = DOWN_DARK, SCZ = UP_DARK)
 
-build_normexpr <- function(gene, title, show_x = FALSE) {
+build_normexpr <- function(gene, title = NULL, show_x = FALSE) {
   df <- NEXPR[NEXPR$gene == gene, ]
   p  <- NSTAT$p[NSTAT$gene == gene]
   yr <- range(df$cp1k)
@@ -431,66 +469,59 @@ build_normexpr <- function(gene, title, show_x = FALSE) {
 # Assemble
 # ============================================================================
 cat("Building panels...\n")
-pA <- build_butterfly()
-pB <- build_volcano("Sst",       c("SST","NAT16","SMAD1","AFG3L2"))
-pC <- build_volcano("L2_3 IT",   c("BDNF","SMAD1","VWA5B2","ADAMTS9-AS2","ST6GAL2"))
-pD <- build_volcano("Astro",     c("SERPING1","CHI3L1","FGFR3","NOTCH1"))
-pE <- build_volcano("Micro-PVM", c("C1QA","C1QB","CX3CR1","P2RY12","SORL1"))
-# 3 forests in a single row -> all carry the "SCZ log2 FC" x-axis label
-forests <- Map(build_forest, FOREST$gene, FOREST$cell, FOREST$lab,
-               show_xlab = c(TRUE, TRUE, TRUE, TRUE))
-pJ <- build_scatter()
-# shared coordinate limit -> consistent zoom + identical 5 um scale bar across all 4 cells
-ex_lim <- 1.15 * max(vapply(
-  list(c("SST","Control"), c("SST","SCZ"), c("FGFR3","Control"), c("FGFR3","SCZ")),
+# --- per-marker panels (one marker per row) ---
+vSst   <- build_volcano("Sst",   c("SST","NAT16","SMAD1","AFG3L2"))
+vPvalb <- build_volcano("Pvalb", c("PVALB","SMAD1","ANXA2","SCN3A","NAT16"))
+fSst   <- build_forest("SST",   "Sst",   "SST / Sst",     show_xlab = TRUE)
+fPvalb <- build_forest("PVALB", "Pvalb", "PVALB / Pvalb", show_xlab = TRUE)
+bSst   <- build_normexpr("SST",   show_x = TRUE)
+bPvalb <- build_normexpr("PVALB", show_x = TRUE)
+# Butterfly (i) carries the DE-genes-vs-proportion inset in its empty bottom-left.
+pA     <- ggdraw(build_butterfly()) +
+  draw_plot(build_de_prop_inset(), x = 0.135, y = 0.085, width = 0.36, height = 0.378)
+pJ     <- build_scatter()
+
+# Exemplar cells: shared coordinate limit -> identical zoom + identical 5 um scale
+# bar across all four cells; drawn as a Control|SCZ pair per marker.
+ex_lim <- 1.05 * max(vapply(
+  list(c("SST","Control"), c("SST","SCZ"), c("PVALB","Control"), c("PVALB","SCZ")),
   function(p) { bd <- read_csv(sprintf("%s/exemplar_%s_%s_boundary.csv", TAB, p[1], p[2]),
                                show_col_types = FALSE); max(abs(c(bd$x, bd$y))) },
   numeric(1)))
-ex <- list(build_exemplar("SST","Control", ex_lim), build_exemplar("SST","SCZ", ex_lim),
-           build_exemplar("FGFR3","Control", ex_lim),
-           build_exemplar("FGFR3","SCZ", ex_lim, scalebar_lab = TRUE))
+ex_hdr <- function(t) ggdraw() + draw_label(t, size = BASE - 0.5)
+# Control|SCZ cell pair for one marker; show_hdr draws the Control/SCZ strip (row 1
+# only). A blank spacer of the same height keeps row-2 cells the same size, so the
+# 5 um scale bar is identical across rows.
+ex_pair <- function(gene, scalebar, show_hdr) plot_grid(
+  if (show_hdr) plot_grid(ex_hdr("Control"), ex_hdr("SCZ"), ncol = 2) else NULL,
+  plot_grid(build_exemplar(gene, "Control", ex_lim),
+            build_exemplar(gene, "SCZ", ex_lim, scalebar_lab = scalebar), ncol = 2),
+  ncol = 1, rel_heights = c(0.16, 1))
+eSst   <- ex_pair("SST",   FALSE, TRUE)
+ePvalb <- ex_pair("PVALB", TRUE,  FALSE)
 
-# Row 1: butterfly (a, ~40% width) | 2x2 volcano grid (~60% width)
-#   b Sst       | c L2/3 IT
-#   d Astro     | e Micro-PVM
-volc_grid <- plot_grid(pB, pC, pD, pE, ncol = 2, labels = c("b","c","d","e"),
-                       label_size = 8, label_fontface = "bold")
-row1 <- plot_grid(pA, volc_grid, ncol = 2, rel_widths = c(2, 3),
-                  labels = c("a",""), label_size = 8, label_fontface = "bold")
+# Row 1 (SST) / Row 2 (PVALB): [volcano | forest | CP1K boxplot] are aligned with
+# cowplot align="h"/axis="tb" so the boxplot (c,g) x-axis lines up with the volcano
+# and forest (a,b); the exemplar pair is appended as the 4th column.
+RW3 <- c(1.05, 0.95, 0.70)
+mkrow <- function(volc, forest, box, expair, labs)
+  plot_grid(
+    plot_grid(volc, forest, box, ncol = 3, rel_widths = RW3, align = "h", axis = "tb",
+              labels = labs[1:3], label_size = 8, label_fontface = "bold"),
+    expair, ncol = 2, rel_widths = c(sum(RW3), 1.25),
+    labels = c("", labs[4]), label_size = 8, label_fontface = "bold")
+row1 <- mkrow(vSst,   fSst,   bSst,   eSst,   c("a","b","c","d"))
+row2 <- mkrow(vPvalb, fPvalb, bPvalb, ePvalb, c("e","f","g","h"))
+# Row 3: butterfly (i) | concordance scatter (j) — equal (50/50) width
+row3 <- plot_grid(pA, pJ, ncol = 2, rel_widths = c(1, 1),
+                  labels = c("i","j"), label_size = 8, label_fontface = "bold")
 
-# Row 2: 4 forest panels in one row (f = SST/Sst, g = BDNF/L2/3 IT,
-#        h = FGFR3/Astro, i = FKBP5/OPC)
-row2 <- plot_grid(plotlist = forests, ncol = 4,
-                  labels = c("f","g","h","i"),
-                  label_size = 8, label_fontface = "bold")
+# rel_heights given in INCHES (they sum to FIG_H): rows 1-2 (SST, PVALB) = 2.00 in
+# each; row 3 (butterfly + scatter) = 2.625 in.
+full <- plot_grid(row1, row2, row3, ncol = 1, rel_heights = c(2, 2, 2.625))
 
-# Row 3: scatter (i) | CP1K boxplots (j, titled per row) | exemplar matrix (k)
-# Exemplar matrix (k): columns = condition (Control / SCZ), rows = the marker gene
-# shown in its cell type (SST in Sst, FGFR3 in astrocytes). Panel j now carries the
-# per-row title (replacing the old rotated shared label), aligned with k's rows.
-# Each k cell: solid grey = cell boundary, dashed = nucleus, red dots = marker mRNA.
-ex_hdr  <- function(t) ggdraw() + draw_label(t, size = BASE - 0.5)
-RH <- c(0.14, 1, 1)   # header | SST row | FGFR3 row (shared across J / K)
-
-# J — library-normalised expression boxplots, each TITLED (the title also names
-# the aligned exemplar row in k, so no separate left label is needed)
-k_col <- plot_grid(NULL,
-                   build_normexpr("SST",   "SST mRNA in Sst cells"),
-                   build_normexpr("FGFR3", "FGFR3 mRNA in Astrocytes", show_x = TRUE),
-                   ncol = 1, rel_heights = RH)
-# K — Xenium exemplar cells (Control / SCZ headers + two cell rows)
-l_col <- plot_grid(plot_grid(ex_hdr("Control"), ex_hdr("SCZ"), ncol = 2),
-                   plot_grid(ex[[1]], ex[[2]], ncol = 2),
-                   plot_grid(ex[[3]], ex[[4]], ncol = 2),
-                   ncol = 1, rel_heights = RH)
-row3 <- plot_grid(pJ, k_col, l_col, ncol = 3,
-                  rel_widths = c(1.0, 0.62, 0.85),
-                  labels = c("j", "k", "l"), label_size = 8, label_fontface = "bold")
-
-full <- plot_grid(row1, row2, row3, ncol = 1, rel_heights = c(1.0, 0.55, 1.05))
-
-FIG_H <- 6.7   # max height (in); width 7.1. Forests in one row (f–i); scatter (j)
-               # column sized so the square scatter fills it (minimal dead space)
+FIG_H <- 6.625 # 7.1 x 6.625 in. Rows 1-2 (SST a-d, PVALB e-h) = 2.00 in each;
+               # butterfly + scatter (i,j) = 2.625 in (rel_heights are inches).
 ggsave("results/09_composite.png", full, width = FIG_W, height = FIG_H,
        dpi = 400, bg = "white")
 ggsave("results/09_composite.pdf", full, width = FIG_W, height = FIG_H, bg = "white")
