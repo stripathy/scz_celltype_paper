@@ -16,9 +16,10 @@ two canonical interneuron markers, in the context of transcriptome-wide DE
 burden.**
 
 (**a–d**) **SST in Sst cells.** (a) Volcano of SCZ log₂ fold change versus
-−log₁₀ FDR for genes tested in Sst cells; points coloured by direction × FDR
-tier (up orange, down blue; dark FDR < 0.05, light FDR < 0.10; NS grey); SST,
-NAT16, SMAD1 and AFG3L2 labelled; data-driven axes. (b) Forest plot for SST:
+−log₁₀ P (raw meta-analytic p) for genes tested in Sst cells; points coloured by
+direction × FDR tier (up orange, down blue; dark FDR < 0.05, light FDR < 0.10;
+NS grey); dashed line, the p at the FDR < 0.10 boundary (above it = FDR < 0.10);
+selected up- and down-regulated genes labelled (provenance table); data-driven axes. (b) Forest plot for SST:
 seven frontal cortical snRNA-seq cohorts (grey squares), pooled random-effects
 (DerSimonian–Laird) meta-analytic estimate (black diamond; log₂FC −0.46,
 FDR = 0.049) and independent Xenium spatial estimate (green triangle; log₂FC
@@ -30,7 +31,7 @@ cell at the pooled group-median transcript density per diagnosis (Control
 Br6432; SCZ Br5973), matched for size and typical outline; grey outline, cell
 boundary; dashed, nucleus; red dots, SST transcript molecules (count, top-left);
 scale bar, 5 µm. (**e–h**) **PVALB in Pvalb cells**, same four views: (e) volcano
-(PVALB, SMAD1, ANXA2, SCN3A, NAT16 labelled); (f) forest (meta log₂FC −0.06,
+(same axes; selected up/down genes labelled, PVALB shown as ns marker reference); (f) forest (meta log₂FC −0.06,
 FDR = 0.86, n.s.; Xenium −0.22, P = 0.044); (g) CP1K (edgeR P = 0.044); (h)
 exemplar Pvalb cells (Control Br6432; SCZ Br5973). (**i**) Up- (orange) and
 down-regulated (blue) DE-gene counts per cell-type subclass (23 subclasses) from
@@ -63,8 +64,8 @@ model) is in **Supplementary Fig. S_percell**. The standalone PVALB supplement
 | Subclasses (panel i) | 23 | `data/DE_genes_all_cells_scz.csv` (unique `cell_type`) |
 | snRNA-seq cohorts | 7 (Bat, HBCC, Mclean, MSSM, MtSinai, Multi, OFC) | `data/meta_results_cohorts_subclass.csv` (unique `cohort`) |
 | Meta model | random-effects DerSimonian–Laird (`rma(method="DL")`) | script 09 |
-| Volcano a (Sst) genes | SST, NAT16, SMAD1, AFG3L2 | `build_volcano("Sst", …)`, script 09 |
-| Volcano e (Pvalb) genes | PVALB, SMAD1, ANXA2, SCN3A, NAT16 | `build_volcano("Pvalb", …)`, script 09 |
+| Volcano a (Sst) genes | SST, NAT16, SMAD1, AFG3L2, STAC, KCTD4, SLC9A9, DRD3 (all FDR<0.10) | `build_volcano("Sst", …)`, script 09 |
+| Volcano e (Pvalb) genes | PVALB (ns, marker ref), SMAD1, ANXA2, SCN3A, NAT16, VGF, CIRBP, TCAF2, FGF10 (rest FDR<0.05) | `build_volcano("Pvalb", …)`, script 09 |
 | Forest b — SST/Sst | meta log₂FC −0.458, FDR 0.0487 (\*\*); Xenium log₂FC −0.318, P 0.0521 (FDR 0.304); 7 cohorts | `DE_genes_all_cells_scz.csv` (`padj`); `de_results_subclass.csv` (`logFC`,`PValue`,`FDR`) |
 | Forest f — PVALB/Pvalb | meta log₂FC −0.056, FDR 0.8556 (n.s.); Xenium log₂FC −0.219, P 0.0438 (FDR 0.392); 7 cohorts | same |
 | CP1K c — SST/Sst (edgeR) | logFC −0.318, P = 0.0521 | `results/tables/marker_norm_expr_stats.csv` |

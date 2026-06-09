@@ -196,7 +196,7 @@ build_volcano <- function(cell, highlight) {
   # colour by the same FDR tiers as the butterfly (panel A): up/down x
   # FDR<0.05 (dark) / 0.05-0.10 (light); NS = grey
   d <- meta_tbl |> filter(cell_type == cell) |>
-    mutate(nlp = -log10(padj),
+    mutate(nlp = -log10(pval),          # y = raw significance; colour still encodes FDR (below)
            tier = case_when(
              padj < 0.05 & estimate > 0 ~ "Up, FDR < 0.05",
              padj < 0.10 & estimate > 0 ~ "Up, FDR < 0.10",
@@ -205,20 +205,24 @@ build_volcano <- function(cell, highlight) {
              TRUE                       ~ "NS") |>
              factor(levels = c("Down, FDR < 0.05","Down, FDR < 0.10","NS",
                                "Up, FDR < 0.10","Up, FDR < 0.05")))
-  lab <- d |> filter(genes %in% highlight)
+  lab <- d |> filter(genes %in% highlight) |>
+    mutate(face = ifelse(genes == toupper(cell), "bold.italic", "italic"))  # bold the cell-type marker (SST / PVALB)
   # Tight, data-driven limits PER PANEL (not symmetric, not shared across the four
   # volcanoes); gene labels are kept inside the panel via ggrepel xlim/ylim +
   # coord_cartesian, so the axes crop close to the data without clipping a label.
   xr  <- range(d$estimate, na.rm = TRUE); xpad <- diff(xr) * 0.07
   xlo <- xr[1] - xpad; xhi <- xr[2] + xpad
   yhi <- max(d$nlp, na.rm = TRUE) * 1.08
+  # BH-FDR is monotone in p, so {FDR<0.10} == {p <= p_thr}; the dashed line at this
+  # p-boundary keeps "above the line = coloured (FDR<0.10), below = grey" exact.
+  p_thr <- if (any(d$padj < 0.10, na.rm = TRUE)) max(d$pval[d$padj < 0.10], na.rm = TRUE) else NA_real_
   tier_cols <- c("Up, FDR < 0.05" = UP_DARK,  "Up, FDR < 0.10" = UP_LIGHT,
                  "Down, FDR < 0.05" = DOWN_DARK, "Down, FDR < 0.10" = DOWN_LIGHT,
                  "NS" = COL_NS)
   ggplot(d, aes(estimate, nlp)) +
     geom_vline(xintercept = 0, colour = "grey70", linewidth = 0.25) +
-    geom_hline(yintercept = -log10(0.1), colour = "grey70",
-               linetype = "dashed", linewidth = 0.25) +
+    {if (!is.na(p_thr)) geom_hline(yintercept = -log10(p_thr), colour = "grey70",
+               linetype = "dashed", linewidth = 0.25)} +
     geom_point(aes(colour = tier), data = ~filter(.x, tier == "NS"),
                size = 0.35, alpha = 0.3) +
     geom_point(aes(colour = tier), data = ~filter(.x, tier != "NS"),
@@ -226,7 +230,7 @@ build_volcano <- function(cell, highlight) {
     geom_point(data = lab, shape = 21, fill = NA, colour = "black",
                size = 1.4, stroke = 0.4) +
     geom_text_repel(data = lab, aes(label = genes), size = BASE*0.32,
-                    fontface = "italic", min.segment.length = 0,
+                    fontface = lab$face, min.segment.length = 0,
                     segment.size = 0.25, segment.colour = "grey55",
                     box.padding = 0.4, point.padding = 0.3, force = 4,
                     max.overlaps = Inf, seed = 2, colour = "grey10",
@@ -235,8 +239,8 @@ build_volcano <- function(cell, highlight) {
     scale_x_continuous(breaks = scales::pretty_breaks(3)) +
     coord_cartesian(xlim = c(xlo, xhi), ylim = c(0, yhi), clip = "on") +
     labs(x = expression("SCZ log"[2]~"FC"),
-         y = expression(-log[10]~"FDR"),
-         subtitle = gsub("_", "/", cell)) +
+         y = expression(-log[10]~italic(P)),
+         subtitle = paste0(gsub("_", "/", cell), " cells")) +
     theme_cowplot(font_size = BASE) +
     theme(plot.subtitle = element_text(size = BASE, face = "italic", hjust = 0.5,
                                        margin = margin(b = 1)),
@@ -476,8 +480,8 @@ build_normexpr <- function(gene, title = NULL, show_x = FALSE) {
 # ============================================================================
 cat("Building panels...\n")
 # --- per-marker panels (one marker per row) ---
-vSst   <- build_volcano("Sst",   c("SST","NAT16","SMAD1","AFG3L2"))
-vPvalb <- build_volcano("Pvalb", c("PVALB","SMAD1","ANXA2","SCN3A","NAT16"))
+vSst   <- build_volcano("Sst",   c("SST","NAT16","SMAD1","AFG3L2","STAC","KCTD4","SLC9A9","DRD3"))
+vPvalb <- build_volcano("Pvalb", c("PVALB","SMAD1","ANXA2","SCN3A","NAT16","VGF","CIRBP","TCAF2","FGF10"))
 fSst   <- build_forest("SST",   "Sst",   "SST / Sst",     show_xlab = TRUE)
 fPvalb <- build_forest("PVALB", "Pvalb", "PVALB / Pvalb", show_xlab = TRUE)
 bSst   <- build_normexpr("SST",   show_x = TRUE)
