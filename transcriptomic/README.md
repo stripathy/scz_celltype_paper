@@ -30,12 +30,14 @@ See [`notes/findings.md`](notes/findings.md) for the full take-stock with caveat
 │   ├── 06_explainer_leading_edge.R       # GSEA running-ES walkthrough (Sst OXPHOS)
 │   ├── 07_forest_plots.R                 # Per-gene cohort + meta + Xenium forest plots
 │   ├── 08_meta_vs_xenium_scatter.R       # snRNA-seq vs Xenium concordance scatter
-│   ├── 09_composite_figure.R             # Publication composite (butterfly+volcano+forest+scatter+exemplars)
-│   ├── 10_xenium_exemplar_cells.py       # Xenium exemplar-cell extraction (panel l inputs)
+│   ├── 09_composite_figure.R             # Publication composite (Fig 09: SST & PVALB rows + butterfly/inset + scatter)
+│   ├── 10_xenium_exemplar_cells.py       # Xenium exemplar-cell extraction (panel d/h inputs)
 │   ├── 11_grain_density.py               # Per-cell grain density, 24 donors → exemplar selection + suppl.
-│   ├── 12_marker_norm_expr.R             # Per-donor CP1K + edgeR p (panel k; SST/FGFR3 + PVALB suppl.)
+│   ├── 12_marker_norm_expr.R             # Per-donor CP1K + edgeR p (panels c/g; SST + PVALB; FGFR3 spare)
 │   ├── 13_supp_percell_metrics.R         # Suppl.: per-cell SST/PVALB across normalisations
-│   └── 14_supp_pvalb.R                   # Suppl.: PVALB forest + CP1K + exemplar cells
+│   ├── 14_supp_pvalb.R                   # Suppl. (superseded by Fig 09 row 2): PVALB forest + CP1K + exemplar
+│   ├── 15_coupling_prototype_xenium.py   # DE × composition coupling prototype (Xenium; see notes/plan_de_composition_coupling.md)
+│   └── 16_de_vs_proportion.R             # DE-gene count vs cell-type proportion (subclass; standalone of panel-i inset)
 ├── exploratory/                          # Deep-dives and archived early work
 │   ├── story_oxphos_inhibitory.R         # 5-panel OxPhos figure
 │   ├── story_cholesterol_glia_exc.R      # 5-panel cholesterol figure
@@ -86,8 +88,8 @@ Cross-platform validation figures + the publication composite (see
 ```bash
 Rscript scripts/07_forest_plots.R            # standalone forest composite
 Rscript scripts/08_meta_vs_xenium_scatter.R  # standalone concordance scatter
-python  scripts/10_xenium_exemplar_cells.py  # panel-l exemplar tables (run BEFORE 09)
-Rscript scripts/09_composite_figure.R        # publication composite (7.1 x 6.7 in)
+python  scripts/10_xenium_exemplar_cells.py  # panel d/h exemplar tables (run BEFORE 09)
+Rscript scripts/09_composite_figure.R        # publication composite (7.1 x 6.625 in)
 ```
 
 Exploratory deep-dives (reuse the cached GSEA):

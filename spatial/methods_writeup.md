@@ -346,15 +346,16 @@ estimateDisp(robust) → glmQLFit(robust) → glmQLFTest` for the SCZ coefficien
 design `~ diagnosis + sex + age` (age centred); run at subclass and supertype
 level → `output/de/de_results_{subclass,supertype}.csv`. This is the expression
 analogue of the crumblr abundance analysis and provides independent spatial
-replication of the snRNA-seq meta-analysis (the `transcriptomic/` composite,
-panels f–l). Native-R `run_de.R` supersedes the archived `edgepython`
+replication of the snRNA-seq meta-analysis (the `transcriptomic/` composite —
+forests b/f, CP1K boxplots c/g, and the concordance scatter j). Native-R
+`run_de.R` supersedes the archived `edgepython`
 implementation; **re-run it whenever the annotations are regenerated** (it reads
 `corr_subclass` from the current h5ads).
 
 A complementary per-cell **grain-density** readout — marker transcripts per cell
 area (grains/100 µm², the Dienel et al. 2023 per-neuron mRNA measure) — is
 produced by `transcriptomic/scripts/11_grain_density.py`; it selects the
-composite's exemplar cells (panel l) and is shown across normalisations for
+composite's exemplar cells (panels d/h) and is shown across normalisations for
 SST/PVALB in Supplementary Fig. S_percell.
 
 ---

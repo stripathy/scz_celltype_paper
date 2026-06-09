@@ -1,12 +1,12 @@
 # Reproducing the composite figure (Fig. 09)
 
 Checklist to regenerate `results/figures/09_composite.{png,pdf}` — the
-7.1 × 6.7 in publication composite — on another machine.
+7.1 × 6.625 in publication composite — on another machine.
 
 ## TL;DR
 
 `scripts/09_composite_figure.R` is self-contained (it does not `source()`
-anything) and reads its **panel-l exemplar inputs from CSVs that are committed to this
+anything) and reads its **panel d/h exemplar inputs from CSVs that are committed to this
 repo**. So you do NOT need the raw Xenium data or the Python pipeline to
 reproduce the figure — only three DE tables and R:
 
@@ -25,7 +25,7 @@ git clone <remote-url> && cd scz_celltype_paper/transcriptomic
 # (the composite-figure code lives in this transcriptomic/ tree; no separate tag)
 ```
 
-Everything code/text the figure needs is in git: the script, the panel-l
+Everything code/text the figure needs is in git: the script, the panel d/h
 exemplar inputs (`results/tables/exemplar_*.csv`, 18 files + `exemplar_cells_meta.csv`),
 the per-donor CP1K table (`marker_norm_expr*.csv`), and all docs.
 
@@ -36,7 +36,7 @@ hand over outside of git. Place each at the path shown:
 
 | Place at this path | Size | What it is |
 |---|---|---|
-| `data/DE_genes_all_cells_scz.csv` | 34 MB | Meta-analytic snRNA-seq DE (7-cohort), one row per (subclass × gene). Feeds the butterfly (a), volcanoes (b,c), forest asterisks, and scatter x-axis. |
+| `data/DE_genes_all_cells_scz.csv` | 34 MB | Meta-analytic snRNA-seq DE (7-cohort), one row per (subclass × gene). Feeds the butterfly + inset (i), volcanoes (a,e), forest asterisks, and scatter x-axis. |
 | `data/meta_results_cohorts_subclass.csv` | 313 MB | Per-cohort snRNA-seq DE (the 7 cohorts). Feeds the forest cohort rows + recomputed meta diamond. |
 | `spatial/output/de/de_results_subclass.csv` (symlink → `~/Github/SCZ_Xenium/output/de/`) | 876 KB | Xenium spatial DE. Feeds the forest Xenium rows + scatter y-axis. The script reads the monorepo-internal path `../spatial/output/de/...` (a git-ignored symlink to the SCZ_Xenium output); only this **one CSV** is needed. If you store it elsewhere, edit `INPUT_XENIUM` at the top of the script. |
 
@@ -78,11 +78,11 @@ every cited number against source — is in `notes/figure_composite_legend.md`.
 - **Pixel-exact** also requires the same package versions (above) and the same
   device **font**. The script uses the default sans font; a different sans font
   changes text metrics, which can nudge the ggrepel labels. Note: the scatter
-  (j) and volcano (b,c) labels both use ggrepel (fixed seed = 7), so they are
+  (j) and volcano (a,e) labels both use ggrepel (fixed seed = 7), so they are
   the most font/version sensitive. For a guaranteed environment, capture a lockfile with
   `renv::init(); renv::snapshot()` or install the exact versions above.
 
-## Optional — regenerate the panel-l exemplar cells from scratch
+## Optional — regenerate the panel d/h exemplar cells from scratch
 
 NOT needed to reproduce the figure (the CSVs are committed). Do this only to
 re-extract exemplar cells (e.g. for different genes — edit `PAIRS` in the

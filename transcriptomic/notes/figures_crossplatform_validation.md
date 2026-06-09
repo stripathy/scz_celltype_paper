@@ -3,22 +3,25 @@
 Documentation + data provenance for the figures that present the snRNA-seq SCZ
 DE meta-analysis and validate it against an independent Xenium spatial dataset.
 Scripts 07 and 08 are standalone components; **script 09 is the publication
-composite** that combines them (forests + concordance scatter) with a butterfly
-summary, per-cell-type volcanoes, and Xenium exemplar cells; script 10 produces
-the exemplar-cell inputs that panel l of the composite reads.
+composite**, laid out one interneuron marker per row — volcano → forest → CP1K
+boxplot → exemplar cells — for SST (a–d) and PVALB (e–h), then a transcriptome-wide
+DE-burden butterfly with a DE-vs-proportion inset (i) and the concordance scatter
+(j); script 10 produces the exemplar-cell inputs that panels d/h read.
 
 | Script | Figure(s) / output | What it shows |
 |---|---|---|
 | `scripts/07_forest_plots.R` | `results/figures/07_forest_composite.{png,pdf}` | Per-gene forest plots: each snRNA-seq cohort + pooled meta + Xenium replication |
 | `scripts/08_meta_vs_xenium_scatter.R` | `results/figures/08_meta_vs_xenium_scatter*.{png,pdf}`, `08b_*_uniform*.{png,pdf}` | Concordance scatter of meta logFC vs Xenium logFC across all testable gene×cell-type pairs |
-| `scripts/10_xenium_exemplar_cells.py` | `results/tables/exemplar_*.csv` | Per-cell boundary + marker-molecule coordinates for the panel-l exemplar cells (run **before** 09) |
-| `scripts/09_composite_figure.R` | `results/figures/09_composite.{png,pdf}` | **Publication composite (7.1 × 6.7 in, 12 panels a–l)**: butterfly (a), volcanoes (b–e: Sst, L2/3 IT, Astro, Micro-PVM), forests (f–i: SST/Sst, BDNF/L2/3 IT, FGFR3/Astro, FKBP5/OPC), concordance scatter (j), CP1K expression (k: SST + FGFR3), Xenium exemplar cells (l: SST + FGFR3) |
-| `scripts/11_grain_density.py` | `results/tables/percell_grain_density.csv` | Per-cell grain-density input (canonical cells, 24 donors) → panel-l exemplar selection + Supplementary |
-| `scripts/12_marker_norm_expr.R` | `results/tables/marker_norm_expr.csv` (+ `_stats`) | Per-donor CP1K (counts/1,000 transcripts) + edgeR p for SST, FGFR3 (composite **panel k**) and PVALB (supplement) |
+| `scripts/10_xenium_exemplar_cells.py` | `results/tables/exemplar_*.csv` | Per-cell boundary + marker-molecule coordinates for the panel d/h exemplar cells (run **before** 09) |
+| `scripts/09_composite_figure.R` | `results/figures/09_composite.{png,pdf}` | **Publication composite (7.1 × 6.625 in, 10 panels a–j)**, one marker per row: **Row 1 SST in Sst** — volcano (a), SST/Sst forest (b), CP1K boxplot (c), exemplar cells (d); **Row 2 PVALB in Pvalb** — volcano (e), PVALB/Pvalb forest (f), CP1K boxplot (g), exemplar cells (h); **Row 3** — DE-gene-count butterfly per subclass with a DE-genes-vs-proportion inset (i), concordance scatter (j) |
+| `scripts/11_grain_density.py` | `results/tables/percell_grain_density.csv` | Per-cell grain-density input (canonical cells, 24 donors) → panel d/h exemplar selection + Supplementary |
+| `scripts/12_marker_norm_expr.R` | `results/tables/marker_norm_expr.csv` (+ `_stats`) | Per-donor CP1K (counts/1,000 transcripts) + edgeR p for SST (**panel c**) and PVALB (**panel g**); FGFR3 also computed (former composite gene, now spare/supplement) |
 | `scripts/13_supp_percell_metrics.R` | `results/figures/S_percell_metrics.{png,pdf}` | **Supplementary**: per-cell SST/PVALB across normalisations (raw, grains/cell-area, lib-norm, library size) |
-| `scripts/14_supp_pvalb.R` | `results/figures/S_pvalb.{png,pdf}` | **Supplementary**: PVALB mRNA in Pvalb cells — forest + per-donor CP1K + exemplar cells (PVALB moved here from the composite) |
+| `scripts/14_supp_pvalb.R` | `results/figures/S_pvalb.{png,pdf}` | **Supplementary (superseded)**: PVALB mRNA in Pvalb cells — forest + CP1K + exemplar cells; now redundant with composite Row 2 (e–h) |
+| `scripts/16_de_vs_proportion.R` | `results/figures/de_vs_proportion_subclass.{png,pdf}` | Standalone fully-labelled DE-genes (FDR<0.10) vs cell-type-proportion scatter (subclass; Xenium proportion proxy) — minimal version is the panel-i inset |
 
-The validation figures (07, 08, and panels f–l of 09) all ask the same question
+The validation figures (07, 08, and the cross-platform panels of 09 — forests
+b/f, CP1K c/g, scatter j) all ask the same question
 from different angles: **does the snRNA-seq discovery DE replicate on an
 independent spatial-transcriptomics platform?** The composite figure legend
 (final wording + per-value provenance) lives in
@@ -78,19 +81,19 @@ and re-render.
 > **and 09**. If a newer Xenium DE table changes column names, update the
 > `transmute()` calls and `ct_map`.
 
-### D. Panel-l exemplar tables (derived) — `results/tables/exemplar_*.csv`
+### D. Panel d/h exemplar tables (derived) — `results/tables/exemplar_*.csv`
 - **What**: per-cell boundary polygons + marker-gene transcript-molecule
   coordinates (µm, recentred), plus `exemplar_cells_meta.csv`. Produced by
   `scripts/10_xenium_exemplar_cells.py` from the Xenium **h5ad + boundary +
   transcript** exports (NOT the DE table). See §6 for full provenance.
-- **Used by**: script 09 panel l only. **Run script 10 before script 09.**
+- **Used by**: script 09 panels d/h only. **Run script 10 before script 09.**
 
 ---
 
 ## 2. Shared methods
 
-> **Script 09 reuses everything in this section.** Its forests (d–f), scatter
-> (j), volcanoes (b,c) and butterfly (a) read the same three DE inputs and use
+> **Script 09 reuses everything in this section.** Its forests (b, f), scatter
+> (j), volcanoes (a, e) and butterfly + inset (i) read the same three DE inputs and use
 > the same SE derivation, meta-diamond computation, significance markers,
 > `ct_map`, and class colours described below. The constants are re-declared at
 > the top of `09_composite_figure.R` (`INPUT_*`, `EXC`/`INH`/`GLI`, `CLASS_COL`).
@@ -204,84 +207,87 @@ binomial p = 7e-12. At padj < 0.05: 109 pairs, 78% concordant, r = 0.78.
 ## 5. Figure 09 — publication composite
 
 The single multi-panel figure for the paper
-(`results/figures/09_composite.{png,pdf}`, **7.1 × 6.7 in, 400 dpi**). Width
-`FIG_W = 7.1` in (NN double-column) and height `FIG_H = 6.7` in are both at the
-Nature Neuroscience print maxima (180 × 170 mm). It reuses the inputs (§1) and methods (§2) of
-07/08 and adds the butterfly, volcanoes, and exemplar cells.
+(`results/figures/09_composite.{png,pdf}`, **7.1 × 6.625 in, 400 dpi**). Width
+`FIG_W = 7.1` in (NN double-column) and height `FIG_H = 6.625` in. It reuses the
+inputs (§1) and methods (§2) of 07/08 and adds the butterfly + inset and exemplar
+cells. Layout = **one interneuron marker per row** (volcano → forest → CP1K boxplot
+→ exemplar cells) for SST (a–d) and PVALB (e–h), then a transcriptome-wide row (i, j).
 
 | Panel | Builder | Content |
 |---|---|---|
-| a | `build_butterfly()` | Up/down DE-gene counts per cell type; FDR<0.10 (light) with the FDR<0.05 subset overlaid (dark); 4-entry legend at `c(0.70,0.16)`. Width halved (`rel_widths c(0.925, 2)`) to make room for the 2×2 volcano grid. |
-| b–e | `build_volcano()` | Volcanoes for Sst (b), L2/3 IT (c), Astro (d), Micro-PVM (e) in a 2×2 grid; points coloured by the same up/down × FDR tiers as a (NS = grey); dashed line at FDR=0.10; selected genes via ggrepel. **Each panel on tight, per-panel data-driven x/y limits** (not symmetric, not shared); labels kept inside via ggrepel `xlim`/`ylim` + `coord_cartesian`. |
-| f–i | `build_forest()` | Four (gene,cell) pairs — SST/Sst (f), BDNF/L2/3 IT (g), FGFR3/Astro (h), FKBP5/OPC (i) (the `FOREST` tribble, single row, neurons then glia); cohort squares + DL meta diamond + Xenium triangle; markers per §2. |
-| j | `build_scatter()` | meta logFC vs Xenium logFC over meta FDR<0.10 ∩ Xenium; colour = class, size = meta FDR tier (legend removed from panel; described in figure legend); OLS fit + identity line; `r`/`% concordant` text. |
-| k | `build_normexpr()` | Library-normalised expression (CP1K, counts/1,000 transcripts) per-donor boxplots, Control vs SCZ; SST-in-Sst (top), FGFR3-in-Astro (bottom); **titled per row** (title also names the aligned exemplar row in l); **edgeR** p via ggsignif (same DE as f–j). Input from `scripts/12`. |
-| l | `build_exemplar()` | Xenium exemplar cells (inputs from script 10): cell boundary + dashed nucleus + marker molecules; SST/Sst (top), FGFR3/Astro (bottom), Control vs SCZ. |
+| a / e | `build_volcano()` | Volcano for Sst (a) and Pvalb (e); points coloured by up/down × FDR tiers (NS = grey); dashed line at FDR=0.10; selected genes via ggrepel. **Tight, per-panel data-driven x/y limits** (not symmetric, not shared); labels kept inside via ggrepel `xlim`/`ylim` + `coord_cartesian`. a Sst = SST, NAT16, SMAD1, AFG3L2; e Pvalb = PVALB, SMAD1, ANXA2, SCN3A, NAT16. |
+| b / f | `build_forest()` | Forest for SST/Sst (b) and PVALB/Pvalb (f) (the `FOREST` tribble); 7 cohort squares + DL meta diamond + Xenium triangle; markers per §2; `SCZ log₂ FC` x-axis on both. |
+| c / g | `build_normexpr()` | Per-donor library-normalised expression (CP1K, counts/1,000 tx) boxplots, Control vs SCZ; SST-in-Sst (c), PVALB-in-Pvalb (g); y-axis `<gene> expr (CP1K)`; **edgeR** p via ggsignif (same DE as b/f, j). Input from `scripts/12`. |
+| d / h | `build_exemplar()` | Xenium exemplar cells (inputs from script 10): cell boundary + dashed nucleus + red marker molecules (count top-left); SST/Sst (d), PVALB/Pvalb (h), Control \| SCZ per row; shared `ex_lim` zoom + 5 µm scale bar. |
+| i | `build_butterfly()` + `build_de_prop_inset()` | Up/down DE-gene counts per subclass; FDR<0.10 (light) + FDR<0.05 (dark); 4-entry legend at `c(0.70,0.16)`. **Inset** in the empty bottom-left (`draw_plot`, x=0.135 y=0.085, 0.36×0.378): # DE genes (FDR<0.10) vs mean per-donor Xenium proportion (log10 %, ≥1-DE subclasses); points by class; Astro/L5 IT/Vip/L6b labelled; Spearman ρ. |
+| j | `build_scatter()` | meta logFC vs Xenium logFC over meta FDR<0.10 ∩ Xenium (n=166); colour = class, size = meta FDR tier (legends removed; in figure legend); **identity line only — no fit line**; 10 ggrepel-labelled pairs; `r` / `% concordant` text bottom-right. |
 
-**Layout** (cowplot): row 1 = butterfly a (`rel_widths c(2, 3)`, ~40% width) +
-2×2 volcano grid (b Sst, c L2/3 IT / d Astro, e Micro-PVM); row 2 = 4 forests
-f–i (single row, neurons f,g then glia h,i); row 3 = scatter j + CP1K k +
-exemplar matrix l (`rel_widths c(1.0, 0.62, 0.85)` over scatter/CP1K/exemplar —
-the old rotated shared row label was removed; panel k now carries per-row titles);
-`rel_heights c(1.0, 0.55, 1.05)`; figure 7.1 × 6.7 in.
-Panel letters 8 pt bold, lowercase (a–l), top-left.
+**Layout** (cowplot): rows 1–2 each = [volcano | forest | CP1K boxplot]
+(`align="h", axis="tb"`, `rel_widths RW3 = c(1.05, 0.95, 0.70)`) then the exemplar
+Control\|SCZ pair as a 4th column (`rel_widths c(sum(RW3), 1.25)`); row 3 = butterfly
+i + scatter j (50/50). `rel_heights c(2, 2, 2.625)` are **inches** (rows 1–2 = 2.0 in
+each, row 3 = 2.625 in), summing to `FIG_H = 6.625`. Panel letters 8 pt bold
+lowercase (a–j), top-left.
 
 **Conventions locked (Nature / Nature Neuroscience print spec)** — change these
 together, not piecemeal:
-- **Size**: 7.1 × 6.7 in = **180 × 170 mm** (NN double-column width × max height).
+- **Size**: 7.1 × 6.625 in (NN double-column width). Rows 1–2 = 2.0 in each, row 3 = 2.625 in (`rel_heights` are inches).
 - **Text size**: master `BASE = 7`; all figure text falls in **5–7 pt** (the
   Nature/NN requirement). `geom_text` multipliers are tuned so nothing exceeds
   7 pt or drops below 5 pt; panel letters are 8 pt bold lowercase. Font =
   Helvetica (PDF device default).
-- **Forests**: 4 panels in a single row; the `SCZ log₂ FC` x-axis title is drawn
-  on all four (`show_xlab = c(T,T,T,T)`). Panel set + order = the `FOREST` tribble
-  (SST/Sst, BDNF/L2_3 IT, FGFR3/Astro, FKBP5/OPC — neurons then glia). PVALB/Pvalb
-  was moved to the supplement (`scripts/14`); C1QA/Micro-PVM was tried but dropped
-  (weak/inconsistent Xenium replication).
-- **Volcano highlights**: edit the `build_volcano()` calls — b Sst = SST, NAT16,
-  SMAD1, AFG3L2; c L2/3 IT = BDNF, SMAD1, VWA5B2, ADAMTS9-AS2, ST6GAL2; d Astro =
-  SERPING1, CHI3L1 (reactive, up) + FGFR3, NOTCH1 (identity, down); e Micro-PVM =
-  C1QA, C1QB (complement, up) + CX3CR1, P2RY12 (homeostatic, down) + SORL1. The
-  glial panels (d, e) are curated to show a reactive shift (up + down markers).
-  **Each volcano uses tight, per-panel data-driven limits** (not symmetric, not
-  shared); to widen for labels, raise the `xpad` / `yhi` multipliers in `build_volcano()`.
-- **Scatter j labels use ggrepel auto-placement** (`force = 2.5`, fixed `seed = 7`,
-  constrained to the panel); the cell-class + meta-FDR legends are **removed from
-  the panel** (described in the figure legend); the in-plot `r` / `% concordant`
-  text sits in the lower-right corner. Labelled pairs = the `lab_pairs` tribble
-  (SST/Sst, BDNF/L2_3 IT, FKBP5/OPC, CX3CR1/Micro-PVM, SMAD1/Pvalb, SERPING1/Astro,
-  FGFR3/Astro). To add/remove one, edit `lab_pairs`.
-- **Butterfly legend** sits at `c(0.70, 0.16)` (shifted right of the bar-tip
-  count labels), keys `unit(9,"pt")`.
-- **Panel l (exemplar matrix)**: `Control` / `SCZ` column headers + two cell rows
-  (SST/Sst top, FGFR3/Astro bottom). Per-row identity comes from panel k's titles
-  (the columns are vertically aligned), so there is no separate rotated row label.
-  Each l cell draws the solid cell boundary, the **dashed nucleus boundary**, and
-  red marker-molecule dots. All four cells share one coordinate limit (`ex_lim` =
-  max boundary extent × 1.15) so the zoom is identical and the **5 µm scale bar is
-  the same physical length in every panel**; the `5 µm` text is on the SCZ/FGFR3
-  cell only.
+- **One marker per row**: row 1 = SST in Sst cells (a–d), row 2 = PVALB in Pvalb
+  cells (e–h); the volcano/forest/CP1K triplet is x-aligned (`align="h", axis="tb"`).
+- **Forests**: 2 panels (b SST/Sst, f PVALB/Pvalb); `SCZ log₂ FC` x-axis on both
+  (`show_xlab = TRUE`). Panel set = the `FOREST` tribble. (Earlier drafts used a
+  single four-forest row — SST/Sst, BDNF/L2_3 IT, FGFR3/Astro, FKBP5/OPC — before
+  the reorg to one marker per row; BDNF/FGFR3/FKBP5 now appear only as scatter labels.)
+- **Volcano highlights**: edit the `build_volcano()` calls — a Sst = SST, NAT16,
+  SMAD1, AFG3L2; e Pvalb = PVALB, SMAD1, ANXA2, SCN3A, NAT16. **Tight, per-panel
+  data-driven limits** (not symmetric, not shared); to widen for labels, raise the
+  `xpad` / `yhi` multipliers in `build_volcano()`. (The earlier glial volcanoes —
+  Astro SERPING1/CHI3L1/FGFR3/NOTCH1 and Micro-PVM C1QA/C1QB/CX3CR1/P2RY12/SORL1 —
+  are no longer in the main figure after the reorg.)
+- **Scatter j labels use ggrepel** (`force = 5`, fixed `seed = 7`; ATP2B4/Sst is
+  `nudge`d up-left so it does not collide with CALB1/L6 IT); cell-class + meta-FDR
+  legends **removed from the panel** (in the figure legend); `r` / `% concordant`
+  lower-right. **No fit line** (dashed identity line only). Labelled pairs (10) =
+  the `lab_pairs` tribble: SST/Sst, BDNF/L2_3 IT, FKBP5/OPC, CX3CR1/Micro-PVM,
+  SMAD1/Pvalb, SERPING1/Astro, FGFR3/Astro, VGF/Chandelier, CALB1/L6 IT, ATP2B4/Sst.
+  To add/remove one, edit `lab_pairs`.
+- **Panel-i inset**: `build_de_prop_inset()` (reads `INPUT_CRUMBLR`) draws # DE
+  genes (FDR<0.10) vs mean per-donor Xenium proportion across ≥1-DE subclasses;
+  minimal styling (semi-transparent fit, 1%/10% log stops, ρ, no point labels except
+  Astro/L5 IT/Vip/L6b). Standalone fully-labelled version = `scripts/16`.
+- **Butterfly legend** sits at `c(0.70, 0.16)` (right of the bar-tip count labels),
+  keys `unit(9,"pt")`.
+- **Exemplar pair (d/h)**: `Control` / `SCZ` column headers on **row 1 only** (a
+  blank spacer of equal height keeps the row-2 cells the same size). Each cell draws
+  the solid boundary, the **dashed nucleus**, and red marker dots (count top-left).
+  All four cells share one coordinate limit (`ex_lim` = max boundary extent × 1.05)
+  so the zoom and the **5 µm scale bar** are identical; the `5 µm` text is on the
+  h (PVALB/SCZ) cell only.
 
 **Run** (script 10 must have produced the exemplar tables first):
 ```bash
 cd ~/Github/scz_celltype_paper/transcriptomic
-python scripts/10_xenium_exemplar_cells.py   # panel-l exemplar inputs (if not present)
+python scripts/10_xenium_exemplar_cells.py   # panel d/h exemplar inputs (if not present)
 Rscript scripts/09_composite_figure.R         # -> results/09_composite.{png,pdf}
 cp results/09_composite.png results/09_composite.pdf results/figures/  # snapshot
 ```
 
 ---
 
-## 6. Script 10 — Xenium exemplar cells (panel-l inputs)
+## 6. Script 10 — Xenium exemplar cells (panel d/h inputs)
 
 Extracts, for each (gene, subclass) pair, one **Control** and one **SCZ**
 exemplar cell, writing the cell boundary + the marker-gene transcript molecules
-inside it, for panel l.
+inside it, for panels d/h.
 
-- **Pairs** (`PAIRS`): `(gene, subclass, {dx: section})` triples — `SST`/Sst and
-  `FGFR3`/Astrocyte for the composite (panels k, l), plus `PVALB`/Pvalb for the
-  supplement (`scripts/14`). SST = down-regulated interneuron marker, FGFR3 =
-  down-regulated astrocyte-identity gene, PVALB = down-regulated interneuron marker.
+- **Pairs** (`PAIRS`): `(gene, subclass, {dx: section})` triples — `SST`/Sst (panels
+  c/d) and `PVALB`/Pvalb (panels g/h) for the composite, plus `FGFR3`/Astrocyte (a
+  former composite gene, kept as a spare / supplement candidate). SST and PVALB =
+  down-regulated interneuron markers; FGFR3 = down-regulated astrocyte-identity gene.
   All render as countable molecule dots. (Caveat: PVALB partly *defines* the Pvalb
   type, so its Xenium effect is mildly circular with label transfer — see §8.)
 - **Samples** (per pair, in `PAIRS`): the donor whose per-section canonical-cell
@@ -322,12 +328,12 @@ inside it, for panel l.
   `disp_grain_density`, `eccentricity`, `total_counts`, `norm_depth`, `layer`,
   `circularity`, `solidity`, `area_um2`).
 - **Current exemplars** (from `exemplar_cells_meta.csv`): dots shown
-  (`n_dots_in_poly`) SST/Sst 35 (Ctrl) vs 28 (SCZ) and FGFR3/Astrocyte 14 vs 12
-  (composite); PVALB/Pvalb 10 vs 9 (supplement); grain density 18.7→13.2,
-  7.1→6.5, 5.2→4.2 grains/100 µm²; eccentricity 0.51–0.62 (≈ median ~0.57);
-  size-matched (area within ±20%).
+  (`n_dots_in_poly`) SST/Sst 35 (Ctrl) vs 28 (SCZ) — **panel d** — and PVALB/Pvalb
+  10 vs 9 — **panel h**; FGFR3/Astrocyte 14 vs 12 (spare). Grain density 18.7→13.2
+  (SST), 5.2→4.2 (PVALB), 7.1→6.5 (FGFR3) grains/100 µm²; eccentricity 0.51–0.62
+  (≈ median ~0.57); size-matched (area within ±20%).
 - **To change the exemplar genes**: edit `PAIRS` (and, for cross-referencing,
-  `FOREST` in script 09 and the `ex_lim`/`ex`/`ex_r2` panel-l block), re-run 10 → 09.
+  `FOREST` / `lab_pairs` in script 09 and the `ex_pair` block), re-run 10 → 09.
 
 **Run**:
 ```bash
@@ -351,7 +357,7 @@ When upstream DE results change, to refresh the figures:
 4. If the Xenium h5ad / boundary / transcript exports change (or you want
    different exemplar genes), edit `PAIRS` / sample constants in script 10 and
    **re-run script 10 first** — it regenerates `results/tables/exemplar_*.csv`
-   that panel l reads.
+   that panels d/h read.
 5. Re-run the figures and copy outputs into `results/figures/`:
    - `Rscript scripts/07_forest_plots.R`
    - `Rscript scripts/08_meta_vs_xenium_scatter.R`

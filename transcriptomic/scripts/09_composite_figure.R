@@ -340,7 +340,8 @@ build_scatter <- function() {
   pc <- round(100*mean(pr$concordant))
   lab_pairs <- tibble::tribble(~genes,~cell_type,
     "SST","Sst","BDNF","L2_3 IT","FKBP5","OPC","CX3CR1","Micro-PVM",
-    "SMAD1","Pvalb","SERPING1","Astro","FGFR3","Astro")
+    "SMAD1","Pvalb","SERPING1","Astro","FGFR3","Astro",
+    "VGF","Chandelier","CALB1","L6 IT","ATP2B4","Sst")
   lab_keys <- paste(lab_pairs$genes, lab_pairs$cell_type)
   lab <- pr |> inner_join(lab_pairs, by = c("genes","cell_type"))
   lim <- max(as.numeric(quantile(abs(c(pr$meta_est, pr$xen_logFC)), 0.97)),
@@ -350,7 +351,11 @@ build_scatter <- function() {
   # bottom-right corner.
   pr <- pr |> mutate(
     tag = sprintf("%s (%s)", genes, gsub("_", "/", cell_type)),
-    rep_label = ifelse(paste(genes, cell_type) %in% lab_keys, tag, ""))
+    rep_label = ifelse(paste(genes, cell_type) %in% lab_keys, tag, ""),
+    # ATP2B4/Sst and CALB1/L6 IT are both up-regulated and land close in the
+    # up-right cluster; bias ATP2B4's label up-left so the two don't collide.
+    nudge_x = ifelse(genes == "ATP2B4" & cell_type == "Sst", -0.16, 0),
+    nudge_y = ifelse(genes == "ATP2B4" & cell_type == "Sst",  0.18, 0))
 
   ggplot(pr, aes(meta_est, xen_logFC)) +
     geom_vline(xintercept = 0, colour = "grey75", linewidth = 0.25) +
@@ -362,8 +367,9 @@ build_scatter <- function() {
                size = 1.8, stroke = 0.5) +
     geom_text_repel(data = pr, aes(label = rep_label), size = BASE*0.28,
                     min.segment.length = 0, segment.size = 0.25,
-                    segment.colour = "grey55", box.padding = 0.45,
-                    point.padding = 0.3, force = 2.5, force_pull = 0.15,
+                    segment.colour = "grey55", box.padding = 0.5,
+                    point.padding = 0.3, force = 5, force_pull = 0.12,
+                    nudge_x = pr$nudge_x, nudge_y = pr$nudge_y,
                     xlim = c(-lim, lim), ylim = c(-lim, lim),
                     max.overlaps = Inf, seed = 7, colour = "grey10") +
     annotate("text", x = lim*0.97, y = -lim*0.80,
@@ -452,7 +458,7 @@ build_normexpr <- function(gene, title = NULL, show_x = FALSE) {
                 textsize = BASE * 0.32, vjust = -0.1) +
     scale_fill_manual(values = NEXPR_COL) +
     scale_y_continuous(expand = expansion(mult = c(0.05, 0.22)), n.breaks = 4) +
-    labs(x = NULL, y = "counts / 1,000 tx", subtitle = title) +
+    labs(x = NULL, y = sprintf("%s expr (CP1K)", gene), subtitle = title) +
     theme_cowplot(font_size = BASE) +
     theme(legend.position = "none",
           plot.subtitle = element_text(size = BASE - 1, face = "plain", hjust = 0.5,

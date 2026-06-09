@@ -41,7 +41,8 @@ gene; points coloured by cell class; Astro, L5 IT, Vip and L6b labelled; Spearma
 ρ = 0.83. (**j**) snRNA-seq meta-analytic versus Xenium log₂ fold change for all
 gene × cell-type pairs with meta FDR < 0.10 (n = 166); points coloured by cell
 class (Excitatory, Inhibitory, Glia) and sized by meta FDR (larger, FDR < 0.05;
-smaller, 0.05–0.10); dashed line, identity. Pearson r = 0.73; 76% sign-concordant.
+smaller, 0.05–0.10); ten representative gene × cell-type pairs labelled (ringed);
+dashed line, identity. Pearson r = 0.73; 76% sign-concordant.
 Significance throughout: \*FDR < 0.10, \*\*FDR < 0.05, \*\*\*FDR < 0.01; •, nominal
 P < 0.05 (FDR ≥ 0.10); n.s., pooled estimate not significant.
 
@@ -79,7 +80,7 @@ model) is in **Supplementary Fig. S_percell**. The standalone PVALB supplement
 | Panel j — Pearson r | 0.7310 → 0.73 | `cor(meta_est, xen_logFC)` |
 | Panel j — concordance | 75.90% → 76% | `mean(sign(meta_est)==sign(xen_logFC))` |
 | Panel j — size split | FDR<0.05 n = 109; 0.05–0.10 n = 57 | `meta_padj` |
-| Panel j — labelled pairs | SST/Sst, BDNF/L2_3 IT, FKBP5/OPC, CX3CR1/Micro-PVM, SMAD1/Pvalb, SERPING1/Astro, FGFR3/Astro | `lab_pairs`, script 09 |
+| Panel j — labelled pairs (10) | SST/Sst, BDNF/L2_3 IT, FKBP5/OPC, CX3CR1/Micro-PVM, SMAD1/Pvalb, SERPING1/Astro, FGFR3/Astro, **VGF/Chandelier** (meta −1.04 / FDR 0.0021, Xen −0.75 / P 0.025), **CALB1/L6 IT** (meta +0.49 / FDR 0.038, Xen +0.41 / P 0.049), **ATP2B4/Sst** (meta +0.21 / FDR 0.016, Xen +0.32 / P 0.0011) | `lab_pairs`, script 09; `DE_genes_all_cells_scz.csv`; `de_results_subclass.csv` |
 | Panel j — fit line | none (identity dashed line only; geom_smooth removed) | `build_scatter()`, script 09 |
 | Sig. symbols | \*\*\* FDR<0.01, \*\* FDR<0.05, \* FDR<0.10 | `ast()` in script 09 |
 | `•` symbol | nominal P<0.05 AND FDR≥0.10 (drawn only when NOT starred) | `is_dot()` in script 09 |
