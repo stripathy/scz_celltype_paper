@@ -233,9 +233,12 @@ lowercase (a–j), top-left.
 together, not piecemeal:
 - **Size**: 7.1 × 6.625 in (NN double-column width). Rows 1–2 = 2.0 in each, row 3 = 2.625 in (`rel_heights` are inches).
 - **Text size**: master `BASE = 7`; all figure text falls in **5–7 pt** (the
-  Nature/NN requirement). `geom_text` multipliers are tuned so nothing exceeds
-  7 pt or drops below 5 pt; panel letters are 8 pt bold lowercase. Font =
-  Helvetica (PDF device default).
+  Nature/NN requirement). Axis titles and tick labels are unified across panels
+  via two constants — `AXIS_TITLE = BASE-0.5` (6.5 pt) and `AXIS_TEXT = BASE-1`
+  (6 pt) — giving a consistent subtitle 7 > axis title 6.5 > tick 6 hierarchy;
+  the panel-i inset keeps its own smaller sizes by design. `geom_text` multipliers
+  are tuned so nothing exceeds 7 pt or drops below 5 pt; panel letters are 8 pt
+  bold lowercase. Font = Helvetica (PDF device default).
 - **One marker per row**: row 1 = SST in Sst cells (a–d), row 2 = PVALB in Pvalb
   cells (e–h); the volcano/forest/CP1K triplet is x-aligned (`align="h", axis="tb"`).
 - **Forests**: 2 panels (b SST/Sst, f PVALB/Pvalb); `SCZ log₂ FC` x-axis on both

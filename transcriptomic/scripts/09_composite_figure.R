@@ -54,7 +54,12 @@ CLASS_COL <- c(Excitatory = "#117733", Inhibitory = "#882255", Glia = "#DDCC77")
 
 BASE <- 7   # base font size (Nature/NN: all figure text 5–7 pt). Most text is
             # sized relative to this; geom_text multipliers tuned so nothing
-            # exceeds 7 pt or drops below 5 pt at the 7.1 × 6.7 in print size.
+            # exceeds 7 pt or drops below 5 pt at the 7.1 × 6.625 in print size.
+# Shared axis-text sizes — applied uniformly across panels for consistency
+# (hierarchy: subtitle BASE=7 > axis title 6.5 > tick labels 6). The inset keeps
+# its own smaller sizes by design.
+AXIS_TITLE <- BASE - 0.5   # 6.5 pt — axis titles (the size used in the forest, reads well)
+AXIS_TEXT  <- BASE - 1     # 6.0 pt — axis tick labels
 
 # significance helpers (shared)
 ast    <- function(fdr) dplyr::case_when(
@@ -133,9 +138,9 @@ build_butterfly <- function() {
                        expand = expansion(mult = 0.12)) +
     labs(x = "Number of DE genes", y = NULL) +
     theme_cowplot(font_size = BASE) +
-    theme(axis.text.y = element_text(size = BASE - 1.5),
-          axis.text.x = element_text(size = BASE - 1.5),
-          axis.title.x = element_text(size = BASE - 1),
+    theme(axis.text.y = element_text(size = AXIS_TEXT),
+          axis.text.x = element_text(size = AXIS_TEXT),
+          axis.title.x = element_text(size = AXIS_TITLE),
           axis.ticks.y = element_blank(),
           axis.line.y  = element_blank(),
           legend.position = c(0.70, 0.16),
@@ -244,8 +249,8 @@ build_volcano <- function(cell, highlight) {
     theme_cowplot(font_size = BASE) +
     theme(plot.subtitle = element_text(size = BASE, face = "italic", hjust = 0.5,
                                        margin = margin(b = 1)),
-          axis.text  = element_text(size = BASE - 1.5),
-          axis.title = element_text(size = BASE - 1),
+          axis.text  = element_text(size = AXIS_TEXT),
+          axis.title = element_text(size = AXIS_TITLE),
           plot.margin = margin(2, 3, 2, 2))
 }
 
@@ -320,9 +325,9 @@ build_forest <- function(gene_sym, cell, ttl, show_xlab = FALSE) {
     theme_cowplot(font_size = BASE) +
     theme(plot.subtitle = element_text(size = BASE, face = "plain",
                                        margin = margin(b = 1)),
-          axis.text.y = element_text(size = BASE - 2),
-          axis.text.x = element_text(size = BASE - 2),
-          axis.title.x = element_text(size = BASE - 0.5, margin = margin(t = 1.5)),
+          axis.text.y = element_text(size = AXIS_TEXT),
+          axis.text.x = element_text(size = AXIS_TEXT),
+          axis.title.x = element_text(size = AXIS_TITLE, margin = margin(t = 1.5)),
           axis.line   = element_line(linewidth = 0.3),
           axis.ticks  = element_line(linewidth = 0.3),
           plot.margin = margin(2, 4, 2, 2))
@@ -392,8 +397,8 @@ build_scatter <- function() {
     # cell-class (colour) and meta-FDR (size) legends removed from the panel;
     # the encoding is described in the figure legend instead.
     theme(legend.position = "none",
-          axis.text = element_text(size = BASE - 1.5),
-          axis.title = element_text(size = BASE - 1),
+          axis.text = element_text(size = AXIS_TEXT),
+          axis.title = element_text(size = AXIS_TITLE),
           aspect.ratio = 1,            # keep the concordance scatter square
           plot.margin = margin(2, 3, 2, 2))
 }
@@ -467,11 +472,11 @@ build_normexpr <- function(gene, title = NULL, show_x = FALSE) {
     theme(legend.position = "none",
           plot.subtitle = element_text(size = BASE - 1, face = "plain", hjust = 0.5,
                                        margin = margin(b = 1)),
-          axis.text.x  = if (show_x) element_text(size = BASE - 1.5) else element_blank(),
+          axis.text.x  = if (show_x) element_text(size = AXIS_TEXT) else element_blank(),
           axis.ticks.x = if (show_x) element_line() else element_blank(),
           axis.line.x  = if (show_x) element_line() else element_blank(),
-          axis.title.y = element_text(size = BASE - 1.5),
-          axis.text.y  = element_text(size = BASE - 1.5),
+          axis.title.y = element_text(size = AXIS_TITLE),
+          axis.text.y  = element_text(size = AXIS_TEXT),
           plot.margin = margin(2, 3, 2, 3))
 }
 
