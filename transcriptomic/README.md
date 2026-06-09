@@ -35,7 +35,6 @@ See [`notes/findings.md`](notes/findings.md) for the full take-stock with caveat
 │   ├── 11_grain_density.py               # Per-cell grain density, 24 donors → exemplar selection + suppl.
 │   ├── 12_marker_norm_expr.R             # Per-donor CP1K + edgeR p (panels c/g; SST + PVALB; FGFR3 spare)
 │   ├── 13_supp_percell_metrics.R         # Suppl.: per-cell SST/PVALB across normalisations
-│   ├── 14_supp_pvalb.R                   # Suppl. (superseded by Fig 09 row 2): PVALB forest + CP1K + exemplar
 │   ├── 15_coupling_prototype_xenium.py   # DE × composition coupling prototype (Xenium; see notes/plan_de_composition_coupling.md)
 │   └── 16_de_vs_proportion.R             # DE-gene count vs cell-type proportion (subclass; standalone of panel-i inset)
 ├── exploratory/                          # Deep-dives and archived early work

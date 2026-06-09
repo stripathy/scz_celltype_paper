@@ -64,7 +64,7 @@ from config import SAMPLE_TO_DX                       # noqa: E402
 PAIRS = [
     ("SST",   "Sst",       {"Control": "Br6432", "SCZ": "Br5973"}),
     ("FGFR3", "Astrocyte",  {"Control": "Br5400", "SCZ": "Br5973"}),
-    ("PVALB", "Pvalb",      {"Control": "Br6432", "SCZ": "Br5973"}),  # supplemental fig (scripts/14)
+    ("PVALB", "Pvalb",      {"Control": "Br6432", "SCZ": "Br5973"}),  # composite panel h (PVALB in Pvalb)
 ]
 ALL_SAMPLES = sorted(SAMPLE_TO_DX)
 

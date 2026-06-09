@@ -49,9 +49,9 @@ P < 0.05 (FDR ≥ 0.10); n.s., pooled estimate not significant.
 
 **Supplementary.** *Per-cell SST/PVALB reduction across normalisations* (raw
 dots, grain density, library-normalised, library size; negative-binomial mixed
-model) is in **Supplementary Fig. S_percell**. The standalone PVALB supplement
-(`scripts/14_supp_pvalb.R`, *S_pvalb*) is now superseded by main-figure row 2
-(e–h); the fully-labelled DE-vs-proportion scatter (all subclasses) is
+model) is in **Supplementary Fig. S_percell**. (PVALB in Pvalb cells is shown as
+main-figure row 2, e–h, so there is no separate PVALB supplement.) The
+fully-labelled DE-vs-proportion scatter (all subclasses) is
 `scripts/16_de_vs_proportion.R`.
 
 ---

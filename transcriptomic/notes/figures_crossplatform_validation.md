@@ -17,7 +17,6 @@ DE-burden butterfly with a DE-vs-proportion inset (i) and the concordance scatte
 | `scripts/11_grain_density.py` | `results/tables/percell_grain_density.csv` | Per-cell grain-density input (canonical cells, 24 donors) → panel d/h exemplar selection + Supplementary |
 | `scripts/12_marker_norm_expr.R` | `results/tables/marker_norm_expr.csv` (+ `_stats`) | Per-donor CP1K (counts/1,000 transcripts) + edgeR p for SST (**panel c**) and PVALB (**panel g**); FGFR3 also computed (former composite gene, now spare/supplement) |
 | `scripts/13_supp_percell_metrics.R` | `results/figures/S_percell_metrics.{png,pdf}` | **Supplementary**: per-cell SST/PVALB across normalisations (raw, grains/cell-area, lib-norm, library size) |
-| `scripts/14_supp_pvalb.R` | `results/figures/S_pvalb.{png,pdf}` | **Supplementary (superseded)**: PVALB mRNA in Pvalb cells — forest + CP1K + exemplar cells; now redundant with composite Row 2 (e–h) |
 | `scripts/16_de_vs_proportion.R` | `results/figures/de_vs_proportion_subclass.{png,pdf}` | Standalone fully-labelled DE-genes (FDR<0.10) vs cell-type-proportion scatter (subclass; Xenium proportion proxy) — minimal version is the panel-i inset |
 
 The validation figures (07, 08, and the cross-platform panels of 09 — forests
