@@ -32,10 +32,14 @@ suppressPackageStartupMessages({
   library(cowplot); library(ggrepel); library(metafor); library(ggsignif)
 })
 
-INPUT_META   <- "data/DE_genes_all_cells_scz.csv"
-INPUT_COH    <- "data/meta_results_cohorts_subclass.csv"
-INPUT_XENIUM <- "../spatial/output/de/de_results_subclass.csv"  # internal cross-ref (was ~/Github/SCZ_Xenium/...)
-INPUT_CRUMBLR <- "../spatial/output/crumblr/crumblr_input_subclass_corr.csv"  # Xenium per-donor composition (panel i inset)
+# Self-contained figure inputs, committed under data/figure_inputs/ (a subdir, so
+# it escapes the single-level data/*.csv ignore — see REPRODUCE.md). The cohorts
+# table is the SST+PVALB-only subset the forests need (the full 313 MB per-cohort
+# table stays external); the meta table is the full per-(cell type × gene) table.
+INPUT_META    <- "data/figure_inputs/DE_genes_all_cells_scz.csv"            # meta-analytic snRNA-seq DE (full)
+INPUT_COH     <- "data/figure_inputs/meta_results_cohorts_subclass_forest.csv"  # per-cohort DE, SST+PVALB rows only
+INPUT_XENIUM  <- "data/figure_inputs/de_results_subclass.csv"              # Xenium spatial DE (snapshot of SCZ_Xenium output)
+INPUT_CRUMBLR <- "data/figure_inputs/crumblr_input_subclass_corr.csv"      # Xenium per-donor composition (panel i inset)
 
 FIG_W <- 7.1    # max total width (inches)
 

@@ -5,10 +5,11 @@ Checklist to regenerate `results/figures/09_composite.{png,pdf}` — the
 
 ## TL;DR
 
-`scripts/09_composite_figure.R` is self-contained (it does not `source()`
-anything) and reads its **panel d/h exemplar inputs from CSVs that are committed to this
-repo**. So you do NOT need the raw Xenium data or the Python pipeline to
-reproduce the figure — only three DE tables and R:
+`scripts/09_composite_figure.R` is **fully self-contained**: it does not
+`source()` anything, and every CSV it reads is committed to the repo (the DE
+inputs under `data/figure_inputs/`, the exemplar + CP1K tables under
+`results/tables/`). You do NOT need the raw Xenium data, the Python pipeline, or
+any external file — just R:
 
 ```bash
 cd scz_celltype_paper/transcriptomic
@@ -25,24 +26,30 @@ git clone <remote-url> && cd scz_celltype_paper/transcriptomic
 # (the composite-figure code lives in this transcriptomic/ tree; no separate tag)
 ```
 
-Everything code/text the figure needs is in git: the script, the panel d/h
-exemplar inputs (`results/tables/exemplar_*.csv`, 18 files + `exemplar_cells_meta.csv`),
-the per-donor CP1K table (`marker_norm_expr*.csv`), and all docs.
+Everything the figure needs is in git: the script, the **DE input CSVs**
+(`data/figure_inputs/`, see §2), the panel d/h exemplar inputs
+(`results/tables/exemplar_*.csv`, 18 files + `exemplar_cells_meta.csv`), the
+per-donor CP1K table (`marker_norm_expr*.csv`), and all docs.
 
-## 2. The three data files — NOT in git, transfer separately
+## 2. Data inputs — committed under `data/figure_inputs/`
 
-These are git-ignored (large / external). They are the **only** things you must
-hand over outside of git. Place each at the path shown:
+The figure's four DE / composition inputs are committed as **real files** in
+`data/figure_inputs/` (a subdirectory, so it escapes the single-level
+`data/*.csv` ignore). Nothing has to be transferred separately — a fresh clone
+has everything.
 
-| Place at this path | Size | What it is |
+| File (in `data/figure_inputs/`) | Size | What it is |
 |---|---|---|
-| `data/DE_genes_all_cells_scz.csv` | 34 MB | Meta-analytic snRNA-seq DE (7-cohort), one row per (subclass × gene). Feeds the butterfly + inset (i), volcanoes (a,e), forest asterisks, and scatter x-axis. |
-| `data/meta_results_cohorts_subclass.csv` | 313 MB | Per-cohort snRNA-seq DE (the 7 cohorts). Feeds the forest cohort rows + recomputed meta diamond. |
-| `spatial/output/de/de_results_subclass.csv` (symlink → `~/Github/SCZ_Xenium/output/de/`) | 876 KB | Xenium spatial DE. Feeds the forest Xenium rows + scatter y-axis. The script reads the monorepo-internal path `../spatial/output/de/...` (a git-ignored symlink to the SCZ_Xenium output); only this **one CSV** is needed. If you store it elsewhere, edit `INPUT_XENIUM` at the top of the script. |
+| `DE_genes_all_cells_scz.csv` | 34 MB | Meta-analytic snRNA-seq DE (7-cohort), one row per (subclass × gene). **Full table.** Feeds the butterfly + inset (i), volcanoes (a,e), forest asterisks, scatter x-axis. |
+| `meta_results_cohorts_subclass_forest.csv` | 20 KB | Per-cohort snRNA-seq DE — **SST + PVALB rows only** (141 of 2.16 M), the subset the forests (b,f) read. The full 313 MB per-cohort table stays external. |
+| `de_results_subclass.csv` | 877 KB | Xenium spatial DE (snapshot of the SCZ_Xenium pipeline output). Feeds the forest Xenium rows + scatter y-axis. |
+| `crumblr_input_subclass_corr.csv` | 21 KB | Xenium per-donor subclass composition. Feeds the panel-i DE-vs-proportion inset. |
 
-Total to transfer ≈ 348 MB (the per-cohort file is the bulk). Column-level
-provenance: `data/README.md` (first two) and
-`notes/figures_crossplatform_validation.md` §1 (all three).
+These are **snapshots**. Canonical sources: `shared/snrnaseq_de/` (the two snRNA
+tables) and the SCZ_Xenium repo (`output/de/`, `output/crumblr/`). To refresh
+after an upstream DE rerun, regenerate them (the cohorts subset is just the
+`genes ∈ {SST, PVALB}` rows) — see `notes/figures_crossplatform_validation.md`
+§1 (column provenance) and §7 (update checklist).
 
 ## 3. R environment (match for an exact match)
 
@@ -73,8 +80,8 @@ every cited number against source — is in `notes/figure_composite_legend.md`.
 
 - **Functional** (identical panels, numbers, layout): the steps above suffice.
   All on-figure statistics (n = 166, r = 0.73, 76% concordant, the DE counts,
-  the forest estimates) are computed from the data at run time, so they match as
-  long as the three data files are identical.
+  the forest estimates) are computed from the committed `data/figure_inputs/`
+  CSVs at run time, so a fresh clone reproduces them exactly.
 - **Pixel-exact** also requires the same package versions (above) and the same
   device **font**. The script uses the default sans font; a different sans font
   changes text metrics, which can nudge the ggrepel labels. Note: the scatter

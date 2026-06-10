@@ -30,9 +30,11 @@ independent spatial-transcriptomics platform?** The composite figure legend
 
 ## 1. Data sources (UPDATE THESE IF THE DATA CHANGES)
 
-Three input files feed these figures. If any DE analysis is re-run upstream,
-update the corresponding file (or the path constant at the top of each script)
-and re-render.
+Three input files feed these figures. Scripts 07/08 read them at the canonical
+paths below; the composite (**script 09**) instead reads committed snapshots from
+`data/figure_inputs/`, so the figure is self-contained (see REPRODUCE.md §2). If
+any DE analysis is re-run upstream, update the source file **and** regenerate the
+matching `data/figure_inputs/` snapshot (checklist §7.1), then re-render.
 
 ### A. Per-cohort snRNA-seq DE — `data/meta_results_cohorts_subclass.csv`
 - **What**: limma differential expression, run separately in each of 7 SCZ
@@ -348,10 +350,12 @@ python scripts/10_xenium_exemplar_cells.py
 
 When upstream DE results change, to refresh the figures:
 
-1. Replace/repoint the relevant input file(s):
-   - new meta-analysis → `data/DE_genes_all_cells_scz.csv` (check cols `estimate`, `pval`, `padj`)
-   - new per-cohort DE → `data/meta_results_cohorts_subclass.csv` (check cols `logFC`, `t`, `P.Value`, `adj.P.Val`, `cohort`)
-   - new Xenium DE → `INPUT_XENIUM` path (check cols `gene`, `logFC`, `F`, `PValue`, `FDR`, `celltype`)
+1. Refresh the committed `data/figure_inputs/` snapshots that script 09 reads
+   (copy the new source table in; for the cohorts, re-subset to `genes ∈ {SST, PVALB}`):
+   - new meta-analysis → `data/figure_inputs/DE_genes_all_cells_scz.csv` (cols `estimate`, `pval`, `padj`)
+   - new per-cohort DE → re-subset to `data/figure_inputs/meta_results_cohorts_subclass_forest.csv` (cols `logFC`, `t`, `P.Value`, `adj.P.Val`, `cohort`)
+   - new Xenium DE → `data/figure_inputs/de_results_subclass.csv` (cols `gene`, `logFC`, `F`, `PValue`, `FDR`, `celltype`)
+   - new Xenium composition → `data/figure_inputs/crumblr_input_subclass_corr.csv`
 2. If subclass labels changed in any input, update `ct_map` (scripts 07–09) and
    the `EXC`/`INH`/`GLI` vectors (scripts 08 and 09).
 3. If the cohort set changed, no code change needed (cohorts are read from the
