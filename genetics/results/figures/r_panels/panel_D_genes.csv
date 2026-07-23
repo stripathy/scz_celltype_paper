@@ -1,0 +1,3 @@
+symbol,strand,start_mb,stop_mb,cds_start_mb,cds_end_mb,is_hcn1,tx_len,lane,n_lanes
+LOC124901180,+,45.227464,45.22843,45.22843,45.22843,False,966,0,2
+HCN1,-,45.254947,45.69638,45.26192,45.696093,True,441433,1,2

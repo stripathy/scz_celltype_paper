@@ -1,0 +1,2 @@
+win_lo_hg38,win_hi_hg38,win_lo_mb,win_hi_mb,hcn1_start_mb,hcn1_stop_mb,lead_rsid,lead_pos_mb,lead_p,lead_neglog10p,lead_pip,second_rsid,second_pos_mb,second_pip,second_loc,second_neglog10p,n_credible,pip_sum
+45054947,45746380,45.054947,45.74638,45.254947,45.69638,rs10035564,45.252398,4.38e-13,12.358525889495901,0.5247,rs16902086,45.28565,0.2632,intron,14.603800652904264,9,0.9503280000000001
