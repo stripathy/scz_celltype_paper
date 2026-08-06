@@ -91,6 +91,11 @@ output/**/*.pdf
 # Archived presentation files (stale exploration outputs)
 output/presentation/_archived/
 
+# Retired figure dir. The submission figures are generated straight into
+# manuscript/figures/supplementary/; what is left here is superseded standalones
+# awaiting the archive-or-delete cleanup. See supplemental_figures/README.md.
+supplemental_figures/
+
 # Empty/unused output dirs
 output/nsforest/
 output/sccoda/

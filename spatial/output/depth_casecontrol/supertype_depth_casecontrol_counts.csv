@@ -1,0 +1,109 @@
+class,subclass,supertype,n_Control,n_SCZ,ndonor_Control,ndonor_SCZ
+GABAergic,Chandelier,Chandelier_1,2271.0,1858.0,12.0,12.0
+GABAergic,Chandelier,Chandelier_2,3443.0,3416.0,12.0,12.0
+GABAergic,Lamp5,Lamp5_1,1390.0,1666.0,12.0,12.0
+GABAergic,Lamp5,Lamp5_2,2213.0,1690.0,12.0,12.0
+GABAergic,Lamp5,Lamp5_3,966.0,849.0,12.0,12.0
+GABAergic,Lamp5,Lamp5_4,827.0,798.0,12.0,12.0
+GABAergic,Lamp5,Lamp5_5,1247.0,940.0,12.0,12.0
+GABAergic,Lamp5,Lamp5_6,805.0,717.0,12.0,12.0
+GABAergic,Lamp5 Lhx6,Lamp5_Lhx6_1,8.0,8.0,6.0,5.0
+GABAergic,Pax6,Pax6_1,982.0,820.0,12.0,12.0
+GABAergic,Pax6,Pax6_2,1180.0,920.0,12.0,12.0
+GABAergic,Pax6,Pax6_3,336.0,184.0,12.0,12.0
+GABAergic,Pax6,Pax6_4,189.0,177.0,12.0,12.0
+GABAergic,Pvalb,Pvalb_1,137.0,159.0,12.0,12.0
+GABAergic,Pvalb,Pvalb_10,900.0,612.0,12.0,12.0
+GABAergic,Pvalb,Pvalb_12,742.0,961.0,12.0,12.0
+GABAergic,Pvalb,Pvalb_13,467.0,226.0,12.0,12.0
+GABAergic,Pvalb,Pvalb_15,3508.0,2564.0,12.0,12.0
+GABAergic,Pvalb,Pvalb_2,1410.0,1323.0,12.0,12.0
+GABAergic,Pvalb,Pvalb_3,1.0,1.0,1.0,1.0
+GABAergic,Pvalb,Pvalb_5,495.0,349.0,12.0,12.0
+GABAergic,Pvalb,Pvalb_6,2823.0,1775.0,12.0,12.0
+GABAergic,Pvalb,Pvalb_7,31.0,36.0,12.0,10.0
+GABAergic,Pvalb,Pvalb_8,65.0,72.0,11.0,12.0
+GABAergic,Pvalb,Pvalb_9,602.0,644.0,12.0,12.0
+GABAergic,Sncg,Sncg_1,222.0,256.0,12.0,12.0
+GABAergic,Sncg,Sncg_2,232.0,268.0,12.0,12.0
+GABAergic,Sncg,Sncg_3,53.0,61.0,12.0,11.0
+GABAergic,Sncg,Sncg_4,1063.0,1005.0,12.0,12.0
+GABAergic,Sncg,Sncg_5,462.0,380.0,12.0,12.0
+GABAergic,Sncg,Sncg_6,465.0,579.0,12.0,12.0
+GABAergic,Sncg,Sncg_8,297.0,298.0,12.0,12.0
+GABAergic,Sst,Sst_1,178.0,226.0,12.0,11.0
+GABAergic,Sst,Sst_10,1513.0,1763.0,12.0,12.0
+GABAergic,Sst,Sst_11,1341.0,1802.0,12.0,12.0
+GABAergic,Sst,Sst_12,381.0,296.0,12.0,11.0
+GABAergic,Sst,Sst_13,1013.0,973.0,12.0,12.0
+GABAergic,Sst,Sst_19,1931.0,1718.0,12.0,12.0
+GABAergic,Sst,Sst_2,777.0,534.0,12.0,12.0
+GABAergic,Sst,Sst_20,1563.0,1685.0,12.0,12.0
+GABAergic,Sst,Sst_22,1189.0,1107.0,12.0,12.0
+GABAergic,Sst,Sst_23,138.0,115.0,12.0,12.0
+GABAergic,Sst,Sst_25,1032.0,382.0,12.0,12.0
+GABAergic,Sst,Sst_3,1565.0,789.0,12.0,12.0
+GABAergic,Sst,Sst_4,283.0,368.0,12.0,12.0
+GABAergic,Sst,Sst_5,575.0,875.0,12.0,12.0
+GABAergic,Sst,Sst_7,186.0,239.0,12.0,12.0
+GABAergic,Sst,Sst_9,506.0,419.0,12.0,12.0
+GABAergic,Sst Chodl,Sst Chodl_1,129.0,142.0,12.0,12.0
+GABAergic,Sst Chodl,Sst Chodl_2,163.0,152.0,12.0,12.0
+GABAergic,Vip,Vip_1,1317.0,1486.0,12.0,12.0
+GABAergic,Vip,Vip_11,549.0,423.0,12.0,12.0
+GABAergic,Vip,Vip_12,1112.0,687.0,12.0,12.0
+GABAergic,Vip,Vip_13,1061.0,641.0,12.0,12.0
+GABAergic,Vip,Vip_14,93.0,83.0,12.0,12.0
+GABAergic,Vip,Vip_15,921.0,643.0,12.0,12.0
+GABAergic,Vip,Vip_16,356.0,406.0,12.0,12.0
+GABAergic,Vip,Vip_18,886.0,766.0,12.0,12.0
+GABAergic,Vip,Vip_19,1149.0,946.0,12.0,12.0
+GABAergic,Vip,Vip_2,800.0,632.0,12.0,12.0
+GABAergic,Vip,Vip_21,1042.0,1078.0,12.0,12.0
+GABAergic,Vip,Vip_23,1320.0,988.0,12.0,12.0
+GABAergic,Vip,Vip_4,1339.0,1116.0,12.0,12.0
+GABAergic,Vip,Vip_5,331.0,344.0,12.0,12.0
+GABAergic,Vip,Vip_6,268.0,213.0,12.0,12.0
+GABAergic,Vip,Vip_9,413.0,326.0,12.0,12.0
+Glutamatergic,L2/3 IT,L2/3 IT_1,17274.0,15344.0,12.0,12.0
+Glutamatergic,L2/3 IT,L2/3 IT_10,4040.0,2828.0,12.0,12.0
+Glutamatergic,L2/3 IT,L2/3 IT_12,9479.0,8568.0,12.0,12.0
+Glutamatergic,L2/3 IT,L2/3 IT_13,391.0,419.0,12.0,12.0
+Glutamatergic,L2/3 IT,L2/3 IT_2,7350.0,5335.0,12.0,12.0
+Glutamatergic,L2/3 IT,L2/3 IT_3,104.0,88.0,12.0,12.0
+Glutamatergic,L2/3 IT,L2/3 IT_5,2294.0,2443.0,12.0,12.0
+Glutamatergic,L2/3 IT,L2/3 IT_6,8368.0,7654.0,12.0,12.0
+Glutamatergic,L2/3 IT,L2/3 IT_7,4888.0,5516.0,12.0,12.0
+Glutamatergic,L2/3 IT,L2/3 IT_8,5231.0,3126.0,12.0,12.0
+Glutamatergic,L4 IT,L4 IT_1,5527.0,6752.0,12.0,12.0
+Glutamatergic,L4 IT,L4 IT_2,7871.0,6126.0,12.0,12.0
+Glutamatergic,L4 IT,L4 IT_3,3473.0,3196.0,12.0,12.0
+Glutamatergic,L4 IT,L4 IT_4,1386.0,959.0,12.0,12.0
+Glutamatergic,L5 ET,L5 ET_1,3052.0,2569.0,12.0,12.0
+Glutamatergic,L5 ET,L5 ET_2,1496.0,992.0,12.0,12.0
+Glutamatergic,L5 IT,L5 IT_1,876.0,1243.0,12.0,12.0
+Glutamatergic,L5 IT,L5 IT_2,3216.0,3663.0,12.0,12.0
+Glutamatergic,L5 IT,L5 IT_3,240.0,262.0,12.0,12.0
+Glutamatergic,L5 IT,L5 IT_5,5674.0,6008.0,12.0,12.0
+Glutamatergic,L5 IT,L5 IT_6,9920.0,7503.0,12.0,12.0
+Glutamatergic,L5 IT,L5 IT_7,5236.0,3872.0,12.0,12.0
+Glutamatergic,L5/6 NP,L5/6 NP_1,663.0,689.0,12.0,12.0
+Glutamatergic,L5/6 NP,L5/6 NP_2,530.0,640.0,12.0,12.0
+Glutamatergic,L5/6 NP,L5/6 NP_3,311.0,584.0,12.0,12.0
+Glutamatergic,L5/6 NP,L5/6 NP_4,1007.0,919.0,12.0,12.0
+Glutamatergic,L5/6 NP,L5/6 NP_6,462.0,526.0,12.0,12.0
+Glutamatergic,L6 CT,L6 CT_1,126.0,357.0,11.0,11.0
+Glutamatergic,L6 CT,L6 CT_2,1091.0,1315.0,12.0,12.0
+Glutamatergic,L6 CT,L6 CT_3,1200.0,1114.0,12.0,12.0
+Glutamatergic,L6 CT,L6 CT_4,1282.0,2091.0,12.0,12.0
+Glutamatergic,L6 IT,L6 IT_1,1803.0,2629.0,12.0,12.0
+Glutamatergic,L6 IT,L6 IT_2,7655.0,8196.0,12.0,12.0
+Glutamatergic,L6 IT Car3,L6 IT Car3_1,780.0,1327.0,12.0,12.0
+Glutamatergic,L6 IT Car3,L6 IT Car3_2,796.0,786.0,12.0,12.0
+Glutamatergic,L6 IT Car3,L6 IT Car3_3,719.0,769.0,12.0,12.0
+Glutamatergic,L6b,L6b_1,15.0,55.0,9.0,12.0
+Glutamatergic,L6b,L6b_2,145.0,291.0,12.0,11.0
+Glutamatergic,L6b,L6b_3,259.0,276.0,11.0,11.0
+Glutamatergic,L6b,L6b_4,58.0,203.0,9.0,11.0
+Glutamatergic,L6b,L6b_5,318.0,787.0,11.0,12.0
+Glutamatergic,L6b,L6b_6,2066.0,2394.0,12.0,11.0
