@@ -27,7 +27,6 @@ from scz_celltype_enrichment.plotting import (
     plot_sst_pvalues_by_layer,
     plot_upper_layer_enrichment,
     plot_shared_vs_unique,
-    plot_conditional_results,
     plot_hcn1_sag_relationship,
     plot_sst_layer_ephys,
 )
@@ -55,13 +54,6 @@ def main():
     )
 
     # Figure 2: Conditional analysis
-    cond_path = TABLES_DIR / "independent_supertypes_conditional.csv"
-    if cond_path.exists():
-        print("\n2. Conditional analysis...")
-        conditional = pd.read_csv(str(cond_path))
-        plot_conditional_results(
-            conditional, FIGURES_DIR / "conditional_analysis_results.png"
-        )
 
     # Figure 3: Shared vs unique
     jaccard_path = TABLES_DIR / "jaccard_similarity.csv"

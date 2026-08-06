@@ -8,7 +8,6 @@ The full pipeline consists of 13 scripts in `scripts/`, run via `run_all.py`:
 |--------|-------------|
 | **01** `compute_specificity.py` | Compute cell-type specificity from SEA-AD snRNA-seq |
 | **02** `magma_enrichment.py` | MAGMA-style gene property analysis (SCZ GWAS × specificity) |
-| **03** `conditional_analysis.py` | Forward selection for independently enriched types |
 | **04** `gene_drivers.py` | Identify genes driving enrichment per cell type |
 | **05** `spatial_layer_analysis.py` | SST layer stratification via spatial transcriptomics |
 | **06** `gene_ephys_correlations.py` | Gene-electrophysiology correlations (patch-seq) |
@@ -192,47 +191,6 @@ signed_MAGMA_Z = sign(lead_SNP_BETA) x |MAGMA_Z|
 ```
 
 This gives a continuous metric where large positive values = strong risk signal, large negative = strong protective signal. But it still inherits the lead-SNP limitations, and MAGMA's Z-statistic is fundamentally non-directional (it tests association strength, not direction).
-
-### Approach C: S-PrediXcan (most rigorous, used as primary)
-
-S-PrediXcan asks: **"If your genetics cause higher expression of this gene in brain cortex, does that make you more or less likely to get SCZ?"**
-
-#### How it works
-
-**Step 1** (done once, from GTEx reference): Train a model predicting each gene's expression from nearby SNPs:
-```
-Predicted expression of Gene X = w1*SNP1 + w2*SNP2 + ...
-```
-These weights (w) capture the cis-eQTL architecture — which SNPs affect expression, and by how much. Models come from GTEx v8 brain tissue (MASHR fine-mapped models, ~1-5 SNPs per gene).
-
-**Step 2** (using GWAS): Combine eQTL weights with GWAS z-scores without needing individual data:
-```
-z_gene = (w' * z_gwas) / sqrt(w' * Sigma * w)
-```
-where Sigma is the LD covariance matrix between the SNPs.
-
-This is mathematically equivalent to: "predict each person's expression from their genotype, then test whether predicted expression correlates with SCZ status."
-
-#### Interpretation
-- **z > 0**: Genetically predicted *upregulation* increases SCZ risk
-- **z < 0**: Genetically predicted *upregulation* is protective (i.e., *downregulation* increases risk)
-
-#### Why this is better
-S-PrediXcan explicitly models the **expression-mediated** causal pathway (SNPs -> expression -> disease), rather than just testing proximity (SNPs near gene -> disease). The direction is biologically interpretable: it tells you whether turning a gene *up* or *down* matters for disease.
-
-#### Implementation
-We ran S-PrediXcan for two GTEx brain tissues:
-- **Brain_Cortex**: 12,086 genes tested, 5,480 FDR-significant
-- **Brain_Frontal_Cortex_BA9**: 11,794 genes tested, 5,389 FDR-significant
-- Cross-tissue correlation: Spearman rho = 0.69
-
-The GTEx v8 MASHR prediction models were downloaded from Zenodo. We wrote a custom vectorized implementation because the official MetaXcan software had compatibility issues.
-
-#### Validation
-C4A (complement component 4A) shows z = +26 (upregulation -> risk), consistent with the landmark finding (Sekar et al. 2016) that increased C4A copy number / expression increases SCZ risk through excessive synaptic pruning.
-
-#### Limitation
-Not all genes have cortical eQTL models. Key genes like HCN1, TCF4, SST, and BCL11B are absent — their expression variation may be driven by trans-regulation, cell-type-specific eQTLs diluted in bulk tissue, or low expression heritability. For these genes, we fall back to the lead-SNP BETA approach.
 
 ### Integration in the volcano plot
 

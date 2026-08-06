@@ -33,7 +33,6 @@ SCRIPTS_DIR = Path(__file__).parent
 CORE_STEPS = [
     ("01_compute_specificity.py", "Compute cell-type specificity"),
     ("02_magma_enrichment.py", "MAGMA-style gene property analysis"),
-    ("03_conditional_analysis.py", "Conditional analysis / forward selection"),
     ("04_gene_drivers.py", "Gene driver identification"),
     ("05_spatial_layer_analysis.py", "Spatial layer-stratified SST analysis"),
     ("06_gene_ephys_correlations.py", "Gene-electrophysiology correlations"),

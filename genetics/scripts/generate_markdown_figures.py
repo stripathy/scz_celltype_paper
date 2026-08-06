@@ -615,7 +615,6 @@ def main():
     print(f"\nDone. All figures in: {out_dir}")
     print("\nFull figure list for the markdown:")
     print("  1. fig1_seaad_manhattan.png")
-    print("  2. conditional_analysis_results.png (existing)")
     print("  3. gene_driver_scatter_Sst_2.png (existing)")
     print("  4. rbh_combined_taxonomy_top_enrichments.png (existing)")
     print("  5. fig4_sst_rbh_depth.png (NEW — RBH combined SST + depth)")

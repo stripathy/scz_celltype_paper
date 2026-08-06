@@ -39,7 +39,6 @@ python scripts/run_all.py --all    # Run full pipeline (steps 01-13)
 |------|--------|-------------|------------|
 | 01 | `01_compute_specificity.py` | Cell-type specificity from SEA-AD snRNA-seq (column-normalize, then row-normalize) | Specificity matrix (genes × 137 types) |
 | 02 | `02_magma_enrichment.py` | MAGMA-style OLS: `GWAS_Z ~ specificity + log(gene_size) + log(n_snps) + log(N)` | Enrichment p-values per type |
-| 03 | `03_conditional_analysis.py` | Forward selection for independently enriched types | 18 independent types |
 | 04 | `04_gene_drivers.py` | Gene contribution scores (specificity × GWAS_Z), Jaccard similarity | Driver gene lists per type |
 | 05 | `05_spatial_layer_analysis.py` | SST layer classification using MERFISH depth, upper-layer gene scores | Layer info + spatial gene rankings |
 | 06 | `06_gene_ephys_correlations.py` | Gene–electrophysiology correlations (sag, tau) from patch-seq | Sag/tau gene correlation tables |
@@ -61,7 +60,6 @@ scz_cell_type_enrichment/
 │   │   ├── specificity.py          #   Cell-type specificity computation
 │   │   ├── gwas.py                 #   MAGMA gene-level results loading, ENTREZ mapping
 │   │   ├── celltype.py             #   OLS regression per cell type
-│   │   ├── conditional.py          #   Forward selection algorithm
 │   │   └── gene_drivers.py         #   Gene contribution scores, Jaccard similarity
 │   ├── integration/                # Multi-modal integration
 │   │   ├── spatial.py              #   Cortical depth classification (MERFISH)

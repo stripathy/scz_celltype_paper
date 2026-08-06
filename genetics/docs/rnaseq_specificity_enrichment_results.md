@@ -54,7 +54,6 @@ GWAS_Z ~ specificity + log(gene_size) + log(n_snps) + log(N)
 Forward stepwise selection identified **18 independently enriched supertypes** — cell types carrying non-redundant SCZ signal after conditioning on all previously accepted types.
 
 <p align="center">
-<img src="../results/figures/conditional_analysis_results.png" width="65%" />
 </p>
 
 **Figure 2.** Conditional analysis. Each point is an independently enriched cell type; x-axis shows marginal significance, y-axis shows conditional significance after accounting for all previously accepted types. Points above the p = 0.05 line carry independent signal. Colored by subclass.
@@ -260,7 +259,6 @@ This is speculative but is the simplest model consistent with both the genetic (
 | Figure | File | Description |
 |--------|------|-------------|
 | 1 | `results/figures/manuscript/fig1_seaad_manhattan.png` | SEA-AD Manhattan scatter (137 types, grouped by subclass) |
-| 2 | `results/figures/conditional_analysis_results.png` | Conditional analysis: marginal vs conditional significance |
 | 3 | `results/figures/gene_drivers/gene_driver_scatter_Sst_2.png` | Gene driver scatter for Sst_2 (exemplar) |
 | 4 | `results/figures/rbh_combined_taxonomy_top_enrichments.png` | Top 30 enrichments: SEA-AD vs novel Siletti |
 | 5 | `results/figures/manuscript/fig4_sst_rbh_depth.png` | SST deep dive: RBH combined enrichment + MERFISH depth (3-panel) |
@@ -286,7 +284,6 @@ This is speculative but is the simplest model consistent with both the genetic (
 |--------|-------------|
 | `scripts/01_compute_specificity.py` | Compute cell-type specificity from SEA-AD snRNA-seq |
 | `scripts/02_magma_enrichment.py` | MAGMA-style gene property analysis |
-| `scripts/03_conditional_analysis.py` | Forward selection for independent types |
 | `scripts/10_combined_taxonomy.py` | Build RBH combined taxonomy and enrichment |
 | `scripts/11_gene_driver_scatter.py` | Gene driver scatter plots |
 | `scripts/13_gwas_vs_composition.py` | GWAS vs case-control composition analysis |
