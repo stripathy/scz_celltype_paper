@@ -2,27 +2,32 @@
 # ===================================================================
 # scz_sst_hcn1_story.R
 #
-# Renders the 7-panel SCZ-cell-type-enrichment / HCN1 / Sst figure.
-# Data are pre-extracted by scripts/figures/export_for_R.py into CSVs
-# in results/figures/r_panels/. This script reads those CSVs, builds
-# each panel with ggplot2, and assembles them with cowplot::plot_grid.
+# Renders Figure 4: the 10-panel SCZ-genetics / HCN1 / Sst figure.
+# Data are pre-extracted by scripts/figures/export_for_R.py and
+# export_fig4_new_panels.py into CSVs in results/figures/r_panels/. This script
+# reads those CSVs and builds each panel with ggplot2; fig4_assemble.R does the
+# final layout via a single build_figure4() call.
 #
-# Panel guide (top→bottom, left→right):
-#   A  enrichment_landscape    SCZ enrichment across 137 SEA-AD supertypes
-#   B  genetics_vs_depletion   Genetic risk × SCZ cell-abundance depletion
-#   C  hcn1_vs_scz_plot        HCN1 expression × SCZ enrichment (Sst only)
-#   D  hcn1_locus_plot         HCN1 locus zoom + gene track (hg38)
-#   E  hcn1_expression_vs_sag  HCN1 expression × intrinsic sag
-#   F  morphology_plot         Two example Sst-cell morphologies
-#   G  ephys_traces_plot       Voltage responses for the same two cells
+# Shared style (fonts, colours, theme_panel, inset helpers) comes from
+# fig4_style.R, which also styles panels h-j in fig4_new_panels.R.
 #
-# Convergence triangle across panels B, C, E (all on the same 16 Sst
-# supertypes, sharing the SEA-AD fill + depletion-outline encoding):
-#   B: genetics  ↔ compositional depletion
-#   C: HCN1 expression ↔ genetics
-#   E: HCN1 expression ↔ intrinsic sag
-# The gene-level driver-plot for Sst_25 (previous Panel C) moves to a
-# supplementary figure.
+# Panel guide (top->bottom, left->right):
+#   a  genetics_vs_depletion_c  SCZ common-variant enrichment x depletion
+#   b  gene_driver_plot         Sst_25 gene drivers (specificity x MAGMA p)
+#   c  hcn1_locus_plot          HCN1 locus zoom + fine-mapping + gene track
+#   d  hcn1_vs_depletion_c      HCN1 expression x depletion
+#   e  sag_c                    HCN1 expression x patch-seq voltage sag
+#   f  morphology_plot          Two exemplar Sst reconstructions
+#   g  ephys_traces_plot        Voltage responses for the same two cells
+#   h  marker volcano           Depleted vs not-depleted Sst markers
+#   i  CALB1 violin             CALB1 by depletion group
+#   j  AD concordance           SCZ depletion x SEA-AD DLPFC CPS slope
+#
+# Convergence across a, d and e (all on the same 16 Sst supertypes, sharing the
+# SEA-AD fill + depletion-outline encoding): genetics <-> depletion,
+# HCN1 expression <-> depletion, HCN1 expression <-> intrinsic sag.
+#
+# Also writes one supplement: the SCZ enrichment landscape across supertypes.
 # ===================================================================
 
 suppressPackageStartupMessages({
@@ -35,11 +40,37 @@ suppressPackageStartupMessages({
 # ────────────────────────────────────────────────────────────────────
 REPO     <- "/Users/shreejoy/Github/scz_celltype_paper/genetics"
 DATA_DIR <- file.path(REPO, "results", "figures", "r_panels")
-OUT_PNG  <- file.path(REPO, "results", "figures", "scz_sst_hcn1_multipanel_R_v3.png")
-OUT_PDF  <- file.path(REPO, "results", "figures", "scz_sst_hcn1_multipanel_R_v3.pdf")
+FIGDIR   <- file.path(REPO, "results", "figures")
 # Former Panel A (enrichment landscape) is now a standalone supplement.
-OUT_SUPPA_PNG <- file.path(REPO, "results", "figures", "supp_scz_enrichment_landscape_R.png")
-OUT_SUPPA_PDF <- file.path(REPO, "results", "figures", "supp_scz_enrichment_landscape_R.pdf")
+OUT_SUPPA_STEM <- file.path(FIGDIR, "supp_scz_enrichment_landscape_R")
+
+
+# ────────────────────────────────────────────────────────────────────
+# Output helper — every figure is written as PNG (raster preview),
+# PDF (vector, for submission) and SVG (vector, for hand-editing in
+# Illustrator/Inkscape). `stem` is a path WITHOUT an extension.
+# svglite is used for SVG: it needs no X11/cairo and embeds text as
+# real text, so labels stay editable.
+# ────────────────────────────────────────────────────────────────────
+FIG_DPI <- 400
+
+save_figure <- function(plot, stem, width, height, dpi = FIG_DPI) {
+  ggsave(paste0(stem, ".png"), plot, width = width, height = height,
+         dpi = dpi, bg = "white")
+  ggsave(paste0(stem, ".pdf"), plot, width = width, height = height,
+         bg = "white")
+  ggsave(paste0(stem, ".svg"), plot, width = width, height = height,
+         bg = "white", device = svglite::svglite)
+  invisible(paste0(stem, c(".png", ".pdf", ".svg")))
+}
+
+# The panel CSVs are snapshots of upstream analyses, so they can go stale
+# without any error. r_panels/MANIFEST.tsv records the source each one came
+# from; this stops the render if any source has been rerun since.
+source(file.path(dirname(REPO), "shared", "figure_inputs.R"))
+fi_check(DATA_DIR,
+         refresh_cmd = paste("python3 scripts/figures/export_for_R.py  (and/or",
+                             "export_fig4_new_panels.py), then re-run this script"))
 
 read_panel <- function(filename) {
   read_csv(file.path(DATA_DIR, filename), show_col_types = FALSE)
@@ -51,104 +82,26 @@ read_panel <- function(filename) {
 # Sized for a Nature Neuroscience-style double-column figure: 6.5" wide.
 # Text scales proportionally LESS than spatial elements so it stays
 # legible at print scale (~7 pt body, ~12 pt panel labels).
-BASE_FONT_SIZE   <- 7
-PANEL_LABEL_SIZE <- 12
-FIG_WIDTH_IN     <- 6.5
-FIG_HEIGHT_IN    <- 6.36   # extra 0.75 in over the aspect-preserving 5.61;
-                            # the extra height is routed to rows 2/3 (see
-                            # rel_heights in the assembly block) so the middle
-                            # and bottom panels are less vertically crowded.
+# Figure 2 is drawn at 7.1 in wide with 7 pt base text. This figure is drawn on
+# a larger 8.0 in canvas -- which gives the 10 panels more room for labels during
+# layout -- and every text size is Figure 2's value multiplied by 8.0/7.1. Once
+# the figure is scaled to a 7.1 in column, its text matches Figure 2 exactly.
+# Shared aesthetic vocabulary -- font sizes, depletion encoding, theme_panel(),
+# inset_spearman() and friends -- lives in fig4_style.R and is sourced by both
+# this script (panels a-g) and fig4_new_panels.R (panels h-j). The two files
+# previously carried duplicate copies, so a font change applied to one of them
+# silently left the other seven panels at the old size.
+source(file.path(REPO, "scripts", "figures", "fig4_style.R"))
 
-HCN1_COLOR <- "#1565C0"   # Used in C (gene driver callout) and D (gene track)
-
-# Depletion encoding: thick black outline = depleted in SCZ post-mortem at
-# FDR < 0.20; thin grey outline = not depleted. Used in panels B and E.
-DEPLETION_OUTLINE <- c(`Depleted (FDR < 0.20)` = "black",
-                       `Not depleted`         = "grey60")
-DEPLETION_STROKE  <- c(`Depleted (FDR < 0.20)` = 0.7,
-                       `Not depleted`         = 0.2)
-
-# Plain-language axis labels, shared across panels for a consistent vocabulary.
-LAB_GWAS <- expression("SCZ GWAS enrichment ("*-log[10]~italic(P)*")")
-LAB_DEPL <- expression("Cell depletion in SCZ ("*-beta*")")
-LAB_HCN1 <- expression(italic("HCN1")*" expression ("*log[2]*" CP10K+1)")
-
-# ────────────────────────────────────────────────────────────────────
-# Shared theme + helpers
-# ────────────────────────────────────────────────────────────────────
-
-# Common theme. Print-size text, no bold by default (bold reserved for
-# in-panel callouts and panel labels). Drop in via `+ theme_panel()`.
-theme_panel <- function(base_size = BASE_FONT_SIZE) {
-  theme_cowplot(font_size = base_size) +
-    theme(
-      plot.title        = element_blank(),
-      plot.subtitle     = element_blank(),
-      panel.grid.major  = element_line(color = "grey92", linewidth = 0.15),
-      panel.grid.minor  = element_blank(),
-      axis.title        = element_text(size = base_size + 1),
-      axis.text         = element_text(size = base_size - 0.5),
-      axis.line         = element_line(linewidth = 0.3, color = "grey20"),
-      axis.ticks        = element_line(linewidth = 0.25, color = "grey20"),
-      legend.title      = element_text(size = base_size - 0.5),
-      legend.text       = element_text(size = base_size - 1),
-      legend.background = element_rect(fill = alpha("white", 0.85), color = NA),
-      legend.key.size   = unit(0.30, "cm"),
-      plot.margin       = margin(3, 4, 3, 4))
-}
-
-# Add a `depleted_status` factor (with the canonical level order) to a
-# supertype-keyed table, for color/stroke mapping in B and E.
-add_depletion_status <- function(df) {
-  df |> mutate(
-    depleted_status = factor(
-      ifelse(depleted_fdr20, "Depleted (FDR < 0.20)", "Not depleted"),
-      levels = c("Depleted (FDR < 0.20)", "Not depleted")))
-}
-
-# Color and stroke scales for the depletion encoding.
-# show_legend = TRUE produces a clean legend with grey-filled keys; FALSE
-# suppresses the legend (used in panel E to avoid duplicating B's legend).
-depletion_scales <- function(show_legend = TRUE) {
-  color_guide <- if (show_legend) {
-    guide_legend(override.aes = list(
-      shape = 21, fill = "grey85", size = 2.5,
-      stroke = unname(DEPLETION_STROKE)))
-  } else {
-    "none"
-  }
-  list(
-    scale_color_manual(
-      values = DEPLETION_OUTLINE,
-      breaks = names(DEPLETION_OUTLINE),
-      name   = NULL,
-      guide  = color_guide),
-    scale_discrete_manual("stroke",
-      values = DEPLETION_STROKE, guide = "none"))
-}
-
-# Inset Spearman ρ — corner annotation used in B, C, E.
-# Supports all four corners so positive- and negative-slope scatters can
-# each park their annotation in their natural empty corner.
-inset_spearman <- function(rho, p,
-                            corner = c("top-right", "bottom-right",
-                                       "top-left",  "bottom-left"),
-                            size = 6) {
-  corner <- match.arg(corner)
-  xval  <- if (grepl("right",  corner))  Inf else -Inf
-  yval  <- if (grepl("top",    corner))  Inf else -Inf
-  hjust <- if (grepl("right",  corner))  1.05 else -0.05
-  vjust <- if (grepl("top",    corner))  1.5  else -1.0
-  annotate("text", x = xval, y = yval, hjust = hjust, vjust = vjust,
-           label = sprintf("rho == %.2f * ',' ~ italic(p) == %.3g", rho, p),
-           parse = TRUE, size = size, color = "#222")
-}
-
-# Pretty Spearman correlation and its asymptotic p-value
-spearman_rp <- function(x, y) {
-  list(rho = cor(x, y, method = "spearman"),
-       p   = cor.test(x, y, method = "spearman")$p.value)
-}
+# ---- constants specific to this script, not part of the shared vocabulary ----
+FIG_WIDTH_IN  <- 6.5
+FIG_HEIGHT_IN <- 6.36   # extra 0.75 in over the aspect-preserving 5.61; the
+                        # extra height is routed to rows 2/3 so the middle and
+                        # bottom panels are less vertically crowded.
+HCN1_COLOR    <- "#1565C0"   # panel b (gene-driver callout) and c (gene track)
+LAB_HCN1      <- expression(italic("HCN1")*" expression ("*log[2]*" CP10K+1)")
+# Shared axis range so d-x and e-x line up (DEPLETION_LIM comes from fig4_style).
+HCN1_LIM      <- c(1.35, 3.65)
 
 
 # ====================================================================
@@ -263,14 +216,15 @@ build_genetics_vs_depletion <- function(compact = FALSE) {
                 linetype = "dashed", se = TRUE) +
     geom_hline(yintercept = 0, linetype = "dotted", color = "#aaa", linewidth = 0.2) +
     pts +
-    geom_text_repel(aes(label = supertype), size = 2.4,
+    geom_text_repel(aes(label = supertype), size = LBL_GENE,
                     box.padding = 0.25, point.padding = 0.20,
                     max.overlaps = 30, segment.color = "#999",
                     segment.size = 0.2, force = 3, min.segment.length = 0) +
     scale_fill_identity() +
     depletion_scales(show_legend = !compact) +
     (if (!compact) scale_size(range = c(1.2, 3), guide = "none")) +
-    inset_spearman(rp$rho, rp$p, corner = "top-left", size = 2.4) +
+    inset_spearman(rp$rho, rp$p, corner = "top-left", size = LBL_STAT) +
+    coord_cartesian(ylim = DEPLETION_LIM) +
     labs(x = LAB_GWAS, y = LAB_DEPL) +
     theme_panel() +
     (if (compact) theme(legend.position = "none")
@@ -284,41 +238,6 @@ build_genetics_vs_depletion <- function(compact = FALSE) {
 # ====================================================================
 # The direct convergence statement: per-Sst-supertype mean HCN1 expression
 # tracks SCZ genetic enrichment. Same x-axis units as Panel E (log2 CP10K+1)
-# so C and E share a horizontal axis for cross-reference; same y-axis units
-# as Panel A and Panel B so the genetics-axis is consistent across the row.
-# Source CSVs are panel_B (provides SCZ enrichment) + panel_E (HCN1 expr);
-# join on supertype in R rather than duplicating in the Python exporter.
-build_hcn1_vs_scz_plot <- function() {
-  panel_b <- read_panel("panel_B_genetics_vs_depletion.csv")
-  panel_e <- read_panel("panel_E_hcn1_vs_sag.csv")
-
-  df <- panel_b |>
-    select(supertype, scz_neg_log10_p, depleted_fdr20, color, exemplar) |>
-    inner_join(select(panel_e, supertype, HCN1_expr),
-               by = "supertype") |>
-    add_depletion_status() |>
-    mutate(HCN1_expr_log2 = HCN1_expr / log(2))
-
-  rp <- spearman_rp(df$HCN1_expr_log2, df$scz_neg_log10_p)
-
-  ggplot(df, aes(x = scz_neg_log10_p, y = HCN1_expr_log2)) +
-    geom_smooth(method = "lm", formula = y ~ x, color = "#444",
-                fill = "#888", alpha = 0.18, linewidth = 0.3,
-                linetype = "dashed", se = TRUE) +
-    geom_point(aes(fill = color,
-                   color = depleted_status, stroke = depleted_status),
-               shape = 21, size = 2.6, alpha = 0.92) +
-    geom_text_repel(aes(label = supertype), size = 2.4,
-                    box.padding = 0.25, point.padding = 0.20,
-                    max.overlaps = 30, segment.color = "#999",
-                    segment.size = 0.2, force = 3, min.segment.length = 0) +
-    scale_fill_identity() +
-    # Depletion legend suppressed — Panel B carries it for the row.
-    depletion_scales(show_legend = FALSE) +
-    inset_spearman(rp$rho, rp$p, corner = "bottom-right", size = 2.4) +
-    labs(x = LAB_GWAS, y = LAB_HCN1) +
-    theme_panel()
-}
 
 
 # ====================================================================
@@ -329,6 +248,12 @@ build_hcn1_locus_plot <- function() {
   cs      <- read_panel("panel_D_credible_set.csv")
   genes   <- read_panel("panel_D_genes.csv")
   exons   <- read_panel("panel_D_exons.csv")
+
+  # Keep the track focused on HCN1: drop the neighbouring uncharacterised LOC
+  # RNA gene and collapse to a single lane (it was the only other occupant).
+  genes <- genes |> filter(!grepl("^LOC", symbol)) |>
+    mutate(lane = 0L, n_lanes = 1L)
+  exons <- exons |> filter(!grepl("^LOC", symbol)) |> mutate(lane = 0L)
   meta    <- read_panel("panel_D_meta.csv")
 
   # --- top: Manhattan with FINEMAP credible set ---
@@ -471,7 +396,7 @@ build_hcn1_expression_vs_sag <- function(compact = FALSE) {
                 linetype = "dashed",
                 aes(weight = sqrt(n_cells))) +
     pts +
-    geom_text_repel(aes(label = supertype), size = 2.4,
+    geom_text_repel(aes(label = supertype), size = LBL_GENE,
                     box.padding = 0.25, point.padding = 0.20,
                     max.overlaps = 30, segment.color = "#999",
                     segment.size = 0.2, force = 3, min.segment.length = 0) +
@@ -483,7 +408,7 @@ build_hcn1_expression_vs_sag <- function(compact = FALSE) {
       breaks = c(2, 5, 10),
       name = expression(-log[10](italic(P)[MAGMA])))) +
     scale_x_continuous(expand = expansion(mult = c(0.03, 0.03))) +
-    inset_spearman(rp$rho, rp$p, corner = "bottom-right", size = 2.4) +
+    inset_spearman(rp$rho, rp$p, corner = "bottom-right", size = LBL_STAT) +
     labs(x = LAB_HCN1, y = "Sag ratio (Patch-seq)") +
     theme_panel() +
     (if (compact) theme(legend.position = "none")
@@ -514,7 +439,7 @@ build_morphology_plot <- function() {
 
   # Place the two cells side-by-side at common µm scale.
   half_w  <- max(abs(range(c(segs$x0, segs$x1))))
-  x_gap   <- 80
+  x_gap   <- 25
   shifts  <- c(-(half_w + x_gap / 2), +(half_w + x_gap / 2))
   names(shifts) <- meta$supertype[order(meta$cell_order)]
   segs <- segs |> mutate(x0_sh = x0 + shifts[cell],
@@ -525,15 +450,18 @@ build_morphology_plot <- function() {
   cell_tops <- segs |> group_by(cell) |>
     summarise(top_y = min(pmin(y0, y1), na.rm = TRUE)) |>
     rename(supertype = cell)
+  # Both labels sit at a common height in the headroom ABOVE the pia line, so
+  # they cannot collide with the pia/L1-L2/L2-L3/L3-L4 boundaries.
   meta <- meta |> left_join(cell_tops, by = "supertype") |>
-    mutate(label_y = top_y - 90)
+    mutate(label_y = -120)
 
   # Vertical zoom: from pia (with a bit of headroom for "Pia" label) to
   # just below the deepest dendrite + scale-bar room.
   max_y    <- max(segs$y0, segs$y1)
-  y_bottom <- max_y + 320   # bar at +90, label at +180, plus padding
-  y_top    <- -130
-  x_extent <- c(shifts[1] - half_w * 1.40, shifts[2] + half_w * 1.15)
+  y_bottom <- max_y + 70    # scale bar now sits inside the panel (lower left)
+  y_top    <- -260   # headroom for the cell labels, which sit above the
+                     # pia line and above the "Pia" annotation at y = -50
+  x_extent <- c(shifts[1] - half_w * 0.78, shifts[2] + half_w * 0.12)
 
   # Layer-boundary lines (Pia is solid; L1/L2, L2/L3, L3/L4 are dashed).
   layer_lines <- tibble(
@@ -547,11 +475,11 @@ build_morphology_plot <- function() {
   # Layer text positions (LEFT side of panel).
   layer_label_x <- x_extent[1] + diff(x_extent) * 0.02
   layer_labels  <- tibble(
-    text = c("L1", "L2", "L3", "L4+"),
+    text = c("L1", "L2", "L3"),
     y    = c( LAYER_FRACTIONS$L1_L2 / 2,
               (LAYER_FRACTIONS$L1_L2 + LAYER_FRACTIONS$L2_L3) / 2,
-              (LAYER_FRACTIONS$L2_L3 + LAYER_FRACTIONS$L3_L4) / 2,
-              (LAYER_FRACTIONS$L3_L4 + 1) / 2) * CORTEX_THICKNESS_UM)
+              (LAYER_FRACTIONS$L2_L3 + LAYER_FRACTIONS$L3_L4) / 2) *
+             CORTEX_THICKNESS_UM)
 
   ggplot() +
     geom_hline(data = layer_lines,
@@ -566,25 +494,28 @@ build_morphology_plot <- function() {
     # Cell labels (just above each cell's topmost dendrite, colored by supertype).
     geom_text(data = meta,
               aes(x = soma_x_um_sh, y = label_y,
-                  label = paste(supertype, layer, sep = " · "),
+                  label = supertype,
                   color = supertype),
-              size = 2.8, hjust = 0.5, vjust = 1) +
+              size = LBL_CALL, hjust = 0.5, vjust = 0) +
     # Layer text on the LEFT.
     geom_text(data = layer_labels,
               aes(x = layer_label_x, y = y, label = text),
-              color = "#777", size = 2.8, hjust = 0, vjust = 0.5,
+              color = "#777", size = LBL_SMALL, hjust = 0, vjust = 0.5,
               fontface = "italic") +
     annotate("text", x = layer_label_x, y = -50, label = "Pia",
-             color = "#555", size = 2.8, hjust = 0) +
+             color = "#555", size = LBL_SMALL, hjust = 0) +
     # 100 µm scale bar (label offset clearly below the bar so they don't overlap).
     annotate("segment",
              x    = x_extent[1] + diff(x_extent) * 0.05,
              xend = x_extent[1] + diff(x_extent) * 0.05 + 100,
-             y    = max_y + 90, yend = max_y + 90,
+             y    = max_y - 190, yend = max_y - 190,
              linewidth = 0.8) +
+    # vjust = 1 anchors the label's top edge, so with scale_y_reverse() the text
+    # is pushed away from the bar rather than back onto it (it collided once the
+    # base font was raised).
     annotate("text", x = x_extent[1] + diff(x_extent) * 0.05 + 50,
-             y = max_y + 180, label = "100 µm",
-             size = 2.4, hjust = 0.5, vjust = 0) +
+             y = max_y - 150, label = "100 µm",
+             size = LBL_SMALL, hjust = 0.5, vjust = 1) +
     scale_color_manual(values = setNames(meta$color, meta$supertype),
                        guide = "none") +
     scale_linewidth_identity() +
@@ -595,7 +526,7 @@ build_morphology_plot <- function() {
                 clip = "off") +
     theme_void() +
     theme(legend.position = "none",
-          plot.margin = margin(8, 24, 8, 8))
+          plot.margin = margin(8, 10, 8, 22))   # shifted right within its cell
 }
 
 
@@ -612,7 +543,6 @@ build_ephys_traces_plot <- function() {
 
   v_range <- range(traces$v_mV)
   v_pad   <- diff(v_range) * 0.10
-  stim_y  <- v_range[1] - v_pad * 0.4
 
   # Per-trace supertype labels, placed mid-step where the two traces are
   # most separated. Sit ~5 mV above each cell's steady-state V — comfortably
@@ -627,7 +557,7 @@ build_ephys_traces_plot <- function() {
     geom_text(data = trace_labels,
               aes(x = label_t_ms, y = label_v_mV,
                   label = supertype, color = supertype),
-              size = 2.6, hjust = 0.5, vjust = 0,
+              size = LBL_CALL, hjust = 0.5, vjust = 0,
               inherit.aes = FALSE) +
     # Sag annotation on Sst_25: peak (circle) + steady-state (square) +
     # double-headed arrow labeled "Sag".
@@ -646,19 +576,12 @@ build_ephys_traces_plot <- function() {
     geom_text(data = sst25,
               aes(x = V_peak_t_ms + 110, y = (V_peak + V_steady) / 2,
                   label = "Sag"),
-              color = sst25_color, fontface = "bold", size = 2.2,
+              color = sst25_color, fontface = "bold", size = LBL_SMALL,
               hjust = 0, inherit.aes = FALSE) +
-    # Stim bar at the bottom.
-    annotate("segment", x = 0, xend = 1000, y = stim_y, yend = stim_y,
-             linewidth = 0.55) +
-    annotate("segment", x = 0,    xend = 0,    y = stim_y, yend = stim_y + v_pad * 0.2,
-             linewidth = 0.4) +
-    annotate("segment", x = 1000, xend = 1000, y = stim_y, yend = stim_y + v_pad * 0.2,
-             linewidth = 0.4) +
     scale_color_manual(values = setNames(meta$color, meta$supertype),
                        guide = "none") +
-    coord_cartesian(ylim = c(v_range[1] - v_pad * 0.9, v_range[2] + v_pad * 0.1)) +
-    labs(x = "Time (ms, zeroed at step onset)",
+    coord_cartesian(ylim = c(v_range[1] - v_pad * 0.15, v_range[2] + v_pad * 0.1)) +
+    labs(x = "Time (ms)",
          y = "Membrane potential (mV)") +
     theme_panel() +
     theme(legend.position = "none")
@@ -681,8 +604,13 @@ build_gene_driver_plot <- function() {
   lab  <- read_panel("panel_C_top_labels.csv")
   meta <- read_panel("panel_C_meta.csv")
 
-  g_grey <- g |> filter(!is_driver, !is_hcn1)
-  g_red  <- g |> filter(is_driver,  !is_hcn1)
+  # clip="off" (needed so repelled labels may sit outside the panel) also lets
+  # points outside ylim render below the axis -- 11,457 genes fall under
+  # ylim_lo. Restrict the point layers to the displayed range instead.
+  in_view <- function(d) filter(d, neg_log10_p >= meta$ylim_lo,
+                                  neg_log10_p <= meta$ylim_hi)
+  g_grey <- g |> filter(!is_driver, !is_hcn1) |> in_view()
+  g_red  <- g |> filter(is_driver,  !is_hcn1) |> in_view()
   g_hcn1 <- g |> filter(is_hcn1)
   lab_g  <- lab |> filter(!is_hcn1)
 
@@ -697,22 +625,27 @@ build_gene_driver_plot <- function() {
     geom_point(data = g_red,  color = "#d1483d", size = 0.7,  alpha = 0.8) +
     geom_point(data = g_hcn1, fill = HCN1_COLOR, color = "white",
                shape = 21, size = 2.8, stroke = 0.3) +
-    geom_text_repel(data = lab_g, aes(label = symbol), size = 2.1,
+    # The HCN1 marker is drawn in its own layer, so the gene-label repel cannot
+    # see it and parked RBFOX1 underneath it. Carry HCN1 into this layer with an
+    # empty label: it repels as an obstacle but draws nothing.
+    geom_text_repel(data = bind_rows(lab_g,
+                                     transmute(g_hcn1, specificity, neg_log10_p,
+                                               symbol = "")),
+                    aes(label = symbol), size = LBL_GENE,
                     fontface = "italic", color = "#333",
                     box.padding = 0.30, max.overlaps = 40,
                     segment.color = "#bbb", segment.size = 0.2,
                     min.segment.length = 0, force = 4, seed = 1) +
-    geom_text_repel(data = g_hcn1, aes(label = symbol), size = 3.3,
+    geom_text_repel(data = g_hcn1, aes(label = symbol), size = LBL_CALL,
                     fontface = "bold.italic", color = HCN1_COLOR,
                     nudge_y = 3.2, nudge_x = 0.25, box.padding = 0.6,
                     segment.color = HCN1_COLOR, segment.size = 0.4,
                     min.segment.length = 0, seed = 1) +
-    annotate("text", x = meta$xlim_hi, y = GENOME_WIDE_NEG_LOG10P,
-             label = "'Genome-wide' ~ 5 %*% 10^-8", parse = TRUE,
-             hjust = 1, vjust = -0.45, size = 1.9, color = "purple") +
-    annotate("text", x = meta$xlim_hi, y = meta$fdr_neg_log10p_cutoff,
-             label = "MAGMA FDR 0.05", hjust = 1, vjust = -0.45,
-             size = 1.9, color = "#999") +
+    # The two threshold lines carry no in-plot text: there is no empty region to
+    # park it in (the right edge collides with the driver-gene labels, the left
+    # edge sits on the point cloud), and the figure legend already identifies
+    # them -- "horizontal lines, MAGMA FDR 0.05 (grey) and genome-wide
+    # significance (5e-8, purple)". Descriptive text belongs in the legend.
     scale_x_log10(limits = c(meta$xlim_lo, meta$xlim_hi),
                   breaks = c(0.001, 0.003, 0.01, 0.03)) +
     coord_cartesian(ylim = c(meta$ylim_lo, meta$ylim_hi), clip = "off") +
@@ -726,10 +659,7 @@ build_gene_driver_plot <- function() {
 # Assemble & save
 # ====================================================================
 enrichment_landscape    <- build_enrichment_landscape()
-genetics_vs_depletion   <- build_genetics_vs_depletion()
-hcn1_vs_scz_plot        <- build_hcn1_vs_scz_plot()
 hcn1_locus_plot         <- build_hcn1_locus_plot()
-hcn1_expression_vs_sag  <- build_hcn1_expression_vs_sag()
 morphology_plot         <- build_morphology_plot()
 ephys_traces_plot       <- build_ephys_traces_plot()
 
@@ -737,72 +667,15 @@ panel_label_kwargs <- list(
   label_size = PANEL_LABEL_SIZE, label_fontface = "bold",
   label_x = 0.0, label_y = 1.0,  hjust = -0.3, vjust = 1.3)
 
-# Main figure: the former Panel A (enrichment landscape) is moved to a
-# supplement; the remaining six panels relabel A–F across two rows.
-row_ABC <- do.call(plot_grid,
-  c(list(genetics_vs_depletion, hcn1_locus_plot, hcn1_vs_scz_plot,
-         nrow = 1, rel_widths = c(1, 1, 1),
-         labels = c("A", "B", "C")),
-    panel_label_kwargs))
-
-row_DEF <- do.call(plot_grid,
-  c(list(hcn1_expression_vs_sag, morphology_plot, ephys_traces_plot,
-         nrow = 1, rel_widths = c(1, 1, 1),
-         labels = c("D", "E", "F")),
-    panel_label_kwargs))
-
-figure <- plot_grid(row_ABC, row_DEF, ncol = 1, rel_heights = c(1, 1))
-
-MAIN_H <- 4.3   # two panel rows (former Panel A removed to the supplement)
-ggsave(OUT_PNG, figure, width = FIG_WIDTH_IN, height = MAIN_H, dpi = 350, bg = "white")
-ggsave(OUT_PDF, figure, width = FIG_WIDTH_IN, height = MAIN_H, bg = "white")
 
 # Supplement: SCZ enrichment landscape (former Panel A), on its own.
-ggsave(OUT_SUPPA_PNG, enrichment_landscape, width = FIG_WIDTH_IN, height = 2.8,
-       dpi = 350, bg = "white")
-ggsave(OUT_SUPPA_PDF, enrichment_landscape, width = FIG_WIDTH_IN, height = 2.8,
-       bg = "white")
-message(glue("\n→ Saved {OUT_PNG}"))
-message(glue("→ Saved {OUT_PDF}"))
-message(glue("→ Saved {OUT_SUPPA_PNG}  (former Panel A)"))
+save_figure(enrichment_landscape, OUT_SUPPA_STEM, FIG_WIDTH_IN, 2.8)
+message(glue("→ Saved {OUT_SUPPA_STEM}.{{png,pdf,svg}}  (former Panel A)"))
 
 
-# ====================================================================
-# Variant: 7-panel figure that KEEPS the enrichment landscape (A) and
-# restores the Sst_25 gene-driver panel (C). Row 1 = landscape (full width);
-# rows 2-3 = B depletion / C gene-driver / D locus  and  E sag / F morph /
-# G traces. (The v3 six-panel figure above stays as-is.)
-# ====================================================================
+# Panel b of Figure 4. (Built here, where the gene-driver panel was
+# originally introduced for the retired 7-panel variant.)
 gene_driver_plot         <- build_gene_driver_plot()
-# Panel A here shows ALL 137 supertypes (incl. non-neuronal), matching the
-# original 7-panel layout — unlike the v3 supplement, which is neurons-only.
-enrichment_landscape_all <- build_enrichment_landscape(neurons_only = FALSE,
-                                                       dense_labels = TRUE)
-
-row_A_wd <- plot_grid(enrichment_landscape_all,
-  labels = "A", label_size = PANEL_LABEL_SIZE, label_fontface = "bold",
-  label_x = 0.0, label_y = 1.0, hjust = -0.3, vjust = 1.3)
-
-row_BCD_wd <- do.call(plot_grid,
-  c(list(genetics_vs_depletion, gene_driver_plot, hcn1_locus_plot,
-         nrow = 1, rel_widths = c(1, 1, 1), labels = c("B", "C", "D")),
-    panel_label_kwargs))
-
-row_EFG_wd <- do.call(plot_grid,
-  c(list(hcn1_expression_vs_sag, morphology_plot, ephys_traces_plot,
-         nrow = 1, rel_widths = c(1, 1, 1), labels = c("E", "F", "G")),
-    panel_label_kwargs))
-
-figure_wd <- plot_grid(row_A_wd, row_BCD_wd, row_EFG_wd,
-                       ncol = 1, rel_heights = c(0.82, 1, 1))
-
-OUT_WD_PNG <- file.path(REPO, "results", "figures", "scz_sst_hcn1_multipanel_withdriver.png")
-OUT_WD_PDF <- file.path(REPO, "results", "figures", "scz_sst_hcn1_multipanel_withdriver.pdf")
-WD_H <- 2.5 + MAIN_H   # landscape row + the two scatter rows
-ggsave(OUT_WD_PNG, figure_wd, width = FIG_WIDTH_IN, height = WD_H, dpi = 350, bg = "white")
-ggsave(OUT_WD_PDF, figure_wd, width = FIG_WIDTH_IN, height = WD_H, bg = "white")
-message(glue("→ Saved {OUT_WD_PNG}  (7-panel, with gene-driver)"))
-
 
 # ====================================================================
 # Standalone: HCN1 expression vs SCZ Sst depletion (16 Sst supertypes)
@@ -810,7 +683,7 @@ message(glue("→ Saved {OUT_WD_PNG}  (7-panel, with gene-driver)"))
 # Simple Fig-4-style scatter: the more HCN1 a Sst supertype expresses, the
 # more it is depleted in SCZ. x = mean HCN1 expression (log2 CP10K+1) from
 # panel_E; y = compositional depletion (−β) from panel_B; joined on supertype.
-build_hcn1_vs_depletion <- function() {
+build_hcn1_vs_depletion <- function(show_legend = TRUE) {
   panel_b <- read_panel("panel_B_genetics_vs_depletion.csv")
   panel_e <- read_panel("panel_E_hcn1_vs_sag.csv")
 
@@ -830,57 +703,57 @@ build_hcn1_vs_depletion <- function() {
     geom_hline(yintercept = 0, linetype = "dotted", color = "#aaa", linewidth = 0.2) +
     geom_point(aes(fill = color, color = depleted_status, stroke = depleted_status),
                shape = 21, size = 2.8, alpha = 0.92) +
-    geom_text_repel(aes(label = supertype), size = 2.4,
+    geom_text_repel(aes(label = supertype), size = LBL_GENE,
                     box.padding = 0.25, point.padding = 0.20,
                     max.overlaps = 30, segment.color = "#999",
                     segment.size = 0.2, force = 3, min.segment.length = 0) +
     scale_fill_identity() +
-    depletion_scales(show_legend = TRUE) +
-    inset_spearman(rp$rho, rp$p, corner = "top-left", size = 2.6) +
+    depletion_scales(show_legend = show_legend) +
+    inset_spearman(rp$rho, rp$p, corner = "top-left", size = LBL_STAT) +
+    coord_cartesian(xlim = HCN1_LIM, ylim = DEPLETION_LIM) +
     labs(x = LAB_HCN1, y = LAB_DEPL) +
     theme_panel() +
-    theme(legend.position = c(0.98, 0.02),
-          legend.justification = c("right", "bottom"))
+    (if (show_legend)
+       theme(legend.position = c(0.98, 0.02),
+             legend.justification = c("right", "bottom"))
+     else theme(legend.position = "none"))
 }
-
-hcn1_vs_depletion_plot <- build_hcn1_vs_depletion()
-OUT_HD_PNG <- file.path(REPO, "results", "figures", "hcn1_vs_depletion_sst.png")
-OUT_HD_PDF <- file.path(REPO, "results", "figures", "hcn1_vs_depletion_sst.pdf")
-ggsave(OUT_HD_PNG, hcn1_vs_depletion_plot, width = 3.4, height = 3.1, dpi = 350, bg = "white")
-ggsave(OUT_HD_PDF, hcn1_vs_depletion_plot, width = 3.4, height = 3.1, bg = "white")
-message(glue("→ Saved {OUT_HD_PNG}  (HCN1 expr vs Sst depletion)"))
 
 
 # ====================================================================
-# Variant: compact Fig 4 — no enrichment-landscape row; the two scatter
-# panels (depletion↔genetics, sag↔HCN1) get uniform dot size and no legend;
-# the HCN1-expression-vs-depletion scatter is added as the last column of
-# the top row. Bottom row (sag / morphology / traces) unchanged.
+# Compact-form panels a, d and e. `compact = TRUE` drops the in-panel
+# legend and uses a uniform dot size; the depleted/not-depleted outline
+# encoding is identical in every scatter, so it is described once in the
+# figure legend rather than repeated in each panel.
 # ====================================================================
 genetics_vs_depletion_c <- build_genetics_vs_depletion(compact = TRUE)
 sag_c                   <- build_hcn1_expression_vs_sag(compact = TRUE)
+# The depleted/not-depleted outline encoding is identical in every scatter, so
+# it is described once in the figure legend rather than repeated in-panel.
+hcn1_vs_depletion_c     <- build_hcn1_vs_depletion(show_legend = FALSE)
 
-# Top row = the genetic case (cell-type → gene → variant); bottom row = HCN1's
-# functional consequences (depletion, sag) grounded in exemplar cells. D and E
-# sit adjacent and share the HCN1-expression x-axis.
-row_top_c <- do.call(plot_grid,
-  c(list(genetics_vs_depletion_c, gene_driver_plot, hcn1_locus_plot,
-         nrow = 1, rel_widths = c(1, 1, 1),
-         labels = c("A", "B", "C")),
-    panel_label_kwargs))
 
-row_bot_c <- do.call(plot_grid,
-  c(list(hcn1_vs_depletion_plot, sag_c, morphology_plot, ephys_traces_plot,
-         nrow = 1, rel_widths = c(1, 1, 1, 1),
-         labels = c("D", "E", "F", "G")),
-    panel_label_kwargs))
+# ====================================================================
+# Variant: full Fig 4 — the compact layout plus a third row that
+# characterises the vulnerable population molecularly (marker volcano,
+# CALB1) and shows the same Sst supertypes decline in Alzheimer's disease.
+# Builders are shared with the standalone renderer via fig4_new_panels.R.
+# ====================================================================
+source(file.path(REPO, "scripts", "figures", "fig4_new_panels.R"))
+source(file.path(REPO, "scripts", "figures", "fig4_assemble.R"))
 
-figure_c <- plot_grid(row_top_c, row_bot_c, ncol = 1, rel_heights = c(1, 1))
+figure_full <- build_figure4(list(
+  a = genetics_vs_depletion_c,             # SCZ GWAS enrichment vs depletion
+  b = gene_driver_plot,                    # Sst_25 gene drivers
+  c = hcn1_locus_plot,                     # HCN1 locus zoom + fine-mapping
+  d = hcn1_vs_depletion_c,                 # HCN1 expression vs depletion
+  e = sag_c,                               # HCN1 expression vs patch-seq sag
+  f = morphology_plot,                     # exemplar reconstructions
+  g = ephys_traces_plot,                   # exemplar voltage traces
+  h = build_marker_volcano(),              # depleted vs not-depleted markers
+  i = build_violin("CALB1"),               # CALB1 by depletion group
+  j = build_ad_concordance(show_legend = FALSE)))   # SCZ vs AD (DLPFC)
 
-OUT_C_PNG <- file.path(REPO, "results", "figures", "scz_sst_hcn1_multipanel_compact.png")
-OUT_C_PDF <- file.path(REPO, "results", "figures", "scz_sst_hcn1_multipanel_compact.pdf")
-C_W <- 8.0    # slightly wider than the 6.5" default: the top row now has 4 panels
-C_H <- 4.5
-ggsave(OUT_C_PNG, figure_c, width = C_W, height = C_H, dpi = 350, bg = "white")
-ggsave(OUT_C_PDF, figure_c, width = C_W, height = C_H, bg = "white")
-message(glue("→ Saved {OUT_C_PNG}  (compact: no landscape, +HCN1-vs-depletion)"))
+OUT_FULL_STEM <- file.path(FIGDIR, "scz_sst_hcn1_figure4")
+render_figure4(figure_full, OUT_FULL_STEM)
+message(glue("\u2192 Saved {OUT_FULL_STEM}.{{png,pdf,svg}}  (Figure 4, 10 panels)"))

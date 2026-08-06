@@ -42,7 +42,13 @@ ENRICH_REPO   = Path("/Users/shreejoy/Github/scz_cell_type_enrichment")
 INTERM        = ENRICH_REPO / "results" / "intermediates"   # 43M mean-expr (panel E); 287M specificity (panel C, unused)
 RAW_GWAS_DIR  = ENRICH_REPO / "data" / "gwas"               # 229M PGC3 sumstats (panel D locus)
 MAGMA_REPO    = ENRICH_REPO / "linking_cell_types_to_brain_phenotypes"  # MAGMA out + gene.loc (panel C, unused)
-PATCHSEQ_REPO = Path("/Users/shreejoy/Github/human_int_patch_seq")      # NWB traces + SWC morphology (panels F/G)
+PATCHSEQ_REPO = Path("/Users/shreejoy/Github/human_int_patch_seq")      # patchseq_builder code (parse_swc, orientation)
+# The four raw files panels F/G need (2 SWC + 2 NWB, 54 MB) are held in the
+# repo so those panels reproduce without the patch-seq repo checked out.
+# Falls back to the upstream repo if the in-repo copies are absent.
+PATCHSEQ_DATA = DATA / "patchseq"
+if not PATCHSEQ_DATA.exists():
+    PATCHSEQ_DATA = PATCHSEQ_REPO / "data"                              # swc/ and nwb/ differ upstream; see data/patchseq/README.md
 
 # ────────────────────────────────────────────────────────────────────
 # Common: SEA-AD supertype colors
@@ -474,7 +480,10 @@ print(f"  → {len(df)} SNPs; {len(genes_df)} genes ({len(exon_df)} exon segment
 # ────────────────────────────────────────────────────────────────────
 print("Panel E …")
 ephys = pd.read_csv(TABLES / "sst_supertype_ephys_summary.csv")
-exp = pd.read_csv(INTERM / "seaad_supertype_mean_expression.csv", index_col=0)
+# Ported in-repo (Sst slice of the SEA-AD reference mean-expression matrix)
+# so Figure 4 is reproducible without the external enrichment repo.
+exp = pd.read_csv(REPO / "results" / "intermediates" /
+                  "seaad_sst_supertype_mean_expression.csv", index_col=0)
 hcn1_exp = exp.loc["HCN1"]
 ephys["HCN1_expr"] = ephys.supertype.map(hcn1_exp.to_dict())
 df_E = ephys.dropna(subset=["HCN1_expr", "mean_sag"]).copy()
@@ -499,10 +508,10 @@ from patchseq_builder.morphology.orientation import INVERTED_SPECIMEN_IDS, flip_
 
 MORPH_CELLS = [
     dict(specimen_id=819770858, supertype="Sst_25", layer="L2",
-         swc_path="/Users/shreejoy/Github/human_int_patch_seq/data/morphology/swc/819770858_upright.swc",
+         swc_path=str(PATCHSEQ_DATA / "swc" / "819770858_upright.swc"),
          pia_dist_um=405.610339, color=SEAAD_COLORS["Sst_25"]),
     dict(specimen_id=758996755, supertype="Sst_5", layer="L4",
-         swc_path="/Users/shreejoy/Github/human_int_patch_seq/data/morphology/swc/758996755_upright.swc",
+         swc_path=str(PATCHSEQ_DATA / "swc" / "758996755_upright.swc"),
          pia_dist_um=1500.0, color=SEAAD_COLORS["Sst_5"]),
 ]
 all_segments = []
@@ -554,10 +563,10 @@ from pynwb import NWBHDF5IO
 TRACES_CELLS = [
     dict(specimen_id=819770858, supertype="Sst_25", layer="L2",
          sag=0.564, color=SEAAD_COLORS["Sst_25"], target_pa=-100,
-         nwb_path="/Users/shreejoy/Github/human_int_patch_seq/data/nwb_cache/819770858.nwb"),
+         nwb_path=str(PATCHSEQ_DATA / "nwb" / "819770858.nwb")),
     dict(specimen_id=758996755, supertype="Sst_5", layer="L4",
          sag=0.00196, color=SEAAD_COLORS["Sst_5"], target_pa=-30,
-         nwb_path="/Users/shreejoy/Github/human_int_patch_seq/data/nwb_cache/758996755.nwb"),
+         nwb_path=str(PATCHSEQ_DATA / "nwb" / "758996755.nwb")),
 ]
 
 def best_hyperpol_sweep(nwb_path, target_pa, amp_tol=25):
@@ -639,3 +648,9 @@ print(f"  → {sum(len(t) for t in all_traces)} samples across {len(trace_meta)}
 
 print(f"\nAll CSVs written to: {OUT}")
 print(f"Files: {sorted([f.name for f in OUT.glob('*.csv')])}")
+
+# Record which upstream table each panel CSV came from, so the R renderer stops
+# rather than drawing stale numbers. Source map: r_panels_provenance.py.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from r_panels_provenance import record as _record_provenance
+_record_provenance(OUT)
