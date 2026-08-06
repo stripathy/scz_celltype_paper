@@ -20,7 +20,7 @@ Restricts to neuronal (Glutamatergic + GABAergic) cortical cells present in both
 platforms. Supertypes too rare to analyse in Xenium are dropped (see SM1).
 
 Outputs to output/depth_platform/:
-  supertype_depth_platform.csv          per-cell (subsampled for plotting)
+  supertype_depth_platform.csv.gz       per-cell (subsampled for plotting)
   supertype_depth_platform_summary.csv  per-supertype medians/IQR/n on ALL cells
 """
 import os, sys
@@ -107,6 +107,6 @@ plot = (df.groupby(["supertype", "platform"], group_keys=False).apply(cap)
 # gzipped: ~20 MB of per-cell depth compresses to ~3 MB, small enough to commit so
 # the figure regenerates from a clean clone. readr/pandas both handle .gz natively.
 plot.to_csv(os.path.join(OUT, "supertype_depth_platform.csv.gz"), index=False)
-print(f"\nsaved supertype_depth_platform.csv: {len(plot):,} cells "
+print(f"\nsaved supertype_depth_platform.csv.gz: {len(plot):,} cells "
       f"(capped at {MAX_PER_CELL_GROUP:,} per supertype x platform)")
 print(f"saved supertype_depth_platform_summary.csv: {len(wide)} supertypes")

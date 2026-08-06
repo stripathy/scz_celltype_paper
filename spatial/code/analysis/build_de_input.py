@@ -102,6 +102,23 @@ def main():
               f"(donors/type: median {int(n_donor.median())}, min {int(n_donor.min())})")
         print(f"  -> pseudobulk_{lvl}.csv ({len(long):,} rows) + pseudobulk_{lvl}_samples.csv")
 
+    # Record which h5ads these pseudobulks came from — the same guard the
+    # crumblr inputs carry. Without it, a rerun of the upstream objects leaves
+    # the DE results silently orphaned from their input, which is exactly what
+    # happened between 2026-06-04 and the 2026-04-01 revert.
+    sys.path.insert(0, os.path.join(os.path.dirname(BASE_DIR), "scz_celltype_paper", "shared"))
+    try:
+        from figure_inputs import write_manifest
+        outs = {f"pseudobulk_{lvl}.csv": list(h5ads) for lvl, _ in LEVELS}
+        outs.update({f"pseudobulk_{lvl}_samples.csv": list(h5ads) for lvl, _ in LEVELS})
+        outs = {k: v for k, v in outs.items() if os.path.exists(os.path.join(OUT_DIR, k))}
+        p = write_manifest(OUT_DIR, outs,
+                           {k: "per-donor per-cell-type pseudobulk (cortical, corr_qc_pass)"
+                            for k in outs}, cheap=True)
+        print(f"  provenance -> {p} ({len(h5ads)} source h5ads)")
+    except ImportError:
+        print("  (shared/figure_inputs.py not importable; skipping provenance)")
+
     print(f"\nDone in {time.time()-t0:.0f}s")
 
 

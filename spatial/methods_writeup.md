@@ -307,7 +307,18 @@ Full depth profile comparisons (proportion vs depth curves for all subclasses) s
 
 ### 6.4 Classifier validation summary
 
-The correlation classifier (step 02b) achieves r = 0.81 against MERFISH proportions (Controls only), compared to r = 0.73 for Harmony-based integration. Critically, Harmony misclassified non-neuronal types into GABAergic categories (e.g., VLMC classified as OPC 82% of the time) and inflated Sst proportions to 12.1% vs the expected 2.5%.
+The correlation classifier (step 02b) achieves r = 0.80 against MERFISH proportions (Controls only), compared to r = 0.73 for Harmony-based integration. Critically, Harmony misclassified non-neuronal types into GABAergic categories (e.g., VLMC classified as Sst 56% of the time) and inflated Sst proportions to 12.1% vs the expected 2.5%.
+
+### 6.5 Panel resolvability: information ceiling (snRNA panel vs transcriptome)
+
+To separate *"the panel lacks the genes"* from *"the cell types are intrinsically hard to tell apart,"* we benchmarked how well each cell type can be classified from the 300 panel genes alone versus the full transcriptome — holding the classifier (nearest-centroid Pearson correlation) and validation (leave-one-donor-out CV on the SEA-AD neurotypical snRNA reference, 137,303 nuclei, 5 donors) fixed, and varying only the gene set.
+
+Subclass identity is **panel-sufficient**: median F1 0.96 (panel) vs 0.99 (transcriptome), with 15/23 subclasses at ceiling on the panel (F1 ≥ 0.95; Lamp5 Lhx6 excluded as too rare in Xenium) and all non-neuronal types essentially perfect. The only material panel deficits are the rare interneuron subclasses Sst Chodl (0.45 → 0.95) and Pax6 (0.70 → 0.88), whose discriminating genes lie off-panel. Sst supertype identity is **only partially resolved** by the panel (median F1 0.62 vs 0.88), but the high transcriptome ceiling shows these subtypes are genuinely separable — the gap reflects panel coverage, not biological continuity. Sst_25 is the best-resolved Sst supertype on the panel (F1 0.81, precision 0.91) and lies closest to its transcriptome ceiling.
+
+The snRNA proxy does not flatter the panel through read depth: Xenium captures comparable-or-greater counts per cell than snRNA over these curated genes (median 871 vs 482 transcripts/cell across the 300 panel genes), so the reported F1 is a near-upper-bound whose only unmodeled gap is Xenium's spatial spillover. An exploratory ambient-spillover model left subclass F1 ≥ 0.91 and Sst_25 the most robust Sst supertype even at 20% contamination, so spillover does not qualitatively change this picture.
+
+![Panel resolvability](../manuscript/figures/supplementary/S02_xenium_celltype_annotation.png)
+*Figure 16: panels (c) and (e) of Supplementary Figure S2 — cell-type resolvability on the Xenium panel vs the full transcriptome, at subclass and Sst supertype resolution (dumbbell: panel F1 in blue, transcriptome F1 in dark; connector = panel information deficit). Cell types follow the marker dot-plot ordering (subclass: inhibitory → excitatory → non-neuronal; Sst supertypes: pia → white matter by depth). Built by `resolvability_report.py` → `plot_markers_resolvability_combined.R`; full legend in `manuscript/figures/supplementary/README.md`.*
 
 ---
 
@@ -341,10 +352,13 @@ analysis** (cortical, `corr_qc_pass`, `corr_subclass` / `corr_supertype`, all 24
 donors). For each cell type, raw counts are summed across that donor's cells of
 the type into a genes × donors **pseudobulk** matrix (`build_de_input.py`;
 `min_cells = 10` per donor × cell type). edgeR then fits, per cell type
-(`run_de.R`): `DGEList → filterByExpr → calcNormFactors(TMM) →
+(`run_de.R`): `DGEList → gene filter → calcNormFactors(TMM) →
 estimateDisp(robust) → glmQLFit(robust) → glmQLFTest` for the SCZ coefficient,
-design `~ diagnosis + sex + age` (age centred); run at subclass and supertype
-level → `output/de/de_results_{subclass,supertype}.csv`. This is the expression
+design `~ diagnosis + sex + age + PMI` (age and PMI centred), keeping genes
+detected in ≥ 80% of the donors retained for that cell type; run at subclass and
+supertype level → `output/de/de_results_{subclass,supertype}.csv`. Covariates and
+gene filter follow the snRNAseq meta-analysis, matching the crumblr composition
+model, which already covaried PMI. This is the expression
 analogue of the crumblr abundance analysis and provides independent spatial
 replication of the snRNA-seq meta-analysis (the `transcriptomic/` composite —
 forests b/f, CP1K boxplots c/g, and the concordance scatter j). Native-R

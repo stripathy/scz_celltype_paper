@@ -7,9 +7,20 @@
 # Same cell/donor inclusion as crumblr (set in build_de_input.py): cortical
 # cells passing corr_qc_pass, typed by corr_subclass / corr_supertype, 24 donors.
 #
-# Per cell type: DGEList -> filterByExpr -> calcNormFactors(TMM) ->
+# Per cell type: DGEList -> gene filter -> calcNormFactors(TMM) ->
 #   estimateDisp(robust) -> glmQLFit(robust) -> glmQLFTest(coef = dxSCZ),
-#   design ~ diagnosis + sex + age(centered).
+#   design ~ diagnosis + sex + age(centered) + PMI(centered).
+#
+# Covariates and gene filter follow the snRNA-seq meta-analysis methods so the
+# two platforms are described by the same sentence: PMI is a covariate there and
+# in the Xenium crumblr model, and genes are kept when expressed in >= 80% of
+# the donors retained for that cell type (replacing edgeR's filterByExpr).
+# Two snRNA-seq conventions are deliberately NOT adopted, because Xenium is a
+# single 24-section cohort rather than seven pooled datasets:
+#   - the >= 500 cells/donor/cell-type rule would drop 8 of 23 subclasses,
+#     including L6b (1/24 donors reach 500); we keep MIN_CELLS = 10.
+#   - BH across all gene x cell-type pairs is unattainable on a 300-gene panel
+#     (min P = 3.6e-5 x 6,640 pairs = 0.24), so FDR stays within cell type.
 #
 # Usage:  Rscript run_de.R [subclass|supertype]    (default: subclass)
 # Input:  output/de/pseudobulk_{level}.csv  + pseudobulk_{level}_samples.csv
@@ -23,6 +34,7 @@ args  <- commandArgs(trailingOnly = TRUE)
 level <- if (length(args) >= 1) args[1] else "subclass"
 IN    <- "output/de"
 MIN_PER_GROUP <- 3                     # min donors per group for a cell type to be tested
+MIN_DONOR_FRAC <- 0.80                 # gene kept if detected in >= this fraction of retained donors
 
 cat(sprintf("DE level: %s\n", level))
 long <- read_csv(sprintf("%s/pseudobulk_%s.csv", IN, level), show_col_types = FALSE)
@@ -40,17 +52,21 @@ run_ct <- function(ct) {
   mat <- as.matrix(w[, -1]); rownames(mat) <- genes
   sm <- sm[match(colnames(mat), sm$donor), ]
 
-  # design ~ diagnosis + sex + age_c (drop a covariate if constant in this subset)
+  # design ~ diagnosis + sex + age_c + pmi_c (drop a covariate if constant or
+  # unavailable in this subset, mirroring the snRNA-seq handling of missing PMI)
   dx  <- factor(sm$diagnosis, levels = c("Control", "SCZ"))
   terms <- "dx"
   if (length(unique(sm$sex)) > 1) { sex <- factor(sm$sex); terms <- c(terms, "sex") }
   age_c <- sm$age - mean(sm$age)
   if (sd(age_c) > 0) terms <- c(terms, "age_c")
+  pmi_c <- sm$pmi - mean(sm$pmi)
+  if (!any(is.na(pmi_c)) && sd(pmi_c) > 0) terms <- c(terms, "pmi_c")
   design <- model.matrix(as.formula(paste("~", paste(terms, collapse = " + "))))
   if (!"dxSCZ" %in% colnames(design)) return(NULL)
 
   d <- DGEList(counts = mat)
-  keep <- filterByExpr(d, design)
+  # snRNA-seq convention: keep genes detected in >= 80% of the retained donors
+  keep <- rowMeans(mat > 0) >= MIN_DONOR_FRAC
   if (sum(keep) < 5) return(NULL)
   d <- d[keep, , keep.lib.sizes = FALSE]
   d <- calcNormFactors(d, method = "TMM")

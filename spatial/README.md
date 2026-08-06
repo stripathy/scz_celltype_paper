@@ -83,10 +83,13 @@ therefore operate on the *same cells and donors*.
   - `code/analysis/build_de_input.py` — sums raw counts per (donor × cell type)
     into genes × donors pseudobulk matrices at subclass **and** supertype level
     (`min_cells = 10` per pseudobulk).
-  - `code/analysis/run_de.R` — per cell type: `DGEList → filterByExpr →
+  - `code/analysis/run_de.R` — per cell type: `DGEList → gene filter →
     calcNormFactors(TMM) → estimateDisp(robust) → glmQLFit(robust) →
-    glmQLFTest`, design `~ diagnosis + sex + age`; writes
-    `output/de/de_results_{subclass,supertype}.csv`.
+    glmQLFTest`, design `~ diagnosis + sex + age + PMI` (age and PMI centred);
+    a gene is kept when detected in ≥ 80% of the donors retained for that cell
+    type. Both follow the snRNAseq meta-analysis so the two platforms are
+    described by one sentence. Writes `output/de/de_results_{level}_v2.csv` for
+    review, which is swapped onto `de_results_{level}.csv` once checked.
 
 ```bash
 python3 code/analysis/build_de_input.py     # pseudobulk inputs (both levels)
@@ -108,7 +111,7 @@ The initial HANN labels from MapMyCells provide a reasonable starting point, but
 
 ### Depth from spatial neighbors, not expression
 
-Cortical depth is predicted using K=50 spatial neighborhood cell type composition as features, not the 300-gene expression profile directly. At 300 genes, expression-based depth prediction is noisy and overfits to a few marker genes. Neighborhood composition is more robust because it leverages the known laminar organization of cell types — a cell surrounded by L4 IT neurons is almost certainly in layer 4, regardless of its own expression noise. The model (GradientBoostingRegressor trained on SEA-AD MERFISH data) achieves R-squared = 0.90 and MAE = 0.031 on held-out donors.
+Cortical depth is predicted using K=50 spatial neighborhood cell type composition as features, not the 300-gene expression profile directly. At 300 genes, expression-based depth prediction is noisy and overfits to a few marker genes. Neighborhood composition is more robust because it leverages the known laminar organization of cell types — a cell surrounded by L4 IT neurons is almost certainly in layer 4, regardless of its own expression noise. The model (GradientBoostingRegressor trained on SEA-AD MERFISH data) achieves R² = 0.89 and MAE = 0.069 on held-out donors (3 donors held out; train R² = 0.93).
 
 ### BANKSY spatial domains
 

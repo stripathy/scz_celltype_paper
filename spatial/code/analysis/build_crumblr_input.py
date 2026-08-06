@@ -144,8 +144,35 @@ def main():
             print(f"\n  {level_name} ({stratum_label}): {n_samples} donors x "
                   f"{n_types} types -> {os.path.basename(outpath)}")
 
+    record_provenance(h5ad_files)
+
     elapsed = time.time() - t0
     print(f"\nDone in {elapsed:.0f}s")
+
+
+def record_provenance(h5ad_files):
+    """Record which h5ad objects these count tables were built from.
+
+    This is the check that was missing when the objects were rewritten on
+    2026-06-11: the committed crumblr results silently stopped corresponding to
+    the h5ads on disk, and nothing surfaced it until the numbers were chased by
+    hand months later. verify_provenance.py now reports that drift immediately.
+    """
+    sys.path.insert(0, os.path.join(os.path.dirname(BASE_DIR), "scz_celltype_paper", "shared"))
+    try:
+        from figure_inputs import write_manifest
+    except ImportError:
+        print("  (shared/figure_inputs.py not importable; skipping provenance)")
+        return
+    outputs = [f"crumblr_input_{lvl}{st}.csv"
+               for lvl in ("subclass", "supertype")
+               for st in ("", "_neuronal", "_nonneuronal")]
+    sources = {o: list(h5ad_files) for o in outputs
+               if os.path.exists(os.path.join(CRUMBLR_DIR, o))}
+    p = write_manifest(CRUMBLR_DIR, sources,
+                       {o: "per-donor cell-type counts (cortical, corr_qc_pass)"
+                        for o in sources}, cheap=True)
+    print(f"\n  provenance -> {p} ({len(h5ad_files)} source h5ads)")
 
 
 if __name__ == "__main__":

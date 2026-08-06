@@ -8,7 +8,7 @@ depth. Exports a tidy per-cell CSV (donor, dx, class, subclass, supertype, depth
 per-supertype power summary so the R step can filter to supertypes estimable with a
 donor-random-effect model.
 
-Output: output/depth_casecontrol/supertype_depth_casecontrol.csv (+ _counts.csv)
+Output: output/depth_casecontrol/supertype_depth_casecontrol.csv.gz (+ _counts.csv)
 """
 import os, sys
 import numpy as np, pandas as pd
@@ -40,7 +40,7 @@ df = df[["donor", "dx", "class", "subclass", "supertype", "depth"]]
 # gzipped: ~20 MB of per-cell depth compresses to ~4 MB, small enough to commit so
 # the figure regenerates from a clean clone. readr/pandas both handle .gz natively.
 df.to_csv(os.path.join(OUT, "supertype_depth_casecontrol.csv.gz"), index=False)
-print(f"\nsaved supertype_depth_casecontrol.csv: {len(df):,} neuronal cells, "
+print(f"\nsaved supertype_depth_casecontrol.csv.gz: {len(df):,} neuronal cells, "
       f"{df.supertype.nunique()} supertypes, {df.donor.nunique()} donors "
       f"({(df.dx=='Control').sum():,} Control / {(df.dx=='SCZ').sum():,} SCZ cells)")
 

@@ -20,3 +20,14 @@ histology/coordinates
 .DS_Store
 __pycache__/
 *.pyc
+
+# Fig. 4 panels f/g raw patch-seq data: NWB recordings are large binaries kept
+# out of git; the SWC reconstructions are small text and are committed.
+# See genetics/data/patchseq/README.md
+genetics/data/patchseq/nwb/*.nwb
+
+# Superseded panel-K exploration (5.7 MB). Kept on disk as a methods-provenance
+# record of the edgeR-vs-mixed-model comparison and the old exemplar-selection
+# rule, but its tables predate the canonical April+PMI DE — one of them flips
+# PVALB across p = 0.05. Ignored so `git add -A` cannot sweep it into the repo.
+transcriptomic/scratch_panelK/
