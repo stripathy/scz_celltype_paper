@@ -17,11 +17,9 @@ The full pipeline consists of 13 scripts in `scripts/`, run via `run_all.py`:
 | **09** `metaneighbor_integration.py` | MetaNeighbor cross-dataset matching (SEA-AD ↔ Siletti) |
 | **10** `combined_taxonomy.py` | Build RBH combined taxonomy (503 types) |
 | **11** `gene_driver_scatter.py` | Gene driver scatter plots (specificity × GWAS p-value) |
-| **12** `atac_peak_overlap.py` | ATAC-seq peak overlap with FINEMAP credible sets |
 | **13** `gwas_vs_composition.py` | GWAS enrichment vs case-control composition |
 
 Scripts 01–07 form the **core SEA-AD pipeline** (`run_all.py`).
-Scripts 08–13 add the **Siletti integration, ATAC, and composition analyses** (`run_all.py --all`).
 See `docs/combined_taxonomy_approach.md` for methodology on scripts 08–11.
 See `docs/rnaseq_specificity_enrichment_results.md` for RNAseq enrichment results and composition intersection.
 
@@ -31,7 +29,6 @@ This analysis links schizophrenia (SCZ) GWAS genetic risk to specific brain cell
 
 1. **GWAS summary statistics** (PGC3 SCZ, 53K cases / 77K controls)
 2. **snRNA-seq reference** (SEA-AD, 137K cells across 137 supertypes)
-3. **snATAC-seq chromatin accessibility** (SEA-AD, 516K nuclei × 219K peaks)
 4. **Spatial transcriptomics** (MERFISH + Xenium cortical depth estimates)
 5. **Patch-seq electrophysiology** (SST interneuron functional properties)
 6. **Tissue-specific eQTL models** (GTEx v8 MASHR, brain cortex)
@@ -287,38 +284,6 @@ SEA-AD snRNA-seq (137K cells)
     |
     +---> [8] Gene-ephys correlations (patch-seq functional link)
 ```
-
----
-
-## Part 9: ATAC-seq Peak Overlap with Fine-Mapped Variants
-
-### Goal
-Test whether SCZ risk variants preferentially fall in open chromatin of specific cell types, providing an orthogonal (chromatin-based) measure of cell-type enrichment.
-
-### Data
-- **SEA-AD snATAC-seq** (516,389 nuclei × 218,882 peaks, 139 supertypes)
-- **FINEMAP credible sets** (20,591 SNPs across 249 PGC3 SCZ loci with posterior inclusion probabilities)
-
-### Method
-1. **Peak-variant overlap**: For each fine-mapped variant, find ATAC peaks that contain its genomic position
-2. **Per-cell-type accessibility**: For each overlapping peak, compute mean accessibility per supertype from the sparse peak × cell matrix
-3. **PIP-weighted scoring**: Score = Σ(PIP × mean_accessibility) across all overlapping peaks. This weights each variant by its probability of being causal.
-
-### Key Result
-Expression-based enrichment (MAGMA) and chromatin-based enrichment (ATAC) identify **different cell type classes**:
-- **MAGMA (expression)**: GABAergic interneurons (Sst, Pvalb, Lamp5) dominate
-- **ATAC (chromatin)**: Glutamatergic neurons (L5 IT, L2/3 IT, L5 ET) dominate
-
-The two approaches show **near-zero correlation** (Spearman r ≈ 0.09), suggesting SCZ risk variants sit in open chromatin of excitatory neurons but affect genes specifically expressed in inhibitory neurons — consistent with a regulatory model where variants in excitatory neuron enhancers control genes whose products act in interneurons.
-
-### Output
-- `results/tables/atac_pip_weighted_scores.csv` — PIP-weighted ATAC scores per cell type
-- `results/intermediates/atac_finemap_peak_overlaps.csv` — All variant-peak overlaps
-- `results/figures/atac_vs_gwas_manhattan.png` — Side-by-side comparison
-- `results/figures/atac_vs_gwas_enrichment.png` — Scatter of ATAC vs GWAS scores
-
----
-
 ## Part 10: GWAS vs Case-Control Composition
 
 ### Goal

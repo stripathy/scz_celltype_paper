@@ -1,12 +1,18 @@
 # ============================================================================
-# Data — large reference files, GWAS sumstats, ATAC-seq, etc. (140GB+)
+# Data — large reference files, GWAS sumstats, etc. (140GB+)
 # ============================================================================
 data/
 
 # ============================================================================
 # Intermediate results — large matrices, npz files (1.3GB)
+# Exception: the small Sst mean-expression slice + its provenance note are
+# tracked, so Figure 4 is reproducible without the external enrichment repo.
+# (Pattern must be `dir/*`, not `dir/`, or git will not descend to see the
+#  negations below.)
 # ============================================================================
-results/intermediates/
+results/intermediates/*
+!results/intermediates/README.md
+!results/intermediates/seaad_sst_supertype_mean_expression.csv
 
 # ============================================================================
 # S-PrediXcan results (1MB each, can be regenerated)

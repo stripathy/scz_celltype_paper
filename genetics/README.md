@@ -22,7 +22,6 @@ This pipeline tests whether genes specific to particular brain cell types carry 
 | **PGC3 SCZ GWAS** | Gene-level results from 76,755 cases / 243,649 controls (MAGMA) | [Trubetskoy et al. 2022, *Nature*](https://doi.org/10.1038/s41586-022-04434-5) |
 | **SEA-AD MERFISH** | Spatial transcriptomics with cortical depth per cell type (0 = pial, 1 = WM) | [Gabitto et al. 2024](https://doi.org/10.1038/s41593-024-01774-5) |
 | **Siletti whole-brain atlas** | 461 clusters spanning neocortex, hippocampus, thalamus, amygdala, and more | [Siletti et al. 2023, *Science*](https://doi.org/10.1126/science.add7046) |
-| **SEA-AD snATAC-seq** | 516K nuclei, 219K peaks — chromatin accessibility per cell type | [Gabitto et al. 2024](https://doi.org/10.1038/s41593-024-01774-5) |
 | **Patch-seq electrophysiology** | Sag, tau, and other intrinsic properties per transcriptomic type | [Lee & Bhatt Dalley et al.](https://portal.brain-map.org/) |
 | **Case-control snRNA-seq composition** | 7-cohort meta-analysis of cell-type proportion changes in SCZ (crumblr model) | Endresz et al., in prep |
 | **SCZ fine-mapping** | FINEMAP credible sets from PGC3 SCZ GWAS | [Trubetskoy et al. 2022](https://doi.org/10.1038/s41586-022-04434-5) |
@@ -49,7 +48,6 @@ python scripts/run_all.py --all    # Run full pipeline (steps 01-13)
 | 09 | `09_metaneighbor_integration.py` | MetaNeighbor reciprocal best hits: SEA-AD ↔ Siletti matching | 95 matched type pairs |
 | 10 | `10_combined_taxonomy.py` | Build 503-type RBH combined taxonomy + enrichment | Combined enrichment (503 types) |
 | 11 | `11_gene_driver_scatter.py` | Gene driver scatter plots for top enriched types | Scatter figures per type |
-| 12 | `12_atac_peak_overlap.py` | ATAC-seq peak overlap with FINEMAP credible sets | PIP-weighted accessibility scores |
 | 13 | `13_gwas_vs_composition.py` | Correlate GWAS enrichment with case-control composition changes | Correlation statistics + figure |
 
 ## Repository Structure
@@ -102,7 +100,6 @@ The `data/` directory is not tracked in git (140GB+ of reference data). To repro
 | `data/spatial/median_depth_supertype.csv` | <1 MB | Step 05 (cortical depth) |
 | `data/patchseq/*.csv` | <1 MB | Step 06 (electrophysiology) |
 | `data/precomputed_stats.siletti.training.h5` | 8.1 GB | Steps 08–10 (Siletti atlas) — [download from Allen S3](https://allen-brain-cell-atlas.s3.us-west-2.amazonaws.com/mapmycells/WHB-10Xv3/20240831/precomputed_stats.siletti.training.h5) ([browse dir](https://allen-brain-cell-atlas.s3.us-west-2.amazonaws.com/index.html#mapmycells/WHB-10Xv3/20240831/)) |
-| `data/atac/SEAAD_MTG_ATACseq_final-nuclei.2024-12-06.h5ad` | 17 GB | Step 12 (ATAC-seq) |
 | `data/gwas/PGC3_SCZ_wave3...tsv.gz` | 229 MB | Step 13 (SNP-level sumstats) |
 
 The `linking_cell_types_to_brain_phenotypes/` directory is a separate repository: [Integrative-Mental-Health-Lab/linking_cell_types_to_brain_phenotypes](https://github.com/Integrative-Mental-Health-Lab/linking_cell_types_to_brain_phenotypes). Clone it into the project root.

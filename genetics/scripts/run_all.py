@@ -14,12 +14,11 @@ Executes all analysis steps in order:
   09: MetaNeighbor integration (SEA-AD ↔ Siletti, ~10s)
   10: RBH combined taxonomy (~3s)
   11: Gene driver scatter plots (~30s)
-  12: ATAC-seq peak overlap (~5min, needs h5ad)
   13: GWAS vs case-control composition (~1s)
 
 Usage:
     python scripts/run_all.py                # Steps 01-07 (SEA-AD core pipeline)
-    python scripts/run_all.py --all          # Steps 01-13 (includes Siletti, ATAC, composition)
+    python scripts/run_all.py --all          # Steps 01-13 (includes Siletti, composition)
     python scripts/run_all.py --force        # Recompute everything including specificity
     python scripts/run_all.py --from 3       # Start from step 3
     python scripts/run_all.py --only 5       # Run only step 5
@@ -46,7 +45,6 @@ SILETTI_STEPS = [
     ("09_metaneighbor_integration.py", "MetaNeighbor integration (SEA-AD ↔ Siletti)"),
     ("10_combined_taxonomy.py", "RBH combined taxonomy"),
     ("11_gene_driver_scatter.py", "Gene driver scatter plots (top 10 types)"),
-    ("12_atac_peak_overlap.py", "ATAC-seq peak overlap with FINEMAP credible sets"),
     ("13_gwas_vs_composition.py", "GWAS vs case-control composition"),
 ]
 
