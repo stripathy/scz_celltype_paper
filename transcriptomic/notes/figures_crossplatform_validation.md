@@ -118,7 +118,7 @@ project rather than a re-derived p-value. (The two agree closely.)
 Xenium is **never** pooled into the meta-analysis. It is shown only as
 independent replication (the green triangle in 07; the y-axis in 08). This
 preserves the discovery/replication separation — see
-`notes/findings.md` discussion. (An 8-cohort sensitivity pool was explored
+`archive/notes/findings.md` discussion (archived 2026-08-06). (An 8-cohort sensitivity pool was explored
 earlier but is not the primary analysis.)
 
 ### Significance markers (script 07)

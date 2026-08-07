@@ -33,8 +33,9 @@ suppressPackageStartupMessages({
   library(cowplot); library(ggrepel)
 })
 
-INPUT_META   <- "data/DE_genes_all_cells_scz.csv"
-INPUT_XENIUM <- "~/Github/SCZ_Xenium/output/de/de_results_subclass.csv"
+source("scripts/_figure_inputs.R")     # committed snapshots + staleness guard
+INPUT_META   <- fig_input("DE_genes_all_cells_scz.csv")
+INPUT_XENIUM <- fig_input("de_results_subclass.csv")
 FIG_DIR      <- "results"
 
 # snRNA-seq meta FDR threshold. Optional CLI arg (default 0.1). Non-default

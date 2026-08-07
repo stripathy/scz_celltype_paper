@@ -13,14 +13,13 @@
 # ============================================================================
 suppressPackageStartupMessages({library(edgeR); library(dplyr); library(tidyr); library(readr)})
 
-PB  <- path.expand("~/Github/SCZ_Xenium/output/de")
-DE  <- "../spatial/output/de/de_results_subclass.csv"
+source("scripts/_figure_inputs.R")     # committed snapshots + staleness guard
 OUT <- "results/tables"
 PAIRS <- list(c("SST", "Sst"), c("FGFR3", "Astrocyte"), c("PVALB", "Pvalb"))
 
-long <- read_csv(file.path(PB, "pseudobulk_subclass.csv"), show_col_types = FALSE)
-samp <- read_csv(file.path(PB, "pseudobulk_subclass_samples.csv"), show_col_types = FALSE)
-de   <- read_csv(DE, show_col_types = FALSE)
+long <- read_csv(fig_input("pseudobulk_subclass.csv"), show_col_types = FALSE)
+samp <- read_csv(fig_input("pseudobulk_subclass_samples.csv"), show_col_types = FALSE)
+de   <- read_csv(fig_input("de_results_subclass.csv"), show_col_types = FALSE)
 
 expr_rows <- list(); stat_rows <- list()
 for (pr in PAIRS) {

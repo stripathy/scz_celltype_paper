@@ -44,9 +44,10 @@ suppressPackageStartupMessages({
   library(cowplot); library(metafor)
 })
 
-INPUT_COH    <- "data/meta_results_cohorts_subclass.csv"
-INPUT_META   <- "data/DE_genes_all_cells_scz.csv"
-INPUT_XENIUM <- "~/Github/SCZ_Xenium/output/de/de_results_subclass.csv"
+source("scripts/_figure_inputs.R")     # committed snapshots + staleness guard
+INPUT_COH    <- fig_input("meta_results_cohorts_subclass_forest.csv")
+INPUT_META   <- fig_input("DE_genes_all_cells_scz.csv")
+INPUT_XENIUM <- fig_input("de_results_subclass.csv")
 FIG_DIR      <- "results"
 
 COL_POOL   <- "black"      # meta-analysis diamond

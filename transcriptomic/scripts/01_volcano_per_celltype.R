@@ -17,7 +17,8 @@ args <- commandArgs(trailingOnly = TRUE)
 CELL_TYPE     <- if (length(args) >= 1) args[[1]] else "Sst"
 FORCE_LABEL   <- if (length(args) >= 2) strsplit(args[[2]], ",")[[1]] else character(0)
 
-INPUT         <- "data/DE_genes_all_cells_scz.csv"
+source("scripts/_figure_inputs.R")     # committed snapshots + staleness guard
+INPUT         <- fig_input("DE_genes_all_cells_scz.csv")
 PADJ_SIG      <- 0.1
 PADJ_STRICT   <- 0.05
 slug          <- gsub("[^A-Za-z0-9]+", "_", CELL_TYPE)

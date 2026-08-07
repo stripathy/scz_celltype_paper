@@ -24,15 +24,17 @@ suppressPackageStartupMessages({
   library(cowplot); library(scales)
 })
 
+source("scripts/_figure_inputs.R")     # committed snapshots + staleness guard
+
 # --- y: meta DE-gene count (FDR<0.10) per subclass ---
-m <- read_csv("data/DE_genes_all_cells_scz.csv", show_col_types = FALSE)
+m <- read_csv(fig_input("DE_genes_all_cells_scz.csv"), show_col_types = FALSE)
 nde <- m |> group_by(cell_type) |>
   summarise(n_de = sum(padj < 0.10, na.rm = TRUE), n_tested = dplyr::n(), .groups = "drop")
 
 # --- x: cell-type proportion (XENIUM, mean per-donor) — swap this block for snRNA later ---
 ct_map <- c("Astrocyte"="Astro","L2/3 IT"="L2_3 IT","L5/6 NP"="L5_6 NP",
             "Microglia-PVM"="Micro-PVM","Oligodendrocyte"="Oligo","Endothelial"="Endo")
-cr <- read_csv("../spatial/output/crumblr/crumblr_input_subclass_corr.csv", show_col_types = FALSE)
+cr <- read_csv(fig_input("crumblr_input_subclass_corr.csv"), show_col_types = FALSE)
 prop <- cr |>
   mutate(p = count / total,
          cell_type = ifelse(celltype %in% names(ct_map), ct_map[celltype], celltype)) |>
