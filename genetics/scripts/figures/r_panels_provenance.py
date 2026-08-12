@@ -31,14 +31,28 @@ REFGENE = GEN / "data" / "gwas" / "ncbiRefSeq_hg38.txt.gz"
 FINEMAP = GEN / "data" / "fine_mapping" / "pgc3_finemap_credible_sets.csv"
 
 PATCHSEQ = GEN / "data" / "patchseq"
-SWC = [PATCHSEQ / "swc" / f"{i}_upright.swc" for i in ("819770858", "758996755")]
-NWB = [PATCHSEQ / "nwb" / f"{i}.nwb" for i in ("819770858", "758996755")]
+# Five exemplars since the 2026-08 rebuild: three depleted supertypes and two
+# not-depleted, ordered by soma depth. The three added cells were pulled from
+# DANDI 000636 / the patch-seq repo into data/patchseq so the chain no longer
+# depends on anything outside this repo.
+EXEMPLARS = ("819770858", "907585117", "1037461069", "758996755", "797048104")
+SWC = [PATCHSEQ / "swc" / f"{i}_upright.swc" for i in EXEMPLARS]
+NWB = [PATCHSEQ / "nwb" / f"{i}.nwb" for i in EXEMPLARS]
 
 XEN = Path("/Users/shreejoy/Github/SCZ_Xenium")
 REF_H5AD = Path("/Users/shreejoy/Github/shared_data/nicole_sea_ad_snrnaseq_reference.h5ad")
 SCZ_CRUMBLR = PAPER / "spatial/data/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv"
 AD_CRUMBLR = PAPER / "crossdisorder/results/crumblr_results_supertype_neurons.csv"
 
+# Enrichment now comes from MAGMA run natively on the A9-derived 501-type
+# taxonomy; the specificity matrix itself (160 MB) is regenerable and stays out
+# of the repo, so the gsa output and the gene-level results stand in for it.
+GSA = GEN / "results" / "intermediates" / "T_a9rbh_bigdeli.gsa.out"
+RBH = GEN / "results" / "intermediates" / "franken_rbh_A9.csv"
+BIGDELI_GENES = GEN / "data" / "gwas" / "magma_bigdeli" / "bigdeli.step2.genes.out"
+BIGDELI_SS = GEN / "data" / "gwas" / "bigdeli_eur_scz_sum_stats.gz"
+A9 = sorted(Path("/Users/shreejoy/Downloads").glob(
+    "*A9_RNAseq_final-nuclei.2024-02-13.h5ad"))
 ENRICH = TABLES / "rbh_combined_enrichment.csv"
 COMPOS = TABLES / "gwas_vs_casecontrol_composition.csv"
 EPHYS = TABLES / "sst_supertype_ephys_summary.csv"
@@ -47,18 +61,18 @@ SPEC = INTERM / "rbh_combined_specificity.csv"
 # panel CSV -> upstream file(s) it was derived from
 SOURCES: dict[str, object] = {
     # --- export_for_R.py ---
-    "panel_A_enrichment.csv":            ENRICH,
-    "panel_A_family_groups.csv":         ENRICH,
-    "panel_A_thresholds.csv":            ENRICH,
-    "panel_B_genetics_vs_depletion.csv": COMPOS,
+    "panel_A_enrichment.csv":            GSA,
+    "panel_A_family_groups.csv":         GSA,
+    "panel_A_thresholds.csv":            GSA,
+    "panel_B_genetics_vs_depletion.csv": [GSA, COMPOS],
     "panel_B_bd.csv":                    COMPOS,
     "panel_B_bigdeli.csv":               COMPOS,
-    "panel_C_gene_drivers.csv":          SPEC,
-    "panel_C_top_labels.csv":            SPEC,
-    "panel_C_meta.csv":                  SPEC,
-    "panel_D_credible_set.csv":          FINEMAP,
-    "panel_D_snps.csv":                  FINEMAP,
-    "panel_D_meta.csv":                  FINEMAP,
+    "panel_C_gene_drivers.csv":          [GSA, BIGDELI_GENES, RBH],
+    "panel_C_top_labels.csv":            [GSA, BIGDELI_GENES],
+    "panel_C_meta.csv":                  [GSA, BIGDELI_GENES],
+    "panel_D_credible_set.csv":          BIGDELI_SS,
+    "panel_D_snps.csv":                  BIGDELI_SS,
+    "panel_D_meta.csv":                  BIGDELI_SS,
     "panel_D_genes.csv":                 REFGENE,
     "panel_D_exons.csv":                 REFGENE,
     "panel_E_hcn1_vs_sag.csv":           EPHYS,
@@ -67,10 +81,10 @@ SOURCES: dict[str, object] = {
     "panel_G_traces.csv":                NWB,
     "panel_G_meta.csv":                  NWB,
     # --- export_fig4_new_panels.py ---
-    "panel_volcano_vulnerable_vs_notdepleted.csv": REF_H5AD,
-    "panel_violin_calb1_percell.csv":             REF_H5AD,
-    "panel_violin_donor_means.csv":               REF_H5AD,
-    "panel_violin_stats.csv":                     REF_H5AD,
+    "panel_volcano_vulnerable_vs_notdepleted.csv": A9,
+    "panel_violin_calb1_percell.csv":             A9,
+    "panel_violin_donor_means.csv":               A9,
+    "panel_violin_stats.csv":                     A9,
     "panel_ad_concordance_sst.csv":               [SCZ_CRUMBLR, AD_CRUMBLR],
     "panel_ad_concordance_stats.csv":             [SCZ_CRUMBLR, AD_CRUMBLR],
 }
@@ -78,12 +92,12 @@ SOURCES: dict[str, object] = {
 DESCRIPTIONS = {
     "panel_A_enrichment.csv":            "MAGMA gene-property enrichment per supertype",
     "panel_B_genetics_vs_depletion.csv": "SCZ GWAS enrichment vs compositional depletion",
-    "panel_C_gene_drivers.csv":          "per-gene drivers of Sst_25 enrichment",
-    "panel_D_credible_set.csv":          "PGC3 FINEMAP credible set at the HCN1 locus",
+    "panel_C_gene_drivers.csv":          "per-gene drivers of Sst_3 enrichment",
+    "panel_D_credible_set.csv":          "Bigdeli SuSiE-R EUR credible set at the HCN1 locus (Suppl. Table 13)",
     "panel_D_genes.csv":                 "RefSeq gene track for the HCN1 locus",
     "panel_E_hcn1_vs_sag.csv":           "HCN1 expression vs patch-seq sag per supertype",
-    "panel_F_morphology.csv":            "SWC reconstruction nodes, Sst_25 and Sst_5 exemplars",
-    "panel_G_traces.csv":                "hyperpolarising-step voltage traces, same two cells",
+    "panel_F_morphology.csv":            "SWC reconstruction nodes, five depth-ordered Sst exemplars",
+    "panel_G_traces.csv":                "hyperpolarising-step voltage traces, same five cells",
     "panel_volcano_vulnerable_vs_notdepleted.csv": "vulnerable vs not-depleted Sst marker DE",
     "panel_violin_calb1_percell.csv":    "per-cell CALB1 / SST expression",
     "panel_violin_stats.csv":            "donor-paired t-test per gene",

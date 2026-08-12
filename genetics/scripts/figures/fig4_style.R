@@ -23,7 +23,10 @@ PANEL_LABEL_SIZE <- 9 * FIG_SCALE
 
 # HCN1 is blue everywhere it is called out (gene-driver scatter, locus track,
 # and the marker volcano), so the reader tracks one gene by colour across panels.
-HCN1_COLOR  <- "#1565C0"
+# Was #1565C0 (blue). Blue was arbitrary -- it tied HCN1 to nothing else in the
+# figure. HCN1 now takes CALB1's colour, which is Sst_25's own SEA-AD tone, so
+# both marker genes read as belonging to the same cell population.
+HCN1_COLOR  <- "#693d07"
 # CALB1 takes Sst_25's own SEA-AD colour: it is the marker of that population.
 CALB1_COLOR <- "#693d07"
 

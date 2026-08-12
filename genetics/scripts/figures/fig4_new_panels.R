@@ -12,8 +12,13 @@ suppressPackageStartupMessages({
 })
 
 if (!exists("FIG4_REPO")) FIG4_REPO <- "/Users/shreejoy/Github/scz_celltype_paper"
-FIG4_PANELS <- file.path(FIG4_REPO, "genetics/results/figures/r_panels")
-source(file.path(FIG4_REPO, "genetics/scripts/figures/fig4_style.R"))
+# Follow the caller's DATA_DIR when there is one. This was previously a
+# hardcoded absolute path, which silently kept panels g-i on an old snapshot
+# while a-f moved to a new one -- the two halves of the figure disagreed and
+# nothing errored.
+FIG4_PANELS <- if (exists("DATA_DIR")) DATA_DIR else
+  file.path(FIG4_REPO, "genetics", "results", "figures", "r_panels")
+source(file.path(REPO, "scripts", "figures", "fig4_style.R"))
 
 # Distinct name: the assembly script has its own read_panel() bound to DATA_DIR.
 read_new_panel <- function(f) read_csv(file.path(FIG4_PANELS, f), show_col_types = FALSE)
@@ -27,6 +32,13 @@ read_new_panel <- function(f) read_csv(file.path(FIG4_PANELS, f), show_col_types
 # the p-values astronomically small, 1,091 genes underflow to exactly 0, and
 # 63% of genes clear FDR 0.05 -- so the axis saturates and both CALB1 and HCN1
 # land on the clipped ceiling. Provided for comparison.
+# Effect-size gate for the volcano, in log2 fold change (avg_log2FC computed
+# Seurat-style on the un-logged CP10K scale). Loosened from 0.5 to 0.25 so that
+# HCN1 (log2FC = +0.434) is called differentially expressed; at 0.5 it fell just
+# short despite an FDR of 2e-138. Cost: 183 -> 580 called genes.
+LOG2FC_GATE <- 0.25
+N_DRIVER_LABELS <- 4
+
 build_marker_volcano <- function(level = c("donor", "cell")) {
   level <- match.arg(level)
   v <- read_new_panel("panel_volcano_vulnerable_vs_notdepleted.csv")
@@ -45,8 +57,8 @@ build_marker_volcano <- function(level = c("donor", "cell")) {
       # FDR < 0.10 (the test that respects the 5 donors) AND the effect-size
       # gate |log2FC| > 0.5. FDR alone would colour ~2,900 genes, many sitting
       # at log2FC ~ 0 -- consistent across donors but not markers.
-      sig = if (level == "cell") fdr_wilcoxon < 0.05 & abs(log2FC) > 0.5
-            else fdr_donor < 0.10 & abs(log2FC) > 0.5,
+      sig = if (level == "cell") fdr_wilcoxon < 0.05 & abs(log2FC) > LOG2FC_GATE
+            else fdr_donor < 0.10 & abs(log2FC) > LOG2FC_GATE,
       score = abs(log2FC) * donor_logp)
 
   v_ns   <- filter(v, !sig, !gene %in% c("CALB1", "HCN1"))
@@ -54,8 +66,10 @@ build_marker_volcano <- function(level = c("donor", "cell")) {
   v_dn   <- filter(v,  sig, log2FC < 0, !gene %in% c("CALB1", "HCN1"))
   v_key  <- filter(v, gene %in% c("CALB1", "HCN1")) |>
               mutate(key_color = ifelse(gene == "HCN1", HCN1_COLOR, CALB1_COLOR))
-  lab    <- bind_rows(slice_max(v_up, score, n = 9),
-                      slice_max(v_dn, score, n = 9))
+  # Was 9 per direction (18 driver labels). Cut to 4 so HCN1 and CALB1 read as
+  # the callouts rather than as two names among twenty.
+  lab    <- bind_rows(slice_max(v_up, score, n = N_DRIVER_LABELS),
+                      slice_max(v_dn, score, n = N_DRIVER_LABELS))
 
   # All labels in one repel pass (separate passes cannot see each other's boxes).
   # HCN1/CALB1 are additionally nudged off the dense significant cloud into
@@ -70,7 +84,7 @@ build_marker_volcano <- function(level = c("donor", "cell")) {
               ny = ifelse(gene == "HCN1",  0.85, -0.80)))
 
   ggplot(mapping = aes(log2FC, donor_logp)) +
-    geom_vline(xintercept = c(-0.5, 0.5), linetype = "dashed",
+    geom_vline(xintercept = c(-LOG2FC_GATE, LOG2FC_GATE), linetype = "dashed",
                color = "#c4c4c4", linewidth = 0.25) +
     geom_vline(xintercept = 0, linetype = "dotted",
                color = "#e0e0e0", linewidth = 0.2) +
@@ -119,9 +133,12 @@ build_violin <- function(gene_name = "CALB1") {
                          levels = c("Not depleted", "Depleted")))
   st <- read_new_panel("panel_violin_stats.csv") |> filter(gene == gene_name)
 
-  # Report the genome-wide donor-level BH FDR (same threshold as panel h),
-  # not the uncorrected p-value.
-  q <- st$fdr_donor[1]
+  # Report the cell-level BH FDR, which is the statistic the adjacent volcano
+  # uses to define its gene set. Annotating this panel with the donor-paired
+  # test instead left the two panels reporting different statistics for the
+  # same comparison. fdr_donor is the fallback for older exports that predate
+  # the fdr_cell column.
+  q <- if ("fdr_cell" %in% names(st)) st$fdr_cell[1] else st$fdr_donor[1]
   plab <- if (q < 0.001) "FDR < 0.001" else paste0("FDR == ", signif(q, 2))
 
   ggplot(d, aes(group, expression, fill = group,

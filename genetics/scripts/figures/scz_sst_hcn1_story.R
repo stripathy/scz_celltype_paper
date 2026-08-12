@@ -98,7 +98,8 @@ FIG_WIDTH_IN  <- 6.5
 FIG_HEIGHT_IN <- 6.36   # extra 0.75 in over the aspect-preserving 5.61; the
                         # extra height is routed to rows 2/3 so the middle and
                         # bottom panels are less vertically crowded.
-HCN1_COLOR    <- "#1565C0"   # panel b (gene-driver callout) and c (gene track)
+HCN1_COLOR    <- CALB1_COLOR  # was #1565C0; blue tied HCN1 to nothing else in
+                             # the figure, so it now shares CALB1's Sst_25 tone
 LAB_HCN1      <- expression(italic("HCN1")*" expression ("*log[2]*" CP10K+1)")
 # Shared axis range so d-x and e-x line up (DEPLETION_LIM comes from fig4_style).
 HCN1_LIM      <- c(1.35, 3.65)
@@ -256,7 +257,10 @@ build_hcn1_locus_plot <- function() {
   exons <- exons |> filter(!grepl("^LOC", symbol)) |> mutate(lane = 0L)
   meta    <- read_panel("panel_D_meta.csv")
 
-  # --- top: Manhattan with FINEMAP credible set ---
+  # --- top: Manhattan with the SuSiE-R credible set ---
+  # PIPs come from Bigdeli 2026 Supplementary Table 13 (SuSiE-R,
+  # European-ancestry), NOT FINEMAP -- the legend used to say FINEMAP
+  # because the panel was built on PGC3.
   manhattan <- ggplot(snps, aes(x = pos_mb, y = neg_log10_p)) +
     annotate("rect", xmin = meta$hcn1_start_mb, xmax = meta$hcn1_stop_mb,
              ymin = -Inf, ymax = Inf, fill = HCN1_COLOR, alpha = 0.10) +
@@ -277,15 +281,22 @@ build_hcn1_locus_plot <- function() {
       limits  = c(0, max(cs$pip)),
       breaks  = c(0.05, 0.5),       # fewer ticks → more compact legend
       trans   = "sqrt",
-      name    = "FINEMAP PIP") +
+      name    = "SuSiE-R PIP") +
     scale_size(range = c(1.0, 3.2), guide = "none") +
+    # HCN1 is on the minus strand: reversing the coordinate axis makes
+    # transcription read left-to-right with the 3' end on the right, which is
+    # what readers expect. Applied to both stacked subplots so they stay
+    # aligned; the direction chevrons follow the scale and now point right.
+    scale_x_reverse() +
     coord_cartesian(xlim = c(meta$win_lo_mb, meta$win_hi_mb)) +
     labs(x = NULL, y = expression("SCZ GWAS ("*-log[10]~italic(P)*")")) +
     theme_panel() +
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank(),
-          legend.position = c(0.98, 0.98),
-          legend.justification = c("right", "top"),
+          # Reversing the x-axis moved the credible set to the upper RIGHT,
+          # which is where this legend used to sit. Anchor it left instead.
+          legend.position = c(0.02, 0.98),
+          legend.justification = c("left", "top"),
           legend.key.width = unit(0.15, "cm"),
           legend.key.height = unit(0.18, "cm"),
           plot.margin = margin(2, 4, 0, 4))
@@ -311,11 +322,26 @@ build_hcn1_locus_plot <- function() {
            start_mb_dsp = center_mb - display_w / 2,
            stop_mb_dsp  = center_mb + display_w / 2)
 
+  # Transcription-direction chevrons spaced along each gene body, pointing in
+  # the strand direction (HCN1 is on the minus strand, so they point left).
+  # Standard genome-browser convention; drawn under the exon boxes.
+  arrow_marks <- do.call(rbind, lapply(seq_len(nrow(genes_with_y)), function(i) {
+    g   <- genes_with_y[i, ]
+    pos <- seq(g$start_mb, g$stop_mb, length.out = 9)[2:8]
+    dx  <- window_mb * 0.020 * ifelse(g$strand == "-", -1, 1)
+    data.frame(x = pos, xend = pos + dx, y = g$y, is_hcn1 = g$is_hcn1)
+  }))
+
   gene_track <- ggplot() +
     geom_segment(data = genes_with_y,
                  aes(x = start_mb, xend = stop_mb, y = y, yend = y,
                      color = factor(is_hcn1)),
                  linewidth = 0.5, alpha = 0.75) +
+    geom_segment(data = arrow_marks,
+                 aes(x = x, xend = xend, y = y, yend = y,
+                     color = factor(is_hcn1)),
+                 linewidth = 0.45, alpha = 0.95,
+                 arrow = arrow(length = unit(0.09, "cm"), type = "open")) +
     geom_rect(data = filter(exons_with_y, seg_type == "CDS"),
               aes(xmin = start_mb_dsp, xmax = stop_mb_dsp,
                   ymin = y - 0.40, ymax = y + 0.40,
@@ -340,6 +366,7 @@ build_hcn1_locus_plot <- function() {
                        guide = "none") +
     scale_fill_manual(values = c("FALSE" = "#2166ac", "TRUE" = HCN1_COLOR),
                       guide = "none") +
+    scale_x_reverse() +
     coord_cartesian(xlim = c(meta$win_lo_mb, meta$win_hi_mb),
                     ylim = c(-0.5, n_lanes - 0.5 + 0.9)) +
     labs(x = "Position on chr5 (hg38, Mb)", y = NULL) +
@@ -439,8 +466,21 @@ build_morphology_plot <- function() {
 
   # Place the two cells side-by-side at common µm scale.
   half_w  <- max(abs(range(c(segs$x0, segs$x1))))
-  x_gap   <- 25
-  shifts  <- c(-(half_w + x_gap / 2), +(half_w + x_gap / 2))
+  x_gap   <- 170
+  # Generalised from the original two-cell layout. The original spaced both
+  # cells by the GLOBAL half-width; with three cells that wastes horizontal
+  # room and, under coord_fixed(), shrinks the whole panel. Pack each cell by
+  # its OWN half-width instead, edge to edge.
+  ord_cells <- meta$supertype[order(meta$cell_order)]
+  hw_tbl <- segs |> group_by(cell) |>
+    summarise(hw = max(abs(c(x0, x1)), na.rm = TRUE), .groups = "drop")
+  hw <- hw_tbl$hw[match(ord_cells, hw_tbl$cell)]
+  # Even centre-to-centre spacing (edge-to-edge packing left visibly uneven
+  # gaps, because the cells differ a lot in width). Pitch is set by the widest
+  # adjacent PAIR so nothing can overlap, then centres are distributed evenly.
+  n_cells <- length(ord_cells)
+  pitch <- max(hw[-n_cells] + hw[-1]) + x_gap
+  shifts <- (seq_len(n_cells) - (n_cells + 1) / 2) * pitch
   names(shifts) <- meta$supertype[order(meta$cell_order)]
   segs <- segs |> mutate(x0_sh = x0 + shifts[cell],
                          x1_sh = x1 + shifts[cell])
@@ -453,15 +493,17 @@ build_morphology_plot <- function() {
   # Both labels sit at a common height in the headroom ABOVE the pia line, so
   # they cannot collide with the pia/L1-L2/L2-L3/L3-L4 boundaries.
   meta <- meta |> left_join(cell_tops, by = "supertype") |>
-    mutate(label_y = -120)
+    mutate(label_y = -140)
 
   # Vertical zoom: from pia (with a bit of headroom for "Pia" label) to
   # just below the deepest dendrite + scale-bar room.
   max_y    <- max(segs$y0, segs$y1)
-  y_bottom <- max_y + 70    # scale bar now sits inside the panel (lower left)
-  y_top    <- -260   # headroom for the cell labels, which sit above the
+  y_bottom <- max_y + 330    # scale bar now sits inside the panel (lower left)
+  y_top    <- -290   # headroom for the cell labels, which sit above the
                      # pia line and above the "Pia" annotation at y = -50
-  x_extent <- c(shifts[1] - half_w * 0.78, shifts[2] + half_w * 0.12)
+  # extra left margin: the L1/L2/L3 and Pia annotations are anchored at the
+  # left edge and would otherwise sit on top of the first cell.
+  x_extent <- c(min(shifts - hw) - 260, max(shifts + hw) + 40)
 
   # Layer-boundary lines (Pia is solid; L1/L2, L2/L3, L3/L4 are dashed).
   layer_lines <- tibble(
@@ -473,13 +515,27 @@ build_morphology_plot <- function() {
     linetype  = c("solid", "dashed", "dashed", "dashed"))
 
   # Layer text positions (LEFT side of panel).
-  layer_label_x <- x_extent[1] + diff(x_extent) * 0.02
+  layer_label_x <- x_extent[1] + 25
   layer_labels  <- tibble(
     text = c("L1", "L2", "L3"),
     y    = c( LAYER_FRACTIONS$L1_L2 / 2,
               (LAYER_FRACTIONS$L1_L2 + LAYER_FRACTIONS$L2_L3) / 2,
               (LAYER_FRACTIONS$L2_L3 + LAYER_FRACTIONS$L3_L4) / 2) *
              CORTEX_THICKNESS_UM)
+
+  # Depleted set is the Fig-3 vulnerable group; everything else is not depleted.
+  DEPLETED_SUPERTYPES <- c("Sst_25", "Sst_22", "Sst_2", "Sst_20", "Sst_3")
+  bar_y_val <- max_y + 200
+  status_bar <- meta |>
+    mutate(status = ifelse(supertype %in% DEPLETED_SUPERTYPES,
+                           "Depleted in SCZ", "Not depleted"),
+           hw_i = hw[match(supertype, ord_cells)],
+           lo = soma_x_um_sh - hw_i, hi = soma_x_um_sh + hw_i) |>
+    group_by(status) |>
+    summarise(x_start = min(lo), x_end = max(hi), .groups = "drop") |>
+    mutate(bar_y = bar_y_val,
+           x_start = x_start + 40, x_end = x_end - 40,   # gap between groups
+           status_col = ifelse(status == "Depleted in SCZ", "#3d3d3d", "#8c8c8c"))
 
   ggplot() +
     geom_hline(data = layer_lines,
@@ -504,16 +560,26 @@ build_morphology_plot <- function() {
               fontface = "italic") +
     annotate("text", x = layer_label_x, y = -50, label = "Pia",
              color = "#555", size = LBL_SMALL, hjust = 0) +
+    # Compositional status, bracketed under the cells it applies to. Groups
+    # come from the Fig-3 compositional analysis, not from anything drawn here.
+    geom_segment(data = status_bar,
+                 aes(x = x_start, xend = x_end, y = bar_y, yend = bar_y,
+                     color = status_col),
+                 linewidth = 0.4, inherit.aes = FALSE) +
+    geom_text(data = status_bar,
+              aes(x = (x_start + x_end) / 2, y = bar_y + 55,
+                  label = status, color = status_col),
+              size = LBL_SMALL, vjust = 1, inherit.aes = FALSE) +
     # 100 µm scale bar (label offset clearly below the bar so they don't overlap).
     annotate("segment",
-             x    = x_extent[1] + diff(x_extent) * 0.05,
-             xend = x_extent[1] + diff(x_extent) * 0.05 + 100,
+             x    = x_extent[1] + 45,
+             xend = x_extent[1] + 145,
              y    = max_y - 190, yend = max_y - 190,
              linewidth = 0.8) +
     # vjust = 1 anchors the label's top edge, so with scale_y_reverse() the text
     # is pushed away from the bar rather than back onto it (it collided once the
     # base font was raised).
-    annotate("text", x = x_extent[1] + diff(x_extent) * 0.05 + 50,
+    annotate("text", x = x_extent[1] + 95,
              y = max_y - 150, label = "100 µm",
              size = LBL_SMALL, hjust = 0.5, vjust = 1) +
     scale_color_manual(values = setNames(meta$color, meta$supertype),
@@ -548,12 +614,28 @@ build_ephys_traces_plot <- function() {
   # most separated. Sit ~5 mV above each cell's steady-state V — comfortably
   # above the trace, away from the sag-annotation glyphs at the front of
   # the step (V_peak_t_ms ≈ 50 ms for Sst_25).
+  # Labels sit just above each trace's own plateau and are staggered in time,
+  # so cells with similar steady-state voltage (Sst_22 and Sst_3 differ by
+  # ~2 mV) cannot collide. A short leader drops from the label to the trace.
+  LABEL_POS <- tibble::tribble(
+    ~supertype, ~label_t_ms, ~label_v_mV,
+    "Sst_25",         845,       -60.8,   # own clear space above its plateau
+    # "Sag" now sits at LBL_CALL and occupies ~160-340 ms in the same
+    # -65..-74 band, so these two start after it.
+    "Sst_3",          560,       -69.2,
+    "Sst_22",         800,       -71.4,
+    "Sst_1",          880,       -82.3,   # below, so its leader crosses nothing
+    "Sst_5",          430,       -82.9)   # empty band above the deepest trace
   trace_labels <- meta |>
-    mutate(label_t_ms = 750,
-           label_v_mV = V_steady + 5)
+    left_join(LABEL_POS, by = "supertype") |>
+    mutate(leader_v = V_steady + 0.4)
 
   ggplot(traces, aes(x = t_ms, y = v_mV, color = cell)) +
     geom_line(linewidth = 0.45, alpha = 0.95) +
+    geom_segment(data = trace_labels,
+                 aes(x = label_t_ms, xend = label_t_ms,
+                     y = label_v_mV, yend = leader_v, color = supertype),
+                 linewidth = 0.25, alpha = 0.8, inherit.aes = FALSE) +
     geom_text(data = trace_labels,
               aes(x = label_t_ms, y = label_v_mV,
                   label = supertype, color = supertype),
@@ -576,7 +658,7 @@ build_ephys_traces_plot <- function() {
     geom_text(data = sst25,
               aes(x = V_peak_t_ms + 110, y = (V_peak + V_steady) / 2,
                   label = "Sag"),
-              color = sst25_color, fontface = "bold", size = LBL_SMALL,
+              color = sst25_color, size = LBL_CALL,
               hjust = 0, inherit.aes = FALSE) +
     scale_color_manual(values = setNames(meta$color, meta$supertype),
                        guide = "none") +
@@ -649,7 +731,7 @@ build_gene_driver_plot <- function() {
     scale_x_log10(limits = c(meta$xlim_lo, meta$xlim_hi),
                   breaks = c(0.001, 0.003, 0.01, 0.03)) +
     coord_cartesian(ylim = c(meta$ylim_lo, meta$ylim_hi), clip = "off") +
-    labs(x = "Gene specificity in Sst_25 (log scale)",
+    labs(x = "Gene specificity in Sst_3 (log scale)",
          y = expression(-log[10]*"(SCZ MAGMA gene "*italic(p)*")")) +
     theme_panel()
 }
@@ -741,19 +823,19 @@ hcn1_vs_depletion_c     <- build_hcn1_vs_depletion(show_legend = FALSE)
 # ====================================================================
 source(file.path(REPO, "scripts", "figures", "fig4_new_panels.R"))
 source(file.path(REPO, "scripts", "figures", "fig4_assemble.R"))
+source(file.path(REPO, "scripts", "figures", "fig4_assemble_nod.R"))
 
-figure_full <- build_figure4(list(
+figure_full <- build_figure4_nod(list(
   a = genetics_vs_depletion_c,             # SCZ GWAS enrichment vs depletion
   b = gene_driver_plot,                    # Sst_25 gene drivers
   c = hcn1_locus_plot,                     # HCN1 locus zoom + fine-mapping
-  d = hcn1_vs_depletion_c,                 # HCN1 expression vs depletion
   e = sag_c,                               # HCN1 expression vs patch-seq sag
   f = morphology_plot,                     # exemplar reconstructions
   g = ephys_traces_plot,                   # exemplar voltage traces
-  h = build_marker_volcano(),              # depleted vs not-depleted markers
+  h = build_marker_volcano("cell"),              # depleted vs not-depleted markers
   i = build_violin("CALB1"),               # CALB1 by depletion group
   j = build_ad_concordance(show_legend = FALSE)))   # SCZ vs AD (DLPFC)
 
 OUT_FULL_STEM <- file.path(FIGDIR, "scz_sst_hcn1_figure4")
 render_figure4(figure_full, OUT_FULL_STEM)
-message(glue("\u2192 Saved {OUT_FULL_STEM}.{{png,pdf,svg}}  (Figure 4, 10 panels)"))
+message(glue("\u2192 Saved {OUT_FULL_STEM}.{{png,pdf,svg}}  (Figure 4, 9 panels)"))
