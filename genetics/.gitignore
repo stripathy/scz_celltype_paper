@@ -21,6 +21,12 @@ results/intermediates/*
 !results/intermediates/T_a9rbh_bigdeli.gsa.out
 !results/intermediates/franken_rbh_A9.csv
 !results/intermediates/namemap_a9rbh.csv
+# Figure 4 robustness supplement: the two alternative enrichment runs and
+# the MTG type-name map. The specificity matrices behind them (158 MB each)
+# stay untracked and are rebuilt by build_spec_mtg_sametax.py.
+!results/intermediates/T_a9_pgc3.gsa.out
+!results/intermediates/T_mtg_bigdeli.gsa.out
+!results/intermediates/namemap_mtg_sametax.csv
 
 # ============================================================================
 # S-PrediXcan results (1MB each, can be regenerated)
