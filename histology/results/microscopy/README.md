@@ -94,43 +94,25 @@ The annotation is **illustrative**: stars mark *examples* of labeled cells,
 not an exhaustive count. Reported cell counts come from Dwight's original
 quantification, not from the annotated stars.
 
-### 5. Extract annotations and overlay on raw images
-To produce the final publication figures, annotations from the Inkscape-edited
-SVG are detected by rendering the SVG to a PNG and finding the colored markers
-visually (bypasses matplotlib SVG coordinate-math gotchas). The markers are
-then plotted on the **raw** (non-cleaned) composites, so the reader sees the
-original microscopy data with the annotator's cell calls overlaid.
+### 5. Export the annotations and build the manuscript panel
+`marker_coordinates.csv` holds the coordinates of every marker in the curated
+SVG (panel, type, pixel x/y in the 800-px counting frame). The manuscript
+figure panel is built outside this directory: `code/extract_micrograph_panels.py`
+pulls the four cleaned composites embedded in the SVG into `panels/`, and
+`code/plot_figS_rnascope.R` draws them with the markers, labels, scale bar and
+an on-image channel key (Fig. S panel b). The stars are **illustrative**:
+they mark examples of labeled cells, not an exhaustive count; reported cell
+counts come from the original quantification.
 
 ## Files
 
-### Scripts
-
 | File | Description |
 |------|-------------|
-| `lipofuscin_removal.py` | All processing: loads raw images, applies cleaning, reads SVG annotations, regenerates all figures |
-
-Run as: `python lipofuscin_removal.py` (from the repo root, or from this
-directory). Will regenerate all `.png`/`.svg` outputs below.
-
-### User-editable annotation SVG
-
-| File | Description |
-|------|-------------|
-| `RNAscope_fig_representative_inkscape_SJT.svg` | **User's manual annotations.** Open in Inkscape to add/move/delete star markers. Regenerate the final figures after editing by running `lipofuscin_removal.py`. |
-
-### Data
-
-| File | Description |
-|------|-------------|
-| `marker_coordinates.csv` | Exported coordinates of every manual annotation marker (panel, type, pixel x/y). Regenerated automatically by the script. |
-
-### Figures
-
-| File | Description |
-|------|-------------|
-| `fig_original_vs_cleaned_L23.png` | Side-by-side comparison showing the visual effect of lipofuscin suppression on two L2/3 panels |
-| `fig_L23_manual_stars_on_raw.png/.svg` | **Main figure:** L2/3 Control vs SCHIZ with manual annotations on raw (non-cleaned) composites |
-| `fig_all_manual_stars_on_raw.png/.svg` | Full 4-panel version (includes L5/6 panels) |
+| `lipofuscin_removal.py` | Loads raw composites (needs the raw TIFFs, not in the repo), applies the display-only lipofuscin suppression, and exports the SVG marker coordinates. Its legacy figure functions (stars-on-raw renders) are superseded by the R panel above. |
+| `RNAscope_fig_representative_inkscape_SJT.svg` | Curated annotation SVG (edit in Inkscape); embeds the four cleaned composites. |
+| `marker_coordinates.csv` | Exported marker coordinates (panel 0-3 = Control L2/3, SCZ L2/3, Control L5/6, SCZ L5/6). |
+| `panels/panel{0..3}_*.png` | The four cleaned composites extracted from the SVG, display orientation (input to the R panel). |
+| `fig_original_vs_cleaned_L23.png` | Original vs lipofuscin-suppressed comparison for two L2/3 frames (documents the display processing). |
 
 ## Methods-section template
 

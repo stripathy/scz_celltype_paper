@@ -1,0 +1,5 @@
+diagnosis,n,age_mean,age_sd,n_female,n_male,pmi_mean,pmi_sd
+Control,15,47.5,11.4,7,8,18.9,5.0
+SCZ,11,43.8,9.4,6,5,19.6,6.3
+Bipolar,15,46.9,10.0,7,8,21.4,7.0
+MDD,13,42.4,10.2,7,6,19.4,6.5

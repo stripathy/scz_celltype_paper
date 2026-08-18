@@ -1,6 +1,6 @@
 # Data Directory
 
-This directory contains the raw input data for the sgACC cell depth analysis. All data originate from the RNAscope FISH densitometry experiment described in [Arbabi, Newton et al. (2025)](https://doi.org/10.1038/s41380-024-02707-1).
+This directory contains the raw input data for the sgACC SST-density re-analysis. All data originate from the RNAscope FISH densitometry experiment described in [Arbabi, Newton et al. (2025)](https://doi.org/10.1038/s41380-024-02707-1).
 
 ## Primary files used in the analysis
 
@@ -10,17 +10,11 @@ This directory contains the raw input data for the sgACC cell depth analysis. Al
 | `full cell counts(Excel).xlsx` | Authoritative subject-to-diagnosis mapping and Dwight's aggregated cell count summaries (sheet: `full cell counts`). Diagnosis groups: Control, MDD, Bipolar, SCHIZ. |
 | `pTable with correct med info.csv` | Subject demographics and clinical covariates: age, sex, PMI, and medication history. Multiple rows per subject (one per cell type); deduplicated during loading. |
 
-## Other files
+## Derived file
 
-| File/Directory | Description |
-|----------------|-------------|
-| `Cell_counts_NU.xlsx` | Excel version of the cell counts CSV. |
-| `full cell counts.csv` | CSV export of the diagnosis/counts Excel file. |
-| `groups.csv` | Tetrad group assignments. |
-| `count summarization.R` | Original R script used to summarize cell counts. |
-| `Full Analysis/` | Dwight's original density plots and histograms for each cell type. |
-| `figures/` | Summary figures from the original analysis (cell type bar plots, per-section totals). |
-| `full data (but files not required)/` | Preliminary/subset data files not used in the current pipeline. |
+| File | Description |
+|------|-------------|
+| `sst_analysis_data.csv` | Consolidated per-frame dataset built by `code/build_analysis_dataset.py` from the three files above: subject, section, site, layer (L2/3 = sites 1-10, L5/6 = 11-20), SST and VIP counts, diagnosis, age, sex, PMI, and the VIP laminar-QC filter (`vip_ttest_p`, `vip_pass`). 68 subjects, 54 pass the filter. |
 
 ## Notes
 

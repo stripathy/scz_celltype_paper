@@ -22,3 +22,7 @@ results/excel_images/
 
 # Claude
 .claude/
+
+# Excel lock files and R history
+~$*
+.Rhistory
