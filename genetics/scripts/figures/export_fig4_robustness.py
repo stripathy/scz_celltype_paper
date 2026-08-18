@@ -26,10 +26,12 @@ I = f"{GEN}/results/intermediates"
 PANELS = f"{GEN}/results/figures/r_panels"
 TABLES = f"{GEN}/results/tables"
 
+# Labels name the expression reference region (DLPFC = SEA-AD A9 reference,
+# as in the main figure; MTG = SEA-AD MTG reference) and the SCZ GWAS.
 RUNS = {
-    "A9 + Bigdeli (published)": (f"{I}/T_a9rbh_bigdeli.gsa.out", f"{I}/namemap_a9rbh.csv"),
-    "A9 + PGC3":                (f"{I}/T_a9_pgc3.gsa.out",       f"{I}/namemap_a9rbh.csv"),
-    "MTG + Bigdeli":            (f"{I}/T_mtg_bigdeli.gsa.out",   f"{I}/namemap_mtg_sametax.csv"),
+    "DLPFC + Bigdeli (main figure)": (f"{I}/T_a9rbh_bigdeli.gsa.out", f"{I}/namemap_a9rbh.csv"),
+    "DLPFC + PGC3":                  (f"{I}/T_a9_pgc3.gsa.out",       f"{I}/namemap_a9rbh.csv"),
+    "MTG + Bigdeli":                 (f"{I}/T_mtg_bigdeli.gsa.out",   f"{I}/namemap_mtg_sametax.csv"),
 }
 IS_SST = r"Sst_\d+$"
 
@@ -66,7 +68,7 @@ mtg.columns = ["supertype", "ad_slope_mtg", "ad_se_mtg", "ad_fdr_mtg"]
 ad = pub.merge(mtg, on="supertype")
 ad.to_csv(f"{TABLES}/fig4_robustness_ad_mtg.csv", index=False)
 
-for label, col in (("AD DLPFC (published)", "ad_slope"), ("AD MTG", "ad_slope_mtg")):
+for label, col in (("AD DLPFC (main figure)", "ad_slope"), ("AD MTG", "ad_slope_mtg")):
     r = stats.spearmanr(-ad.scz_beta, -ad[col])
     conc = 100 * np.mean(np.sign(-ad.scz_beta) == np.sign(-ad[col]))
     print(f"\n  SCZ vs {label:<22s} rho={r.statistic:+.3f}  p={r.pvalue:.2g}  "
