@@ -15,3 +15,11 @@ not yet accessible.
 
 When access is granted: `git archive HEAD` her repo into here (code only), point
 its outputs at `../shared/snrnaseq_de/`, and delete this placeholder.
+
+## What is here now
+
+- [`composition_sensitivity/`](composition_sensitivity/) — a **downstream** robustness
+  check on the composition meta-analysis (pooling strategy, per-dataset and Xenium
+  estimates, leave-one-dataset-out), built on Nicole's per-donor count export. It is not
+  part of the reserved pipeline slot above; it is path-neutral and re-runnable from its
+  own README.
