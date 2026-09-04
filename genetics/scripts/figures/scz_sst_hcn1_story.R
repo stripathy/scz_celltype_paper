@@ -615,15 +615,16 @@ build_ephys_traces_plot <- function() {
   # above the trace, away from the sag-annotation glyphs at the front of
   # the step (V_peak_t_ms ≈ 50 ms for Sst_25).
   # Labels sit just above each trace's own plateau and are staggered in time,
-  # so cells with similar steady-state voltage (Sst_22 and Sst_3 differ by
-  # ~2 mV) cannot collide. A short leader drops from the label to the trace.
+  # so cells with similar steady-state voltage (Sst_20 and Sst_3 plateaus
+  # differ by ~1.5 mV) cannot collide. A short leader drops from the label to
+  # the trace.
   LABEL_POS <- tibble::tribble(
     ~supertype, ~label_t_ms, ~label_v_mV,
     "Sst_25",         845,       -60.8,   # own clear space above its plateau
     # "Sag" now sits at LBL_CALL and occupies ~160-340 ms in the same
     # -65..-74 band, so these two start after it.
     "Sst_3",          560,       -69.2,
-    "Sst_22",         800,       -71.4,
+    "Sst_20",         850,       -71.5,   # later and lower than Sst_3's label
     "Sst_1",          880,       -82.3,   # below, so its leader crosses nothing
     "Sst_5",          430,       -82.9)   # empty band above the deepest trace
   trace_labels <- meta |>
@@ -718,9 +719,11 @@ build_gene_driver_plot <- function() {
                     box.padding = 0.30, max.overlaps = 40,
                     segment.color = "#bbb", segment.size = 0.2,
                     min.segment.length = 0, force = 4, seed = 1) +
+    # callout goes up and to the LEFT, over the unlabelled sub-threshold cloud;
+    # to the right it lands on the driver labels (RBMS3 for the Sst_20 target)
     geom_text_repel(data = g_hcn1, aes(label = symbol), size = LBL_CALL,
                     fontface = "bold.italic", color = HCN1_COLOR,
-                    nudge_y = 3.2, nudge_x = 0.25, box.padding = 0.6,
+                    nudge_y = 3.2, nudge_x = -0.30, box.padding = 0.6,
                     segment.color = HCN1_COLOR, segment.size = 0.4,
                     min.segment.length = 0, seed = 1) +
     # The two threshold lines carry no in-plot text: there is no empty region to
@@ -729,9 +732,9 @@ build_gene_driver_plot <- function() {
     # them -- "horizontal lines, MAGMA FDR 0.05 (grey) and genome-wide
     # significance (5e-8, purple)". Descriptive text belongs in the legend.
     scale_x_log10(limits = c(meta$xlim_lo, meta$xlim_hi),
-                  breaks = c(0.001, 0.003, 0.01, 0.03)) +
+                  breaks = c(0.003, 0.01, 0.03, 0.1, 0.3)) +
     coord_cartesian(ylim = c(meta$ylim_lo, meta$ylim_hi), clip = "off") +
-    labs(x = "Gene specificity in Sst_3 (log scale)",
+    labs(x = sprintf("Gene specificity in %s (log scale)", meta$target_type),
          y = expression(-log[10]*"(SCZ MAGMA gene "*italic(p)*")")) +
     theme_panel()
 }
@@ -827,7 +830,7 @@ source(file.path(REPO, "scripts", "figures", "fig4_assemble_nod.R"))
 
 figure_full <- build_figure4_nod(list(
   a = genetics_vs_depletion_c,             # SCZ GWAS enrichment vs depletion
-  b = gene_driver_plot,                    # Sst_25 gene drivers
+  b = gene_driver_plot,                    # Sst_2 gene drivers
   c = hcn1_locus_plot,                     # HCN1 locus zoom + fine-mapping
   e = sag_c,                               # HCN1 expression vs patch-seq sag
   f = morphology_plot,                     # exemplar reconstructions

@@ -26,6 +26,17 @@ results/intermediates/*
 # stay untracked and are rebuilt by build_spec_mtg_sametax.py.
 !results/intermediates/T_a9_pgc3.gsa.out
 !results/intermediates/T_mtg_bigdeli.gsa.out
+# SEA-AD-only taxonomy (2026-08-31, L. Duncan's ask): the gsa outputs + namemaps
+# that export_panels_abc.py, export_fig4_robustness.py and
+# export_supp_enrichment_seaad125.py read. The spec matrices (37-74 MB) and the
+# per-supertype mean tables (68-74 MB) stay out; build_spec_seaad_only.py remakes them.
+!results/intermediates/T_a9only_bigdeli.gsa.out
+!results/intermediates/T_a9only_pgc3.gsa.out
+!results/intermediates/T_mtgonly_bigdeli.gsa.out
+!results/intermediates/T_mtgonly_pgc3.gsa.out
+!results/intermediates/namemap_a9only.csv
+!results/intermediates/namemap_mtgonly.csv
+!results/intermediates/a9_sst_supertype_mean_expression_cp10k.csv
 !results/intermediates/namemap_mtg_sametax.csv
 
 # ============================================================================

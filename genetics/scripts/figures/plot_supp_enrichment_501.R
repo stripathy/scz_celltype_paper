@@ -10,7 +10,10 @@
 #
 # Input : results/tables/scz_enrichment_501_bigdeli_dlpfc.csv
 #         (scripts/figures/export_supp_enrichment_501.py)
-# Output: results/figures/supp_scz_enrichment_501.{png,pdf}
+# RETIRED 2026-09-02: the combined SEA-AD + Siletti taxonomy was dropped on
+# L. Duncan's advice; plot_supp_enrichment_seaad125.R renders the S9 that is in
+# the paper. Kept runnable for provenance; it writes OUTSIDE the submission folder.
+# Output: manuscript/figures/not_in_current_version/S09_scz_enrichment_501.{png,pdf}
 suppressPackageStartupMessages({
   library(readr); library(dplyr); library(ggplot2); library(cowplot); library(ggrepel)
 })
@@ -133,7 +136,12 @@ pb <- ggplot(b, aes(x, neglog10p)) +
 
 fig <- plot_grid(pa, pb, ncol = 1, rel_heights = c(1, 1.25), labels = c("a", "b"),
                  label_size = 8, label_fontface = "bold")
+# Written directly into the supplementary submission folder as an original,
+# Not in the current paper, so it writes beside the other retired figures rather
+# than into the submission folder (see manuscript/figures/not_in_current_version/).
+SUPPFIG <- file.path(GEN, "..", "manuscript/figures/not_in_current_version")
+FIGSTEM <- "S09_scz_enrichment_501"
 for (ext in c("png", "pdf"))
-  ggsave(file.path(GEN, "results/figures", paste0("supp_scz_enrichment_501.", ext)), fig,
+  ggsave(file.path(SUPPFIG, paste0(FIGSTEM, ".", ext)), fig,
          width = 7.1, height = 6.3, dpi = 400, bg = "white")
-cat("wrote results/figures/supp_scz_enrichment_501.{png,pdf}\n")
+cat(sprintf("wrote %s/%s.{png,pdf}\n", SUPPFIG, FIGSTEM))

@@ -6,14 +6,15 @@ SCZ GWAS is used and which cortical region supplies the normotypic expression;
 panel i depends on which region the AD compositional signal is measured in.
 This collects the re-runs so the supplement can show all of them side by side.
 
-Every re-run holds the taxonomy, the specificity recipe, the MAGMA settings and
-the compositional model fixed. Only the named input changes -- in particular the
-MTG enrichment reuses the published 501-type definition and RBH removals, so it
-isolates the reference region rather than confounding it with a taxonomy change.
+Every re-run holds the specificity recipe, the MAGMA settings and the
+compositional model fixed. Only the named input changes: each region's
+enrichment is computed on that region's own SEA-AD supertype set (DLPFC 125,
+MTG 137; the combined SEA-AD + Siletti taxonomy was retired on L. Duncan's
+advice), so the MTG runs isolate the reference region under the same recipe.
+All four reference x GWAS combinations are exported, main figure included.
 
 Inputs are produced by:
-    build_spec_mtg_sametax.py            MTG expression on the published taxonomy
-    magma --gene-covar                   the three .gsa.out files
+    build_spec_seaad_only.py             both specs + the four .gsa.out files
     crossdisorder/code/build_mtg_cps_input.py + run_mtg_cps_crumblr.R
 """
 import numpy as np
@@ -29,9 +30,10 @@ TABLES = f"{GEN}/results/tables"
 # Labels name the expression reference region (DLPFC = SEA-AD A9 reference,
 # as in the main figure; MTG = SEA-AD MTG reference) and the SCZ GWAS.
 RUNS = {
-    "DLPFC + Bigdeli (main figure)": (f"{I}/T_a9rbh_bigdeli.gsa.out", f"{I}/namemap_a9rbh.csv"),
-    "DLPFC + PGC3":                  (f"{I}/T_a9_pgc3.gsa.out",       f"{I}/namemap_a9rbh.csv"),
-    "MTG + Bigdeli":                 (f"{I}/T_mtg_bigdeli.gsa.out",   f"{I}/namemap_mtg_sametax.csv"),
+    "DLPFC + Bigdeli (main figure)": (f"{I}/T_a9only_bigdeli.gsa.out",  f"{I}/namemap_a9only.csv"),
+    "DLPFC + PGC3":                  (f"{I}/T_a9only_pgc3.gsa.out",     f"{I}/namemap_a9only.csv"),
+    "MTG + Bigdeli":                 (f"{I}/T_mtgonly_bigdeli.gsa.out", f"{I}/namemap_mtgonly.csv"),
+    "MTG + PGC3":                    (f"{I}/T_mtgonly_pgc3.gsa.out",    f"{I}/namemap_mtgonly.csv"),
 }
 IS_SST = r"Sst_\d+$"
 

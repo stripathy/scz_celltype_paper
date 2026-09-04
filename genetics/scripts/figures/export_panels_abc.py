@@ -1,8 +1,17 @@
 """
 Rebuild Figure 4 panels a, b and c on Bigdeli 2026 (European-ancestry).
 
-  a  genetics-vs-depletion  <- Bigdeli EUR gene-property enrichment (DLPFC 500)
-  b  Sst_3 gene drivers     <- same enrichment + Bigdeli EUR gene-level P
+  a  genetics-vs-depletion  <- Bigdeli EUR gene-property enrichment across the
+                               125 SEA-AD DLPFC supertypes alone (the combined
+                               SEA-AD + Siletti taxonomy was retired on
+                               L. Duncan's advice; build_spec_seaad_only.py)
+  b  Sst_2 gene drivers     <- same enrichment + Bigdeli EUR gene-level P
+                               (Sst_2 is both the most SCZ-enriched Sst
+                               supertype and the most significantly depleted,
+                               so panel b names the type panel a puts at the
+                               corner of the convergence; HCN1 is a top-decile
+                               driver for Sst_2, Sst_3 and Sst_20 alike, so the
+                               HCN1 argument does not rest on the choice)
   c  HCN1 locus zoom        <- Bigdeli EUR sumstats (already hg38, so the
                                hg19->hg38 liftover the PGC3 build needed is
                                dropped) + the SuSiE-R EUR credible set from
@@ -27,10 +36,10 @@ SRC = "/Users/shreejoy/Github/scz_cell_type_enrichment"
 GLOC = f"{SRC}/linking_cell_types_to_brain_phenotypes/Data/NCBI37.3.gene.loc.extendedMHCexcluded"
 SUMSTATS = f"{GEN}/data/gwas/bigdeli_eur_scz_sum_stats.gz"
 OUT = "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/figures/r_panels"
-TARGET = "Sst_3"
+TARGET = "Sst_2"
 
-names = pd.read_csv(f"{W}/namemap_a9rbh.csv").set_index("safe_name").cell_type
-gsa = pd.read_csv(f"{W}/T_a9rbh_bigdeli.gsa.out", sep=r"\s+", comment="#")
+names = pd.read_csv(f"{W}/namemap_a9only.csv").set_index("safe_name").cell_type
+gsa = pd.read_csv(f"{W}/T_a9only_bigdeli.gsa.out", sep=r"\s+", comment="#")
 gsa["supertype"] = gsa.VARIABLE.map(names)
 enrich = gsa.dropna(subset=["supertype"])[["supertype", "BETA", "P"]].rename(
     columns={"BETA": "beta", "P": "p_value"})
@@ -59,8 +68,8 @@ print(f"panel a: n={len(sst)}  Spearman rho={rho:.3f}, p={p:.4f}")
 gl = pd.read_csv(GLOC, sep=r"\s+", header=None,
                  names=["ENTREZ", "CHR", "START", "STOP", "STRAND", "SYMBOL"])
 ent2sym = dict(zip(gl.ENTREZ.astype(int), gl.SYMBOL))
-col = pd.read_csv(f"{W}/namemap_a9rbh.csv").query("cell_type == @TARGET").safe_name.iloc[0]
-spec = pd.read_csv(f"{W}/spec_dlpfc_a9rbh.txt", sep="\t", usecols=["GENE", col])
+col = pd.read_csv(f"{W}/namemap_a9only.csv").query("cell_type == @TARGET").safe_name.iloc[0]
+spec = pd.read_csv(f"{W}/spec_dlpfc_a9only.txt", sep="\t", usecols=["GENE", col])
 spec["symbol"] = spec.GENE.astype(int).map(ent2sym)
 magma = pd.read_csv(f"{GEN}/data/gwas/magma_bigdeli/bigdeli.step2.genes.out", sep=r"\s+")
 magma["symbol"] = magma.GENE.astype(int).map(ent2sym)
@@ -96,7 +105,11 @@ if "HCN1" not in top.symbol.values and "HCN1" in drv.symbol.values:
 top.to_csv(f"{OUT}/panel_C_top_labels.csv", index=False)
 fp = m[m.p_fdr < 0.05]
 t = enrich[enrich.supertype == TARGET].iloc[0]
-pd.DataFrame([dict(spec_q90=q90, xlim_lo=q90 * 0.4, xlim_hi=0.05, ylim_lo=1.3,
+# log-x headroom above the most specific driver, as in the combined-taxonomy
+# figure (0.05 over a 0.022 max); specificity shares are ~4x larger now that
+# the denominator is 125 types instead of 501, so the cap scales with the data
+xlim_hi = float(m.loc[m.is_driver, "specificity"].max()) * 2.25
+pd.DataFrame([dict(spec_q90=q90, xlim_lo=q90 * 0.4, xlim_hi=xlim_hi, ylim_lo=1.3,
                    ylim_hi=20.0,
                    fdr_neg_log10p_cutoff=-np.log10(fp.P.max()) if len(fp) else np.nan,
                    target_type=TARGET, target_beta=t.beta, target_p_fdr=t.p_fdr)]

@@ -33,14 +33,20 @@ colors = dict(zip(*pd.read_csv(f"{GEN}/results/figures/r_panels/panel_A_enrichme
                   [["supertype", "color"]].values.T))
 
 CELLS = [
+    # Sst_20 replaced the Sst_22 exemplar (907585117) on 2026-08-31 so the
+    # series shows the supertype that is both most SCZ-enriched and depleted.
+    # 1079568285 is the only reconstructed Sst_20 cell (16 Sst_25, 2 Sst_22
+    # reconstructions exist); assignment confidence 0.86, the lowest in the
+    # series, declared in the legend. Target current from its 214 MOhm input
+    # resistance under the same ~-12 mV rule as the others.
+    dict(specimen_id=1079568285, supertype="Sst_20", layer="L2",
+         swc=f"{GEN}/data/patchseq/swc/1079568285_upright.swc",
+         nwb=f"{GEN}/data/patchseq/nwb/1079568285.nwb",
+         pia_dist_um=304.031759, sag=0.281601, target_pa=-55),
     dict(specimen_id=819770858, supertype="Sst_25", layer="L2",
          swc=f"{GEN}/data/patchseq/swc/819770858_upright.swc",
          nwb=f"{GEN}/data/patchseq/nwb/819770858.nwb",
          pia_dist_um=405.610339, sag=0.564403, target_pa=-100),
-    dict(specimen_id=907585117, supertype="Sst_22", layer="L3",
-         swc=f"{GEN}/data/patchseq/swc/907585117_upright.swc",
-         nwb=f"{GEN}/data/patchseq/nwb/907585117.nwb",
-         pia_dist_um=516.867061, sag=0.363065, target_pa=-40),
     dict(specimen_id=1037461069, supertype="Sst_3", layer="L3",
          swc=f"{GEN}/data/patchseq/swc/1037461069_upright.swc",
          nwb=f"{GEN}/data/patchseq/nwb/1037461069.nwb",
@@ -61,11 +67,11 @@ CELLS = [
 # is unusable in a three-cell panel. Sst_3 is given a mid tone here so the
 # series reads dark -> mid -> light with depth. Panels f/g only; every other
 # panel keeps the SEA-AD palette.
-# Four cells now, and SEA-AD gives Sst_25 #693d07 / Sst_22 #7b4c10 (nearly the
-# same dark brown) and Sst_3 #f2ad49 / Sst_5 #e6a343 (nearly the same light
-# orange). Sst_22 and Sst_3 are given intermediate tones so the series reads as
-# an even dark -> light ramp with depth. Panels e/f only.
-PANEL_FG_COLORS = {"Sst_22": "#9c5f14", "Sst_3": "#c8862e", "Sst_1": "#f5c77e"}
+# SEA-AD gives Sst_3 #f2ad49 / Sst_5 #e6a343 (nearly the same light orange),
+# so Sst_3 and Sst_1 take intermediate tones and the series reads as an even
+# dark -> light ramp with depth. Sst_20 keeps its SEA-AD colour (#885616),
+# which already separates from Sst_25's #693d07. Panels e/f only.
+PANEL_FG_COLORS = {"Sst_3": "#c8862e", "Sst_1": "#f5c77e"}
 for c in CELLS:
     c["color"] = PANEL_FG_COLORS.get(c["supertype"],
                                      colors.get(c["supertype"], "#888888"))

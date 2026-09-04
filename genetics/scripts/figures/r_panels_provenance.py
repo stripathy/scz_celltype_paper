@@ -32,10 +32,11 @@ FINEMAP = GEN / "data" / "fine_mapping" / "pgc3_finemap_credible_sets.csv"
 
 PATCHSEQ = GEN / "data" / "patchseq"
 # Five exemplars since the 2026-08 rebuild: three depleted supertypes and two
-# not-depleted, ordered by soma depth. The three added cells were pulled from
-# DANDI 000636 / the patch-seq repo into data/patchseq so the chain no longer
-# depends on anything outside this repo.
-EXEMPLARS = ("819770858", "907585117", "1037461069", "758996755", "797048104")
+# not-depleted, ordered by soma depth. Cells not in the upstream cache were
+# pulled from DANDI 000636 / the patch-seq repo into data/patchseq so the chain
+# no longer depends on anything outside this repo. 2026-08-31: Sst_20
+# (1079568285) replaced the Sst_22 exemplar (907585117).
+EXEMPLARS = ("1079568285", "819770858", "1037461069", "758996755", "797048104")
 SWC = [PATCHSEQ / "swc" / f"{i}_upright.swc" for i in EXEMPLARS]
 NWB = [PATCHSEQ / "nwb" / f"{i}.nwb" for i in EXEMPLARS]
 
@@ -44,11 +45,13 @@ REF_H5AD = Path("/Users/shreejoy/Github/shared_data/nicole_sea_ad_snrnaseq_refer
 SCZ_CRUMBLR = PAPER / "spatial/data/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv"
 AD_CRUMBLR = PAPER / "crossdisorder/results/crumblr_results_supertype_neurons.csv"
 
-# Enrichment now comes from MAGMA run natively on the A9-derived 501-type
-# taxonomy; the specificity matrix itself (160 MB) is regenerable and stays out
-# of the repo, so the gsa output and the gene-level results stand in for it.
-GSA = GEN / "results" / "intermediates" / "T_a9rbh_bigdeli.gsa.out"
-RBH = GEN / "results" / "intermediates" / "franken_rbh_A9.csv"
+# Enrichment now comes from MAGMA run natively on the SEA-AD DLPFC taxonomy
+# alone (125 supertypes; build_spec_seaad_only.py -- the combined SEA-AD +
+# Siletti taxonomy was retired on L. Duncan's advice); the specificity matrix
+# is regenerable, so the gsa output and the gene-level results stand in for it.
+# panel_A_*.csv are legacy exports still drawn from the retired combined run.
+GSA = GEN / "results" / "intermediates" / "T_a9only_bigdeli.gsa.out"
+GSA_LEGACY = GEN / "results" / "intermediates" / "T_a9rbh_bigdeli.gsa.out"
 BIGDELI_GENES = GEN / "data" / "gwas" / "magma_bigdeli" / "bigdeli.step2.genes.out"
 BIGDELI_SS = GEN / "data" / "gwas" / "bigdeli_eur_scz_sum_stats.gz"
 A9 = sorted(Path("/Users/shreejoy/Downloads").glob(
@@ -61,13 +64,13 @@ SPEC = INTERM / "rbh_combined_specificity.csv"
 # panel CSV -> upstream file(s) it was derived from
 SOURCES: dict[str, object] = {
     # --- export_for_R.py ---
-    "panel_A_enrichment.csv":            GSA,
-    "panel_A_family_groups.csv":         GSA,
-    "panel_A_thresholds.csv":            GSA,
+    "panel_A_enrichment.csv":            GSA_LEGACY,
+    "panel_A_family_groups.csv":         GSA_LEGACY,
+    "panel_A_thresholds.csv":            GSA_LEGACY,
     "panel_B_genetics_vs_depletion.csv": [GSA, COMPOS],
     "panel_B_bd.csv":                    COMPOS,
     "panel_B_bigdeli.csv":               COMPOS,
-    "panel_C_gene_drivers.csv":          [GSA, BIGDELI_GENES, RBH],
+    "panel_C_gene_drivers.csv":          [GSA, BIGDELI_GENES],
     "panel_C_top_labels.csv":            [GSA, BIGDELI_GENES],
     "panel_C_meta.csv":                  [GSA, BIGDELI_GENES],
     "panel_D_credible_set.csv":          BIGDELI_SS,
@@ -92,7 +95,7 @@ SOURCES: dict[str, object] = {
 DESCRIPTIONS = {
     "panel_A_enrichment.csv":            "MAGMA gene-property enrichment per supertype",
     "panel_B_genetics_vs_depletion.csv": "SCZ GWAS enrichment vs compositional depletion",
-    "panel_C_gene_drivers.csv":          "per-gene drivers of Sst_3 enrichment",
+    "panel_C_gene_drivers.csv":          "per-gene drivers of Sst_2 enrichment",
     "panel_D_credible_set.csv":          "Bigdeli SuSiE-R EUR credible set at the HCN1 locus (Suppl. Table 13)",
     "panel_D_genes.csv":                 "RefSeq gene track for the HCN1 locus",
     "panel_E_hcn1_vs_sag.csv":           "HCN1 expression vs patch-seq sag per supertype",

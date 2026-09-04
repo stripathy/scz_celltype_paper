@@ -1,0 +1,126 @@
+safe_name,cell_type
+Type0,Lamp5_Lhx6_1
+Type1,Lamp5_1
+Type2,Lamp5_2
+Type3,Lamp5_3
+Type4,Lamp5_4
+Type5,Lamp5_5
+Type6,Lamp5_6
+Type7,Pax6_1
+Type8,Pax6_2
+Type9,Pax6_3
+Type10,Pax6_4
+Type11,Sncg_3
+Type12,Sncg_6
+Type13,Sncg_2
+Type14,Sncg_1
+Type15,Sncg_8
+Type16,Sncg_4
+Type17,Sncg_5
+Type18,Vip_14
+Type19,Vip_15
+Type20,Vip_16
+Type21,Vip_4
+Type22,Vip_5
+Type23,Vip_6
+Type24,Vip_9
+Type25,Vip_2
+Type26,Vip_11
+Type27,Vip_13
+Type28,Vip_1
+Type29,Vip_12
+Type30,Vip_18
+Type31,Vip_19
+Type32,Vip_21
+Type33,Vip_23
+Type34,Sst Chodl_1
+Type35,Sst_1
+Type36,Sst_4
+Type37,Sst_5
+Type38,Sst_7
+Type39,Sst_3
+Type40,Sst_19
+Type41,Sst_9
+Type42,Sst_10
+Type43,Sst_13
+Type44,Sst_12
+Type45,Sst Chodl_2
+Type46,Sst_11
+Type47,Sst_20
+Type48,Sst_22
+Type49,Sst_23
+Type50,Sst_25
+Type51,Sst_2
+Type52,Pvalb_6
+Type53,Pvalb_5
+Type54,Pvalb_8
+Type55,Pvalb_7
+Type56,Pvalb_1
+Type57,Pvalb_3
+Type58,Pvalb_2
+Type59,Pvalb_15
+Type60,Pvalb_14
+Type61,Pvalb_12
+Type62,Pvalb_10
+Type63,Pvalb_13
+Type64,Pvalb_9
+Type65,Chandelier_1
+Type66,Chandelier_2
+Type67,L2/3 IT_1
+Type68,L2/3 IT_2
+Type69,L2/3 IT_6
+Type70,L2/3 IT_7
+Type71,L2/3 IT_5
+Type72,L2/3 IT_13
+Type73,L2/3 IT_10
+Type74,L2/3 IT_8
+Type75,L2/3 IT_12
+Type76,L6 IT_1
+Type77,L6 IT_2
+Type78,L4 IT_2
+Type79,L4 IT_3
+Type80,L4 IT_4
+Type81,L5 IT_1
+Type82,L5 IT_3
+Type83,L2/3 IT_3
+Type84,L4 IT_1
+Type85,L5 IT_2
+Type86,L5 IT_5
+Type87,L5 IT_6
+Type88,L5 IT_7
+Type89,L5 ET_2
+Type90,L6 CT_1
+Type91,L6 CT_2
+Type92,L6 CT_3
+Type93,L6b_1
+Type94,L6b_2
+Type95,L6b_3
+Type96,L6b_4
+Type97,L6b_5
+Type98,L6b_6
+Type99,L6 IT Car3_1
+Type100,L6 IT Car3_2
+Type101,L6 IT Car3_3
+Type102,L5/6 NP_1
+Type103,L5/6 NP_2
+Type104,L5/6 NP_3
+Type105,L5/6 NP_6
+Type106,L5/6 NP_4
+Type107,Astro_1
+Type108,Astro_2
+Type109,Astro_5
+Type110,Astro_3
+Type111,Astro_4
+Type112,OPC_1
+Type113,OPC_2
+Type114,Oligo_1
+Type115,Oligo_2
+Type116,Oligo_4
+Type117,Oligo_3
+Type118,Endo_2
+Type119,Micro-PVM_2
+Type120,L6 CT_4
+Type121,Astro_6-SEAAD
+Type122,VLMC_1
+Type123,OPC_2_2-SEAAD
+Type124,Micro-PVM_3-SEAAD

@@ -2,10 +2,24 @@
 # behind it -- which SCZ GWAS, and which cortical region supplies the normotypic
 # expression?
 #
-# Each facet re-runs the panel end to end under one configuration. The taxonomy,
-# the specificity recipe, the MAGMA settings and the compositional data are held
-# fixed throughout; only the named input changes. The y-axis is therefore
+# Each facet re-runs the panel end to end under one configuration. The
+# specificity recipe, the MAGMA settings and the compositional data are held
+# fixed throughout; only the named inputs change. The y-axis is therefore
 # identical across facets and only x moves.
+#
+# Row a is a ONE-AT-A-TIME sensitivity design: the main-figure configuration,
+# then the GWAS swapped, then the reference region swapped. The fourth cell of
+# the 2x2 (MTG + PGC3, both swapped at once) is still computed and kept in
+# fig4_robustness_sst16.csv -- it is simply not drawn, since a both-swapped cell
+# answers no question the single swaps leave open. Its value is in the legend
+# draft (results/figures/supp_fig4_robustness_legend.md) if a referee asks.
+#
+# Since the combined SEA-AD + Siletti taxonomy was retired, each reference
+# region contributes its OWN SEA-AD supertype set (DLPFC 125, MTG 137), so the
+# MTG facet varies region and supertype set together rather than region alone.
+# The 16 Sst supertypes plotted are the same 16 in every facet, and the panel
+# plots uncorrected -log10 P, so the differing correction universes do not
+# affect what is drawn.
 
 suppressPackageStartupMessages({
   library(ggplot2); library(dplyr); library(tidyr); library(readr)
@@ -28,8 +42,8 @@ fmt_p <- function(p) ifelse(p >= 1e-3, sprintf("italic(P) == %.3f", p),
   ifelse(p < 1e-4, "italic(P) < 10^-4",     # cor.test's exact Spearman P underflows here
     sprintf("italic(P) == %.1f %%*%% 10^%.0f", p / 10^floor(log10(p)), floor(log10(p)))))
 
-# one inset per facet, pinned to the lower-right corner -- the only region
-# empty in all three facets, since depletion rises with enrichment
+# one inset per facet, pinned to the lower-right corner -- the region left
+# empty wherever depletion rises with enrichment
 stats_df <- d |> group_by(run) |>
   summarise(rho = cor(nlp, depletion, method = "spearman"),
             p = suppressWarnings(cor.test(nlp, depletion, method = "spearman")$p.value),
@@ -125,10 +139,14 @@ fig <- plot_grid(
             label_size = 15),
   ncol = 1, rel_heights = c(1, 0.9))
 
+# Written directly into the supplementary submission folder as an original,
+# per manuscript/figures/supplementary/README.md; the S-number lives in FIGSTEM.
+SUPPFIG <- file.path(FIGDIR, "..", "..", "..", "manuscript/figures/supplementary")
+FIGSTEM <- "S10_genetics_ad_robustness"
 for (ext in c("png", "pdf")) {
-  ggsave(file.path(FIGDIR, paste0("supp_fig4a_robustness.", ext)), fig,
+  ggsave(file.path(SUPPFIG, paste0(FIGSTEM, ".", ext)), fig,
          width = 10.6, height = 8.0, bg = "white", dpi = 220)
 }
 print(as.data.frame(ad_stats[, c("region", "rho", "p")]), digits = 3)
-cat("wrote supp_fig4a_robustness.{png,pdf}\n")
+cat(sprintf("wrote %s/%s.{png,pdf}\n", SUPPFIG, FIGSTEM))
 print(as.data.frame(stats_df[, c("run", "rho", "p")]), digits = 3)

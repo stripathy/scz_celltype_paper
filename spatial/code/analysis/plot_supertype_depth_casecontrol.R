@@ -18,7 +18,9 @@ suppressPackageStartupMessages({
 cowplot::set_null_device("agg")
 
 DD <- "output/depth_casecontrol"                        # per-cell data + results CSV
-FIGDIR <- "../manuscript/figures/supplementary"                  # the single home for submission figures
+# Not in the current paper (cited nowhere in the Doc), so it writes beside the
+# other retired figures, not into the submission folder.
+FIGDIR <- "../manuscript/figures/not_in_current_version"
 FIGSTEM <- "S10_supertype_depth_by_diagnosis"
 DX_COL <- c(Control = "#4C9BD4", SCZ = "#E2625A"); SIG_COL <- "#B11226"
 SIG_FDR <- 0.10

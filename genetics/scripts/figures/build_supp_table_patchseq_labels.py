@@ -20,7 +20,7 @@ GEN = "/Users/shreejoy/Github/scz_celltype_paper/genetics"
 OUT = f"{GEN}/results/tables/supp_T6_patchseq_sst_annotations.csv"
 
 # the five reconstructions shown in panels e/f, depth-ordered
-EXEMPLARS = {819770858: "Sst_25", 907585117: "Sst_22", 1037461069: "Sst_3",
+EXEMPLARS = {1079568285: "Sst_20", 819770858: "Sst_25", 1037461069: "Sst_3",
              758996755: "Sst_5", 797048104: "Sst_1"}
 
 cells = pd.read_csv(f"{UP}/data/patchseq/patchseq_combined.csv", low_memory=False)

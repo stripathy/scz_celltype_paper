@@ -22,17 +22,48 @@ directories at deadline.
 
 ## Contents
 
-All generators live in `spatial/code/analysis/` and are run from `spatial/`.
+Numbering follows the manuscript Doc (`1cO5ZSt…`) as of 2026-09-01. **S1, S4, S5
+and S7 are Nicole's** (from her snRNA-seq DE and composition analyses); they are
+not in this repo and are not in this folder yet.
 
-| S# | File | Shows | Built by | Data inputs |
-|----|------|-------|----------|-------------|
-| S2 | `S02_xenium_celltype_annotation` | Five panels: agreement with the Kwon/Lieber authors' own annotations (a); subclass and Sst-supertype marker genes (b, d); classification F1 from the 300-gene panel vs the full transcriptome (c, e) | `integrate_lieber_annotations.py`, `plot_subclass_marker_dotplot.py`, `plot_sst_supertype_depth_dotplot.py`, `resolvability_report.py` (data) → `plot_markers_resolvability_combined.R` | `output/depth_validation/lieber_layers/` + `output/celltyping_supplement/data/` |
-| S3 | `S03_xenium_merfish_concordance` | Five panels: subclass and neuronal-supertype proportions and subclass median depth, Xenium vs MERFISH (a–c); per-supertype depth distributions, glutamatergic (d) and GABAergic (e) | `build_celltyping_validation_data.py` + `build_supertype_depth_platform_data.py` (data) → `plot_xenium_merfish_composite.R` | `output/celltyping_supplement/data/` + `output/depth_platform/` |
-| S10 | `S10_supertype_depth_by_diagnosis` | Per-supertype cortical depth, control vs SCZ, with mixed-effects model | `build_supertype_depth_casecontrol_data.py` (data) → `plot_supertype_depth_casecontrol.R` | `output/depth_casecontrol/` |
+| S# | File | Shows | Built by | Run from |
+|----|------|-------|----------|----------|
+| S1 | — | Marker dot plots, integrated + SEA-AD reference | Nicole | — |
+| S2 | `S02_xenium_celltype_annotation` | Agreement with Kwon/Lieber annotations (a); subclass and Sst-supertype marker genes (b, d); panel-vs-transcriptome classification F1 (c, e) | `plot_markers_resolvability_combined.R` | `spatial/` |
+| S3 | `S03_xenium_merfish_concordance` | Xenium vs MERFISH proportions and depth (a–c); per-supertype depth distributions (d, e) | `plot_xenium_merfish_composite.R` | `spatial/` |
+| S4 | — | Supertype-level differential expression | Nicole | — |
+| S5 | — | Non-neuronal compositional changes | Nicole | — |
+| S6 | `S06_composition_pooling` | Abundance results across pooling strategies and leave-one-dataset-out | `02_plot_pooling_heatmap.R` | repo root |
+| S7 | — | Composition robust to re-annotation excluding DE genes | Nicole | — |
+| S8 | `S08_sst_strata` | Sst depletion groups: definition (a), gene-set burden (b), gene-level z (c), NES and exemplar-gene heatmaps (d, e). Built as a main figure (was Fig. 5 until 2026-09-01) so it can be promoted | `fig5/08_figure5.R` | repo root |
+| S9 | `S09_scz_enrichment_seaad125` | SCZ genetic-risk enrichment across the 125 supertypes of the SEA-AD DLPFC taxonomy (single panel; replaced the 501-type combined-taxonomy version 2026-09-02) | `plot_supp_enrichment_seaad125.R` | repo root |
+| S10 | `S10_genetics_ad_robustness` | Genetic-risk and AD comparisons across GWAS version and reference region | `plot_fig4_robustness.R` | repo root |
+
+Regenerate (each writes into this folder in place):
+
+```bash
+# from spatial/
+Rscript code/analysis/plot_markers_resolvability_combined.R      # S2
+Rscript code/analysis/plot_xenium_merfish_composite.R            # S3
+# from the repo root
+Rscript snrnaseq/composition_sensitivity/code/02_plot_pooling_heatmap.R   # S6
+Rscript transcriptomic/scripts/fig5/08_figure5.R                         # S8
+Rscript genetics/scripts/figures/plot_supp_enrichment_seaad125.R         # S9
+Rscript genetics/scripts/figures/plot_fig4_robustness.R                  # S10
+```
+
+Not in this version: the RNAscope figure (cut on Etienne's advice 2026-09-01);
+the 501-type enrichment landscape and `S10_supertype_depth_by_diagnosis`, both
+cited nowhere in the Doc and moved to `../not_in_current_version/` (their renderers
+now write there, so re-running them cannot drop a stray file into this folder);
+and the Sst depletion-group controls figure
+(nuclei imbalance, cell-matched draws, interaction NES), dropped 2026-09-01 when the
+analysis moved to the supplement -- its renderer `fig5/supp/figS_strata_controls.R`
+is kept and now writes `reserve_strata_controls.*` to `transcriptomic/results/`.
 
 The small figure-input CSVs are committed (force-added past the `spatial/output/`
 ignore rule), so the three renderers run from a clean clone with no external data.
-The two ~20 MB per-cell tables behind the S3 and S10 violins are **not** committed —
+The two ~20 MB per-cell tables behind the S3 violins and the retired depth-by-diagnosis figure are **not** committed —
 regenerate them with the `build_*` steps below, which need the Xenium h5ads.
 
 **All three were regenerated from the reinstated 2026-04-01 Xenium dataset** (see
@@ -53,7 +84,7 @@ panels d and e make the same comparison per supertype with the full distribution
 still build those two as standalones but are no longer part of the submission set.
 **Three S-numbers are freed by the two merges; renumber S4–S14 before submission.**
 
-S2 and S3 are both rendered on a 7.1 in canvas (S10 is not, and is due a pass).
+S2 and S3 are both rendered on a 7.1 in canvas.
 
 To regenerate (from `spatial/`):
 
@@ -69,13 +100,17 @@ python3 code/analysis/build_celltyping_validation_data.py
 python3 code/analysis/build_supertype_depth_platform_data.py
 Rscript code/analysis/plot_xenium_merfish_composite.R
 
-# S10
+# depth by diagnosis -- NOT in this version; writes to ../not_in_current_version/
 python3 code/analysis/build_supertype_depth_casecontrol_data.py
 Rscript code/analysis/plot_supertype_depth_casecontrol.R
 ```
 
-## Still to add
+## Not in this folder
 
-S1, S7–S9, S11–S14. Most already exist in module directories (see
-`manuscript/SUPPLEMENT_PLAN.md` for the full inventory and readiness state);
-S8 (supertype-level DE power) has not been built yet.
+S1, S4, S5 and S7 are Nicole's figures and live outside the repo (see
+`manuscript/SUPPLEMENT_PLAN.md`).
+
+S8 is rendered by `transcriptomic/scripts/fig5/08_figure5.R` straight into this
+folder; see `transcriptomic/scripts/fig5/README.md` for the pipeline behind it. To
+promote it back to a main figure, change `FIGSTEM` and the output directory at the
+bottom of that script.
