@@ -31,3 +31,47 @@ genetics/data/patchseq/nwb/*.nwb
 # rule, but its tables predate the canonical April+PMI DE — one of them flips
 # PVALB across p = 0.05. Ignored so `git add -A` cannot sweep it into the repo.
 transcriptomic/scratch_panelK/
+
+# ---- Sst depletion-strata (S8) pipeline, transcriptomic/scripts/fig5/ ----
+# Cluster exports feeding steps 01-04 (1.6 GB of parquet/h5ad). Only the manifests
+# and the tiny summary tables are tracked; shared/snrnaseq_de/EXPORT_SPEC_*.md
+# says how to regenerate them on the cluster.
+transcriptomic/data/stratum_pseudobulks_export/*
+!transcriptomic/data/stratum_pseudobulks_export/MANIFEST.md
+!transcriptomic/data/stratum_pseudobulks_export/_export_summary.csv
+!transcriptomic/data/stratum_pseudobulks_export/_marker_check.csv
+transcriptomic/data/stratum_sst_cells_export/*
+!transcriptomic/data/stratum_sst_cells_export/MANIFEST_sst_cells.md
+!transcriptomic/data/stratum_sst_cells_export/_sst_reconciliation.csv
+# Results: track the canonical tables the fig5 README lists (what 08_figure5.R and
+# 09_verify.R read), not the per-cohort tables (24-42 MB), donor-stratum parquets,
+# msigdb cache, exploratory PNGs, or the reserve (Jens / SEA-AD A9 / cell-subsample)
+# analyses, all regenerable from the numbered scripts.
+transcriptomic/results/sst_strata_gsea/*
+!transcriptomic/results/sst_strata_gsea/strata_definition.csv
+!transcriptomic/results/sst_strata_gsea/xenium_stratum_concordance.csv
+!transcriptomic/results/sst_strata_gsea/xenium_sst_baseline_controls.csv
+!transcriptomic/results/sst_strata_gsea/sst_baseline_vs_depletion.csv
+!transcriptomic/results/sst_strata_gsea/suppl_table_strata_gsea_annotated.csv
+!transcriptomic/results/sst_strata_gsea/pseudobulk/
+transcriptomic/results/sst_strata_gsea/pseudobulk/*
+!transcriptomic/results/sst_strata_gsea/pseudobulk/stratum_meta_de.csv
+!transcriptomic/results/sst_strata_gsea/pseudobulk/gsea_all_signatures.csv
+!transcriptomic/results/sst_strata_gsea/pseudobulk/stratum_gene_signatures.csv
+!transcriptomic/results/sst_strata_gsea/pseudobulk/interaction_meta.csv
+!transcriptomic/results/sst_strata_gsea/pseudobulk/interaction_gsea.csv
+!transcriptomic/results/sst_strata_gsea/pseudobulk/module_score_tests.csv
+!transcriptomic/results/sst_strata_gsea/archive_exploratory/
+transcriptomic/results/sst_strata_gsea/archive_exploratory/*
+!transcriptomic/results/sst_strata_gsea/archive_exploratory/README.md
+
+# ---- Parked 8th cohort (GSE158516): code + README only ----
+external_validation/gse158516/data/
+external_validation/gse158516/output/
+
+# ---- Reading material: PDFs / slide decks are not ours to redistribute ----
+background/relevant papers/
+background/talks/*.pptx
+
+# R side-effect file from non-interactive ggsave sessions
+Rplots.pdf

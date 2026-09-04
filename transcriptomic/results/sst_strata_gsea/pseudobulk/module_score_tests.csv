@@ -1,0 +1,13 @@
+module,stratum,estimate,se,zval,pval,k,n_neg,test
+oxphos,depleted,-0.248,0.072,-3.439,5.8e-4,7,7,per_stratum
+oxphos,intermediate,-0.173,0.057,-3.055,0.0023,7,6,per_stratum
+oxphos,non_depleted,-0.122,0.057,-2.142,0.032,7,6,per_stratum
+synaptic,depleted,-0.227,0.042,-5.39,7e-8,7,6,per_stratum
+synaptic,intermediate,-0.18,0.037,-4.802,1.6e-6,7,6,per_stratum
+synaptic,non_depleted,-0.098,0.034,-2.888,0.0039,7,5,per_stratum
+translation,depleted,-0.216,0.059,-3.667,2.5e-4,7,7,per_stratum
+translation,intermediate,-0.142,0.054,-2.61,0.0091,7,7,per_stratum
+translation,non_depleted,-0.133,0.064,-2.085,0.037,7,7,per_stratum
+oxphos,NA,-0.121,0.056,-2.139,0.032,7,6,within_donor_interaction
+synaptic,NA,-0.124,0.032,-3.821,1.3e-4,7,7,within_donor_interaction
+translation,NA,-0.091,0.042,-2.194,0.028,7,5,within_donor_interaction
