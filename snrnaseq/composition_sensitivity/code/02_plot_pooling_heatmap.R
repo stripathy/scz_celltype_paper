@@ -7,7 +7,7 @@
 #   c  leave-one-dataset-out for the supertypes at FDR < 0.20 in the paper
 # Input : results/composition_pooling_sensitivity.csv, results/composition_lodo.csv,
 #         data/neuronal_supertypes_109.csv
-# Output: results/supp_composition_pooling.{png,pdf}
+# Output: manuscript/figures/supplementary/S06_composition_pooling.{png,pdf}
 suppressPackageStartupMessages({
   library(readr); library(dplyr); library(tidyr); library(tibble); library(ggplot2); library(cowplot); library(jsonlite)
 })
@@ -188,7 +188,11 @@ lodo_p <- ggplot(full_c, aes(x = ct, y = beta)) +
 
 fig <- plot_grid(hm, sc, lodo_p, ncol = 1, rel_heights = c(1.78, 1, 0.78),
                  labels = c("a", "b", "c"), label_size = 8, label_fontface = "bold")
-ggsave(file.path(HERE, "results/supp_composition_pooling.png"), fig, width = 7.1, height = 8.6, dpi = 400, bg = "white")
-ggsave(file.path(HERE, "results/supp_composition_pooling.pdf"), fig, width = 7.1, height = 8.6, bg = "white")
-cat("wrote results/supp_composition_pooling.{png,pdf}\n")
+# Written directly into the supplementary submission folder as an original,
+# per manuscript/figures/supplementary/README.md; the S-number lives in FIGSTEM.
+SUPPFIG <- file.path(ROOT, "manuscript/figures/supplementary")
+FIGSTEM <- "S06_composition_pooling"
+ggsave(file.path(SUPPFIG, paste0(FIGSTEM, ".png")), fig, width = 7.1, height = 8.6, dpi = 400, bg = "white")
+ggsave(file.path(SUPPFIG, paste0(FIGSTEM, ".pdf")), fig, width = 7.1, height = 8.6, bg = "white")
+cat(sprintf("wrote %s/%s.{png,pdf}\n", SUPPFIG, FIGSTEM))
 cat("paper FDR <", THR, "set:", HL, "\n")

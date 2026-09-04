@@ -57,6 +57,7 @@ External hub (~/Github/shared_data/, per ~/Github/DATA_LAYOUT.md):
 | spatial → transcriptomic | `transcriptomic/scripts/09` reads `../spatial/output/de/de_results_subclass.csv` | `SCZ_Xenium/output/de/…` (symlinked) |
 | genetics → transcriptomic | `transcriptomic/scripts/04` reads `../genetics/data/gwas/…`; `genetics/data/gwas/*` symlinked | `scz_cell_type_enrichment/data/gwas/…` |
 | histology data | `histology/coordinates` | `sgACC_cell_depth_analysis/coordinates` |
+| Xenium object → spatial | `spatial/output/all_samples_annotated.h5ad` | `SCZ_Xenium/output/all_samples_annotated.h5ad` (schema: [`spatial/all_samples_annotated_guide.md`](spatial/all_samples_annotated_guide.md)) |
 
 ## Xenium dataset state (which object the numbers come from)
 
@@ -67,6 +68,7 @@ is more than one on disk. Pin it before trusting any Xenium number.
 |---|---|
 | **Canonical** | `SCZ_Xenium/output/all_samples_annotated.h5ad` — the **2026-04-01** state, reinstated 2026-07-31 |
 | Identity | md5 `763e6655fc55839f177d57aa98dc5453`, byte-identical to `SCZ_Xenium/archive/2026-04-01/all_samples_annotated_april_augmented.h5ad` |
+| In this repo | `spatial/output/all_samples_annotated.h5ad` — symlink to the canonical file; obs schema, QC gates and `lieber_*` semantics in [`spatial/all_samples_annotated_guide.md`](spatial/all_samples_annotated_guide.md) |
 | Analysis set | **356,313** neuronal cortical cells (`qc_pass & corr_qc_pass & spatial_domain == 'Cortical'`, neuronal by subclass prefix) |
 | Lieber columns | joined by within-sample position, 94.31% matched, using the **corrected** map **cluster 9 = MGE, cluster 12 = CGE** (S.H. Kwon, email 2026-07-27) |
 | Override | set `XENIUM_BASE` if the processing repo is not at `~/Github/SCZ_Xenium` |

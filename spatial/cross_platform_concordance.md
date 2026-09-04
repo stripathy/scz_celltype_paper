@@ -38,7 +38,7 @@ Full depth profile comparisons (proportion vs depth curves for all subclasses) s
 
 ### 1.4 Classifier validation summary
 
-The correlation classifier (step 02b) achieves r = 0.81 against MERFISH proportions (Controls only), compared to r = 0.73 for Harmony-based integration. Critically, Harmony misclassified non-neuronal types into GABAergic categories (e.g., VLMC classified as OPC 82% of the time) and inflated Sst proportions to 12.1% vs the expected 2.5%. See [Methods Writeup](methods_writeup.md) for the full comparison.
+The correlation classifier (step 02b) achieves r = 0.80 against MERFISH proportions (Controls only), compared to r = 0.73 for Harmony-based integration. Critically, Harmony misclassified non-neuronal types into GABAergic categories (e.g., VLMC classified as Sst 56% of the time) and inflated Sst proportions to 12.1% vs the expected 2.5%. See [Methods Writeup](methods_writeup.md) for the full comparison.
 
 ---
 
