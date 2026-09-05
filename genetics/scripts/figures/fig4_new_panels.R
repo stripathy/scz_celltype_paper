@@ -1,10 +1,11 @@
 # Builder functions for the Figure 4 marker/AD panels.
 #
 # Kept separate from the render script so that BOTH the standalone panel
-# renderer (render_fig4_new_panels.R) and the multipanel assembly
+# multipanel assembly in scz_sst_hcn1_story.R
 # (scz_sst_hcn1_story.R) build these panels from one definition.
 #
-# Panel data: genetics/scripts/figures/export_fig4_new_panels.py
+# Panel data: export_panels_dehi.py (volcano, violin) and
+#             export_panel_ad_concordance.py (AD scatter)
 
 suppressPackageStartupMessages({
   library(ggplot2); library(cowplot); library(ggrepel)

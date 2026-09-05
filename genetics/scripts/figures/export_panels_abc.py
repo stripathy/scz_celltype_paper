@@ -25,6 +25,8 @@ under five other method/ancestry combinations spanning PIP 0.001-0.841; that
 spread belongs in the supplement, not in a panel.
 """
 import gzip
+import json
+
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -46,8 +48,10 @@ enrich = gsa.dropna(subset=["supertype"])[["supertype", "BETA", "P"]].rename(
 enrich["p_fdr"] = stats.false_discovery_control(enrich.p_value.values)
 
 # ---------------------------------------------------------------- panel a
-pa = pd.read_csv(f"{GEN}/results/figures/r_panels/panel_A_enrichment.csv")
-SEAAD_COLORS = dict(zip(pa.supertype, pa.color))
+# Supertype colours come from the SEA-AD palette file, not from the retired
+# 501-type enrichment export that used to carry a colour column.
+SEAAD_COLORS = json.load(open(f"{GEN}/data/seaad_supertype_colors.json"))
+# Per-supertype compositional effects (build_composition_table.py).
 comp = pd.read_csv(f"{GEN}/results/tables/gwas_vs_casecontrol_composition.csv")
 sst = comp[comp.supertype.str.startswith("Sst")
            & ~comp.supertype.str.startswith("Sst Chodl")].copy()
@@ -124,8 +128,13 @@ CS = pd.DataFrame({
     "rsid": ["rs10035564", "rs4492120", "rs6859397", "rs16902086"],
     "pos_hg38": [45252398, 45187702, 45135948, 45285650],
     "pip": [0.556416, 0.314875, 0.069742, 0.043675]})
-old_meta = pd.read_csv(f"{GEN}/results/figures/r_panels/panel_D_meta.csv")
-WIN_LO, WIN_HI = int(old_meta.win_lo_hg38[0]), int(old_meta.win_hi_hg38[0])
+# Plot window, defined here rather than read back from the panel_D_meta.csv
+# this script writes. Asymmetric so all four credible-set variants sit in
+# frame: the most 3' variant is ~165 kb past HCN1, and none extend past its
+# 5' end. export_panel_d_genetrack.py reads the window back out of the meta.
+HCN1_START_HG38, HCN1_STOP_HG38 = 45_254_947, 45_696_380
+WIN_LO = HCN1_START_HG38 - 200_000
+WIN_HI = HCN1_STOP_HG38 + 50_000
 
 rows = []
 with gzip.open(SUMSTATS, "rt") as fh:
@@ -152,7 +161,7 @@ cs["locus"] = "rs10035564"; cs["chr"] = 5; cs["pos"] = cs.pos_hg38
 cs["pos_mb"] = cs.pos_hg38 / 1e6
 cs["gwas_p"] = cs.p; cs["gwas_or"] = np.nan; cs["gene"] = np.nan
 cs["is_lead"] = cs.rsid == "rs10035564"
-hs, he = float(old_meta.hcn1_start_mb[0]) * 1e6, float(old_meta.hcn1_stop_mb[0]) * 1e6
+hs, he = float(HCN1_START_HG38), float(HCN1_STOP_HG38)
 cs["hcn1_location"] = np.where(cs.pos_hg38.between(hs, he), "intron",
                                np.where(cs.pos_hg38 < hs, "5'_upstream", "3'_downstream"))
 cs[["locus", "rsid", "chr", "pos", "pip", "gene", "gwas_p", "gwas_or", "pos_hg38",
@@ -161,7 +170,10 @@ cs[["locus", "rsid", "chr", "pos", "pip", "gene", "gwas_p", "gwas_or", "pos_hg38
 
 lead = cs[cs.is_lead].iloc[0]
 second = cs[~cs.is_lead].nlargest(1, "pip").iloc[0]
-meta = old_meta.copy()
+meta = pd.DataFrame([dict(
+    win_lo_hg38=WIN_LO, win_hi_hg38=WIN_HI,
+    win_lo_mb=WIN_LO / 1e6, win_hi_mb=WIN_HI / 1e6,
+    hcn1_start_mb=HCN1_START_HG38 / 1e6, hcn1_stop_mb=HCN1_STOP_HG38 / 1e6)])
 for k, v in dict(lead_rsid=lead.rsid, lead_pos_mb=lead.pos_mb, lead_p=lead.gwas_p,
                  lead_neglog10p=lead.neg_log10_p, lead_pip=lead.pip,
                  second_rsid=second.rsid, second_pos_mb=second.pos_mb,

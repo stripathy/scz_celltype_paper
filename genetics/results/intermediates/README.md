@@ -25,11 +25,11 @@ Normalisation, applied identically everywhere: **counts-per-10,000 + log1p**
 | Panel | Quantity | Path from the canonical reference |
 |---|---|---|
 | a, b (+ S9, S10) | MAGMA gene x cell-type specificity across the 125 DLPFC supertypes | `a9_supertype_log1p_mean.csv` (from `scripts/figures/build_dlpfc_specificity.py`) -> `scripts/figures/build_spec_seaad_only.py` -> `spec_dlpfc_a9only.txt` -> `T_a9only_{bigdeli,pgc3}.gsa.out` |
-| d, e | per-supertype mean *HCN1* expression | `a9_sst_supertype_mean_expression_cp10k.csv` (this directory), written by `scripts/figures/export_panels_dehi.py` |
-| h, i | depleted vs not-depleted marker DE, *CALB1* | `scripts/figures/export_panels_dehi.py` (loads the three h5ads directly; cell-level data is needed) |
+| d | per-supertype mean *HCN1* expression | `a9_sst_supertype_mean_expression_cp10k.csv` (this directory), written by `scripts/figures/export_panels_dehi.py` |
+| g, h | depleted vs not-depleted marker DE, *CALB1* | `scripts/figures/export_panels_dehi.py` (loads the three h5ads directly; cell-level data is needed) |
 | c | GWAS only | -- no expression |
-| e (sag), f, g | patch-seq physiology / morphology | separate modality, joined by supertype label |
-| j | crumblr composition | -- no expression |
+| d (sag), e, f | patch-seq physiology / morphology | separate modality, joined by supertype label |
+| i | crumblr composition | -- no expression |
 
 The S10 MTG facet uses `seaad_supertype_log1p_mean.csv` (MTG, 137 supertypes)
 through the same `build_spec_seaad_only.py` recipe -> `spec_mtg_only.txt` ->
@@ -59,13 +59,13 @@ Tracked (whitelisted in `genetics/.gitignore`):
 - `a9_sst_supertype_mean_expression_cp10k.csv` -- 36,601 genes x 16 Sst
   supertypes, mean log1p(CP10K) per supertype, DLPFC. Feeds panels d/e.
 - `seaad_sst_supertype_mean_expression.csv` -- the MTG predecessor of the above
-  (5 neurotypical donors). No longer read by the figure; kept so the 2.4404
-  value quoted in older notes can be reproduced.
-- `T_a9rbh_bigdeli.gsa.out`, `namemap_a9rbh.csv`, `T_a9_pgc3.gsa.out`,
-  `T_mtg_bigdeli.gsa.out`, `namemap_mtg_sametax.csv`, `franken_rbh_A9.csv` --
-  the **retired** combined SEA-AD + Siletti (501-type) runs. Read only by
-  `plot_supp_enrichment_501.R`, which renders into
-  `manuscript/figures/not_in_current_version/`.
+  (5 neurotypical donors). No longer read by Figure 4, but still the input to
+  the reserve MTG-vs-DLPFC baseline check in `reserve/sst_strata_supp/`.
+The retired combined SEA-AD + Siletti (501-type) runs -- `T_a9rbh_bigdeli.gsa.out`,
+`namemap_a9rbh.csv`, `T_a9_pgc3.gsa.out`, `T_mtg_bigdeli.gsa.out`,
+`namemap_mtg_sametax.csv`, `franken_rbh_A9.csv` -- were untracked on 2026-09-04
+along with their build scripts. They are recoverable from the git tag
+`pre-prune-2026-09-04`.
 
 Not tracked (regenerable with `build_dlpfc_specificity.py`, `seaad_supertype_log1p.py`
 and `build_spec_seaad_only.py`): the per-supertype mean matrices

@@ -2,7 +2,7 @@
 # for the 125 supertypes of the SEA-AD DLPFC taxonomy (Bigdeli 2026 GWAS, SEA-AD
 # DLPFC expression reference; MAGMA gene-property, one-sided).
 #
-# Supersedes plot_supp_enrichment_501.R: the combined SEA-AD + Siletti taxonomy
+# Supersedes the retired 501-type landscape: the combined SEA-AD + Siletti taxonomy
 # was retired (L. Duncan's advice), so the Siletti panel is gone and the
 # significance lines are corrected over the 125 supertypes actually tested.
 #

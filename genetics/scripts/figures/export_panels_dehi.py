@@ -3,7 +3,7 @@ Rebuild the four Figure 4 panels that still read the MTG reference -- d, e
 (HCN1 expression) and h, i (vulnerable-vs-not-depleted volcano and CALB1
 violin) -- from the SEA-AD A9/DLPFC neurotypical reference instead.
 
-Statistics and normalisation are copied from export_fig4_new_panels.py:
+Statistics and normalisation follow the retired export_fig4_new_panels.py:
 CP10K + log1p, cell-level Wilcoxon for the volcano, Seurat-style avg_log2FC on
 the un-logged CP10K scale, BH FDR, and a donor-level paired t-test for the
 violin annotation.

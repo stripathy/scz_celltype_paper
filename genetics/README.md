@@ -1,132 +1,123 @@
-# SCZ Cell-Type GWAS Enrichment Pipeline
+# genetics/ — SCZ common-variant risk across cell types
 
-Linking schizophrenia (SCZ) genetic risk to specific brain cell types using MAGMA-style gene property analysis on single-cell RNA-seq transcriptomic taxonomies.
+Produces **Figure 4**, **Supplementary Figs. S9 and S10**, and **Supplementary
+Table T6**. Everything else that once lived here (the combined SEA-AD + Siletti
+"Franken" taxonomy, the Siletti whole-brain enrichment, conditional/forward
+selection, gene-driver scatters, the interactive web app) was retired and
+removed on 2026-09-04; it is recoverable from the git tag
+`pre-prune-2026-09-04`.
 
-## Overview
+## The analysis in one paragraph
 
-This pipeline tests whether genes specific to particular brain cell types carry excess schizophrenia GWAS signal. Starting from cell-type specificity scores derived from single-nucleus RNA-seq reference datasets, it runs OLS regression of GWAS Z-scores against specificity for each cell type, then layers on spatial, electrophysiological, chromatin accessibility, and case-control compositional data to build a multi-modal picture of which cell types are most implicated in SCZ.
+SCZ common-variant association (**Bigdeli et al. 2026**, European ancestry) is
+tested for enrichment in the genes specific to each cell type, by MAGMA
+gene-property regression. Specificity is computed across the **125 supertypes
+of the SEA-AD neurotypical DLPFC (A9) taxonomy** — the region matched to the
+paper's frontal-cortex cohorts. Enrichment is then compared with the
+compositional depletion measured in Figure 3, and the convergence is followed
+down to one gene (*HCN1*), one locus, and the intrinsic physiology of the
+patch-seq cells that express it.
 
-### Key Findings
+PGC3 (Trubetskoy et al. 2022) and the SEA-AD **MTG** taxonomy (137 supertypes)
+appear only as robustness checks in S10. The combined SEA-AD + Siletti taxonomy
+was dropped on L. Duncan's advice (2026-08-29).
 
-- **GABAergic interneurons** carry the vast majority of SCZ genetic enrichment — 41/44 FDR-significant SEA-AD cell types are GABAergic
-- **SST interneurons** are the most enriched subclass, with multiple independently significant subtypes
-- **Upper-layer SST subtypes** (cortical layers 1–3) show disproportionately strong enrichment (Spearman r = −0.50 between depth and enrichment)
-- **SST subtypes most enriched for GWAS signal are also the most depleted in SCZ post-mortem brains** (r = 0.65, p = 3.85e-3; Endresz et al., in prep)
-- Extending to a **503-type combined taxonomy** (SEA-AD + Siletti whole-brain atlas) reveals additional enrichment in subcortical MGE interneuron populations — see [`franken_taxonomy/`](franken_taxonomy/) for the canonical type list and RBH dedup mapping that downstream projects can consume
+## What builds what
 
-## Data Sources
-
-| Dataset | Description | Reference |
-|---------|-------------|-----------|
-| **SEA-AD snRNA-seq** | 137,303 nuclei, 36,601 genes, 137 supertypes from middle temporal gyrus | [Gabitto et al. 2024, *Nature Neuroscience*](https://doi.org/10.1038/s41593-024-01774-5) |
-| **PGC3 SCZ GWAS** | Gene-level results from 76,755 cases / 243,649 controls (MAGMA) | [Trubetskoy et al. 2022, *Nature*](https://doi.org/10.1038/s41586-022-04434-5) |
-| **SEA-AD MERFISH** | Spatial transcriptomics with cortical depth per cell type (0 = pial, 1 = WM) | [Gabitto et al. 2024](https://doi.org/10.1038/s41593-024-01774-5) |
-| **Siletti whole-brain atlas** | 461 clusters spanning neocortex, hippocampus, thalamus, amygdala, and more | [Siletti et al. 2023, *Science*](https://doi.org/10.1126/science.add7046) |
-| **Patch-seq electrophysiology** | Sag, tau, and other intrinsic properties per transcriptomic type | [Lee & Bhatt Dalley et al.](https://portal.brain-map.org/) |
-| **Case-control snRNA-seq composition** | 7-cohort meta-analysis of cell-type proportion changes in SCZ (crumblr model) | Endresz et al., in prep |
-| **SCZ fine-mapping** | FINEMAP credible sets from PGC3 SCZ GWAS | [Trubetskoy et al. 2022](https://doi.org/10.1038/s41586-022-04434-5) |
-
-## Pipeline
-
-The analysis consists of 13 scripts run sequentially. Scripts 01–07 use the SEA-AD taxonomy; scripts 08–13 extend to the Siletti atlas and multi-modal integration.
-
-```
-python scripts/run_all.py          # Run core pipeline (steps 01-07)
-python scripts/run_all.py --all    # Run full pipeline (steps 01-13)
-```
-
-| Step | Script | Description | Key Output |
-|------|--------|-------------|------------|
-| 01 | `01_compute_specificity.py` | Cell-type specificity from SEA-AD snRNA-seq (column-normalize, then row-normalize) | Specificity matrix (genes × 137 types) |
-| 02 | `02_magma_enrichment.py` | MAGMA-style OLS: `GWAS_Z ~ specificity + log(gene_size) + log(n_snps) + log(N)` | Enrichment p-values per type |
-| 04 | `04_gene_drivers.py` | Gene contribution scores (specificity × GWAS_Z), Jaccard similarity | Driver gene lists per type |
-| 05 | `05_spatial_layer_analysis.py` | SST layer classification using MERFISH depth, upper-layer gene scores | Layer info + spatial gene rankings |
-| 06 | `06_gene_ephys_correlations.py` | Gene–electrophysiology correlations (sag, tau) from patch-seq | Sag/tau gene correlation tables |
-| 07 | `07_make_all_figures.py` | Regenerate all figures from saved CSVs | Publication figures |
-| 08 | `08_siletti_enrichment.py` | Enrichment on Siletti 461-cluster atlas (Conti vs reprocessed) | Siletti enrichment tables |
-| 09 | `09_metaneighbor_integration.py` | MetaNeighbor reciprocal best hits: SEA-AD ↔ Siletti matching | 95 matched type pairs |
-| 10 | `10_combined_taxonomy.py` | Build 503-type RBH combined taxonomy + enrichment | Combined enrichment (503 types) |
-| 11 | `11_gene_driver_scatter.py` | Gene driver scatter plots for top enriched types | Scatter figures per type |
-| 13 | `13_gwas_vs_composition.py` | Correlate GWAS enrichment with case-control composition changes | Correlation statistics + figure |
-
-## Repository Structure
-
-```
-scz_cell_type_enrichment/
-├── scz_celltype_enrichment/        # Python package
-│   ├── config.py                   # Central configuration (paths, thresholds, figure styles)
-│   ├── utils.py                    # OLS regression, FDR correction, utilities
-│   ├── enrichment/                 # Core GWAS enrichment pipeline
-│   │   ├── specificity.py          #   Cell-type specificity computation
-│   │   ├── gwas.py                 #   MAGMA gene-level results loading, ENTREZ mapping
-│   │   ├── celltype.py             #   OLS regression per cell type
-│   │   └── gene_drivers.py         #   Gene contribution scores, Jaccard similarity
-│   ├── integration/                # Multi-modal integration
-│   │   ├── spatial.py              #   Cortical depth classification (MERFISH)
-│   │   └── gene_ephys.py           #   Gene–electrophysiology correlations
-│   ├── siletti/                    # Siletti atlas processing
-│   │   ├── specificity.py          #   Ensembl→ENTREZ mapping, specificity
-│   │   ├── clusters.py             #   Cluster metadata
-│   │   └── metaneighbor.py         #   HVG selection, AUROC, reciprocal best hits
-│   └── plotting/                   # Publication figures
-│       ├── enrichment.py           #   Core enrichment bar plots, Manhattan
-│       ├── sst_spatial.py          #   SST-focused panels, depth volcano
-│       └── gene_ephys.py           #   Gene–ephys scatter plots
-├── scripts/                        # Analysis pipeline (01-13)
-│   ├── run_all.py                  # Master orchestrator
-│   ├── generate_markdown_figures.py # Manuscript figure generation
-│   └── archive/                    # Superseded scripts
-├── docs/                           # Documentation
-│   ├── analysis_approach.md        # Full methodology
-│   ├── combined_taxonomy_approach.md # RBH combined taxonomy details
-│   └── rnaseq_specificity_enrichment_results.md  # Results summary
-├── results/
-│   ├── tables/                     # All result CSVs
-│   └── figures/                    # All figures including manuscript/
-├── app.py                          # Interactive web explorer
-└── data/                           # Large data files (not tracked — see below)
-```
-
-## Data Setup
-
-The `data/` directory is not tracked in git (140GB+ of reference data). To reproduce the analysis, you need:
-
-| File | Size | Required for |
-|------|------|-------------|
-| `data/seaad_reference.h5ad` | ~34 GB | Steps 01–07 (SEA-AD snRNA-seq) |
-| `linking_cell_types_to_brain_phenotypes/` | 6 MB | Steps 01–02 (MAGMA gene-level results) |
-| `data/spatial/median_depth_supertype.csv` | <1 MB | Step 05 (cortical depth) |
-| `data/patchseq/*.csv` | <1 MB | Step 06 (electrophysiology) |
-| `data/precomputed_stats.siletti.training.h5` | 8.1 GB | Steps 08–10 (Siletti atlas) — [download from Allen S3](https://allen-brain-cell-atlas.s3.us-west-2.amazonaws.com/mapmycells/WHB-10Xv3/20240831/precomputed_stats.siletti.training.h5) ([browse dir](https://allen-brain-cell-atlas.s3.us-west-2.amazonaws.com/index.html#mapmycells/WHB-10Xv3/20240831/)) |
-| `data/gwas/PGC3_SCZ_wave3...tsv.gz` | 229 MB | Step 13 (SNP-level sumstats) |
-
-The `linking_cell_types_to_brain_phenotypes/` directory is a separate repository: [Integrative-Mental-Health-Lab/linking_cell_types_to_brain_phenotypes](https://github.com/Integrative-Mental-Health-Lab/linking_cell_types_to_brain_phenotypes). Clone it into the project root.
-
-The case-control composition data (Endresz et al., in prep) is read from a sibling repository (`SCZ_Xenium/data/nicole_scz_snrnaseq_betas/`).
-
-## Interactive Explorer
-
-A web application provides interactive exploration of enrichment results across the 503-type combined taxonomy:
+Run from the repo root. Steps 1–2 need the large inputs in `data/`
+(see `data/README.md`); step 3 onward runs from committed files.
 
 ```bash
-python app.py
-# Open http://localhost:8050
+# 1. Expression reference -> per-supertype means      (needs the 3 A9 h5ads)
+python3 genetics/scripts/figures/build_dlpfc_specificity.py    # DLPFC 125
+python3 genetics/scripts/figures/seaad_supertype_log1p.py      # MTG 137, S10 only
+
+# 2. Specificity matrices + the four MAGMA runs       (needs MAGMA + sumstats)
+python3 genetics/scripts/figures/build_spec_seaad_only.py
+#    -> results/intermediates/T_{a9only,mtgonly}_{bigdeli,pgc3}.gsa.out  [tracked]
+
+# 3. Figure 4 panel data -> results/figures/r_panels/  [tracked]
+python3 genetics/scripts/figures/build_composition_table.py     # crumblr betas
+python3 genetics/scripts/figures/build_sst_ephys_summary.py     # patch-seq sag
+python3 genetics/scripts/figures/export_panels_abc.py           # a, b, c
+python3 genetics/scripts/figures/export_panel_d_genetrack.py    # c gene track
+python3 genetics/scripts/figures/export_panels_dehi.py          # d, g, h
+python3 genetics/scripts/figures/export_panels_ef.py            # e, f
+python3 genetics/scripts/figures/export_panel_ad_concordance.py # i
+python3 genetics/scripts/figures/r_panels_provenance.py         # MANIFEST.tsv
+
+# 4. Render
+Rscript genetics/scripts/figures/scz_sst_hcn1_story.R    # Figure 4  (9 panels)
+
+# 5. Supplements and the patch-seq table
+python3 genetics/scripts/figures/export_supp_enrichment_seaad125.py
+Rscript genetics/scripts/figures/plot_supp_enrichment_seaad125.R   # S9
+python3 genetics/scripts/figures/export_fig4_robustness.py
+Rscript genetics/scripts/figures/plot_fig4_robustness.R            # S10
+python3 genetics/scripts/figures/build_supp_table_patchseq_labels.py  # T6
 ```
 
-## Dependencies
+`export_panel_d_genetrack.py` must run **after** `export_panels_abc.py`, which
+writes the plot window it reads. Everything else in step 3 is independent.
 
-- Python 3.10+
-- numpy, pandas, scipy, statsmodels
-- scanpy, anndata
-- matplotlib, seaborn
-- loompy (for Siletti atlas)
-- h5py
+## Figure 4, panel by panel
 
-## Citation
+The renderer builds panels under their historical letters and
+`fig4_assemble_nod.R` relabels them a–i (an earlier HCN1-expression-vs-depletion
+panel was dropped, so the old e–j became d–i).
 
-If you use this pipeline, please cite:
+| Panel | Shows | Data | Built by |
+|---|---|---|---|
+| a | SCZ enrichment vs compositional depletion, 16 Sst supertypes | `panel_B_genetics_vs_depletion.csv` | `export_panels_abc.py` |
+| b | Per-gene drivers of Sst_2 enrichment; *HCN1* highlighted | `panel_C_*.csv` | `export_panels_abc.py` |
+| c | *HCN1* locus zoom, credible set, gene track | `panel_D_*.csv` | `export_panels_abc.py` + `export_panel_d_genetrack.py` |
+| d | *HCN1* expression vs patch-seq voltage sag | `panel_E_hcn1_vs_sag.csv` | `export_panels_dehi.py` |
+| e | Five exemplar Sst reconstructions, ordered by soma depth | `panel_F_*.csv` | `export_panels_ef.py` |
+| f | Voltage responses of the same five cells | `panel_G_*.csv` | `export_panels_ef.py` |
+| g | Depleted vs not-depleted Sst marker volcano | `panel_volcano_*.csv` | `export_panels_dehi.py` |
+| h | *CALB1* by depletion group | `panel_violin_*.csv` | `export_panels_dehi.py` |
+| i | SCZ depletion vs SEA-AD Alzheimer's CPS slope | `panel_ad_concordance_sst.csv` | `export_panel_ad_concordance.py` |
 
-- **PGC3 SCZ GWAS:** Trubetskoy et al. (2022). Mapping genomic loci implicates genes and synaptic biology in schizophrenia. *Nature*, 604, 502–508.
-- **SEA-AD:** Gabitto et al. (2024). Integrated multimodal cell atlas of Alzheimer's disease. *Nature Neuroscience*, 27, 2366–2383.
-- **Siletti atlas:** Siletti et al. (2023). Transcriptomic diversity of cell types across the adult human brain. *Science*, 382, eadd7046.
-- **Case-control composition:** Endresz et al. (in prep). 7-cohort snRNA-seq meta-analysis of cell-type composition changes in schizophrenia.
+Layout is `fig4_assemble_nod.R`; shared fonts, colours and `theme_panel()` are
+in `fig4_style.R`, which also styles panels g–i in `fig4_new_panels.R`.
+
+**Why the panel CSVs are committed.** The renderer draws from them, not from
+the analyses that produced them, so the figure rebuilds from a clone without
+the 329 MB of summary statistics. That also means it can go quietly stale, so
+`r_panels/MANIFEST.tsv` records the upstream file behind every panel and
+`shared/figure_inputs.R` halts the render when one has moved on.
+
+Output: `results/figures/scz_sst_hcn1_figure4.{png,pdf}`. The renderer also
+writes an SVG for hand-editing; it is git-ignored because the patch-seq traces
+make it ~25 MB.
+
+## Supplements and tables
+
+| Item | Output | Chain |
+|---|---|---|
+| Supp Fig S9 | `manuscript/figures/supplementary/S09_scz_enrichment_seaad125.{png,pdf}` | `export_supp_enrichment_seaad125.py` -> `results/tables/scz_enrichment_seaad125_bigdeli_dlpfc.csv` -> `plot_supp_enrichment_seaad125.R` |
+| Supp Fig S10 | `manuscript/figures/supplementary/S10_genetics_ad_robustness.{png,pdf}` | `export_fig4_robustness.py` -> `results/tables/fig4_robustness_{sst16,ad_mtg}.csv` -> `plot_fig4_robustness.R` |
+| Supp Table T6 | `results/tables/supp_T6_patchseq_sst_annotations.csv` | `build_supp_table_patchseq_labels.py` |
+
+The S9 table doubles as the paper's supplementary table of SCZ enrichment: one
+row per SEA-AD DLPFC supertype, so the figure and the multiple-testing universe
+are the same 125 types.
+
+Legend drafts sit beside the figures they describe, in `results/figures/`.
+
+## Cross-component seams
+
+- **In:** the 7-cohort crumblr composition meta-analysis, via
+  `shared/snrnaseq_de/nicole_scz_snrnaseq_betas/` (panels a and i).
+- **In:** the Alzheimer's pseudo-progression slopes from `crossdisorder/`
+  (panel i, and S10b).
+- **Out:** `results/figures/r_panels/panel_volcano_vulnerable_vs_notdepleted.csv`
+  and `results/intermediates/*_mean_expression*.csv` are read by the reserve
+  analyses in `reserve/sst_strata_supp/`.
+
+## Citations
+
+- Bigdeli et al. 2026 — SCZ GWAS, European ancestry (primary)
+- Trubetskoy et al. 2022, *Nature* — PGC3 SCZ GWAS (robustness)
+- Gabitto et al. 2024, *Nature Neuroscience* — SEA-AD taxonomy and reference
+- de Leeuw et al. 2015, *PLoS Comput Biol* — MAGMA

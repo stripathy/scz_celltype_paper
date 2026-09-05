@@ -9,9 +9,10 @@ panel CSV, the upstream file it was derived from and that file's checksum, into
 r_panels/MANIFEST.tsv. shared/figure_inputs.R reads the manifest and stops the
 renderer when a source has moved on.
 
-Two exporters write into r_panels/ (export_for_R.py and
-export_fig4_new_panels.py), so the map for both lives here — one map, one
-manifest, no chance of one exporter dropping the other's rows.
+Five exporters write into r_panels/ (export_panels_abc, export_panel_d_genetrack,
+export_panels_dehi, export_panels_ef, export_panel_ad_concordance), so the map
+for all of them lives here — one map, one manifest, no chance of one exporter
+dropping another's rows.
 
 Run standalone to refresh provenance without re-exporting anything:
     python3 scripts/figures/r_panels_provenance.py
@@ -26,7 +27,6 @@ GEN = PAPER / "genetics"
 OUT = GEN / "results" / "figures" / "r_panels"
 
 TABLES = GEN / "results" / "tables"
-INTERM = Path("/Users/shreejoy/Github/scz_cell_type_enrichment/results/intermediates")
 REFGENE = GEN / "data" / "gwas" / "ncbiRefSeq_hg38.txt.gz"
 FINEMAP = GEN / "data" / "fine_mapping" / "pgc3_finemap_credible_sets.csv"
 
@@ -42,34 +42,25 @@ NWB = [PATCHSEQ / "nwb" / f"{i}.nwb" for i in EXEMPLARS]
 
 XEN = Path("/Users/shreejoy/Github/SCZ_Xenium")
 REF_H5AD = Path("/Users/shreejoy/Github/shared_data/nicole_sea_ad_snrnaseq_reference.h5ad")
-SCZ_CRUMBLR = PAPER / "spatial/data/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv"
+SCZ_CRUMBLR = PAPER / "shared/snrnaseq_de/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv"
 AD_CRUMBLR = PAPER / "crossdisorder/results/crumblr_results_supertype_neurons.csv"
 
 # Enrichment now comes from MAGMA run natively on the SEA-AD DLPFC taxonomy
 # alone (125 supertypes; build_spec_seaad_only.py -- the combined SEA-AD +
 # Siletti taxonomy was retired on L. Duncan's advice); the specificity matrix
 # is regenerable, so the gsa output and the gene-level results stand in for it.
-# panel_A_*.csv are legacy exports still drawn from the retired combined run.
 GSA = GEN / "results" / "intermediates" / "T_a9only_bigdeli.gsa.out"
-GSA_LEGACY = GEN / "results" / "intermediates" / "T_a9rbh_bigdeli.gsa.out"
 BIGDELI_GENES = GEN / "data" / "gwas" / "magma_bigdeli" / "bigdeli.step2.genes.out"
 BIGDELI_SS = GEN / "data" / "gwas" / "bigdeli_eur_scz_sum_stats.gz"
 A9 = sorted(Path("/Users/shreejoy/Downloads").glob(
     "*A9_RNAseq_final-nuclei.2024-02-13.h5ad"))
-ENRICH = TABLES / "rbh_combined_enrichment.csv"
 COMPOS = TABLES / "gwas_vs_casecontrol_composition.csv"
 EPHYS = TABLES / "sst_supertype_ephys_summary.csv"
-SPEC = INTERM / "rbh_combined_specificity.csv"
 
 # panel CSV -> upstream file(s) it was derived from
 SOURCES: dict[str, object] = {
-    # --- export_for_R.py ---
-    "panel_A_enrichment.csv":            GSA_LEGACY,
-    "panel_A_family_groups.csv":         GSA_LEGACY,
-    "panel_A_thresholds.csv":            GSA_LEGACY,
+    # --- export_panels_abc.py / export_panel_d_genetrack.py / export_panels_ef.py ---
     "panel_B_genetics_vs_depletion.csv": [GSA, COMPOS],
-    "panel_B_bd.csv":                    COMPOS,
-    "panel_B_bigdeli.csv":               COMPOS,
     "panel_C_gene_drivers.csv":          [GSA, BIGDELI_GENES],
     "panel_C_top_labels.csv":            [GSA, BIGDELI_GENES],
     "panel_C_meta.csv":                  [GSA, BIGDELI_GENES],
@@ -83,17 +74,15 @@ SOURCES: dict[str, object] = {
     "panel_F_meta.csv":                  SWC,
     "panel_G_traces.csv":                NWB,
     "panel_G_meta.csv":                  NWB,
-    # --- export_fig4_new_panels.py ---
+    # --- export_panels_dehi.py / export_panel_ad_concordance.py ---
     "panel_volcano_vulnerable_vs_notdepleted.csv": A9,
     "panel_violin_calb1_percell.csv":             A9,
     "panel_violin_donor_means.csv":               A9,
     "panel_violin_stats.csv":                     A9,
     "panel_ad_concordance_sst.csv":               [SCZ_CRUMBLR, AD_CRUMBLR],
-    "panel_ad_concordance_stats.csv":             [SCZ_CRUMBLR, AD_CRUMBLR],
 }
 
 DESCRIPTIONS = {
-    "panel_A_enrichment.csv":            "MAGMA gene-property enrichment per supertype",
     "panel_B_genetics_vs_depletion.csv": "SCZ GWAS enrichment vs compositional depletion",
     "panel_C_gene_drivers.csv":          "per-gene drivers of Sst_2 enrichment",
     "panel_D_credible_set.csv":          "Bigdeli SuSiE-R EUR credible set at the HCN1 locus (Suppl. Table 13)",

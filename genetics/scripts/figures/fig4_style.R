@@ -1,7 +1,7 @@
 # Shared Figure 4 aesthetic vocabulary -- the single source of truth.
 #
 # Sourced by scz_sst_hcn1_story.R (panels a-g), fig4_new_panels.R (panels h-j)
-# and render_fig4_new_panels.R, so every panel is styled from one place. This
+# and fig4_new_panels.R, so every panel is styled from one place. This
 # file used to be a hand-maintained mirror of an identical block inside
 # scz_sst_hcn1_story.R; the copies drifted, and a font change applied to one of
 # them silently left the other seven panels at the old size. Change sizes,

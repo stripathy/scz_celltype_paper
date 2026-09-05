@@ -34,8 +34,8 @@ SETS = [
      "cd transcriptomic && Rscript scripts/00_refresh_figure_inputs.R"),
     (PAPER / "genetics/results/figures/r_panels",
      "Figure 4 panel CSVs",
-     "cd genetics && python3 scripts/figures/export_for_R.py "
-     "&& python3 scripts/figures/export_fig4_new_panels.py"),
+     "re-run the genetics/scripts/figures/export_panel*.py exporters "
+     "for the stale panels"),
     (XEN / "crumblr",
      "Xenium crumblr inputs",
      "cd spatial && python3 code/analysis/build_crumblr_input.py"),

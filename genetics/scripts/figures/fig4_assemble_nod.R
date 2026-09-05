@@ -12,6 +12,10 @@
 #   e  exemplar morphologies (was f)
 suppressPackageStartupMessages({ library(cowplot) })
 
+# Canvas: same aspect as the Figure 2 composite (7.1 x 6.625 in) so the two
+# figures share text sizes once both are scaled to a 7.1 in column. Drawn wider
+# (8.0 in) to give the panels room during layout; fig4_style.R scales every font
+# by 8.0/7.1 to compensate.
 FIG4_WIDTH_IN  <- 8.0
 FIG4_HEIGHT_IN <- 6.625 * (8.0 / 7.1)
 
@@ -48,4 +52,13 @@ build_figure4_nod <- function(panels) {
       panel_label_kwargs))
 
   plot_grid(row_abc, row_efg, row_hij, ncol = 1, rel_heights = c(1, 1, 1.06))
+}
+
+#' Write Figure 4 to PNG + PDF.
+#'
+#' @param fig  Object returned by build_figure4_nod().
+#' @param stem Output path WITHOUT an extension.
+render_figure4 <- function(fig, stem,
+                           width = FIG4_WIDTH_IN, height = FIG4_HEIGHT_IN) {
+  save_figure(fig, stem, width, height)
 }

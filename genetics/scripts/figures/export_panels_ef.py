@@ -17,6 +17,8 @@ DANDI dandiset 000636 (sub-1036289507_ses-1037460966_icephys.nwb).
 """
 import sys
 import numpy as np
+import json
+
 import pandas as pd
 
 W = "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/intermediates"
@@ -29,8 +31,8 @@ from patchseq_builder.morphology.download import parse_swc            # noqa: E4
 from patchseq_builder.morphology.orientation import (                  # noqa: E402
     INVERTED_SPECIMEN_IDS, flip_swc_y)
 
-colors = dict(zip(*pd.read_csv(f"{GEN}/results/figures/r_panels/panel_A_enrichment.csv")
-                  [["supertype", "color"]].values.T))
+# SEA-AD supertype palette (was read from the retired 501-type enrichment export)
+colors = json.load(open(f"{GEN}/data/seaad_supertype_colors.json"))
 
 CELLS = [
     # Sst_20 replaced the Sst_22 exemplar (907585117) on 2026-08-31 so the

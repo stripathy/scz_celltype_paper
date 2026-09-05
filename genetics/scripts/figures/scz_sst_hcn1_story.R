@@ -2,32 +2,32 @@
 # ===================================================================
 # scz_sst_hcn1_story.R
 #
-# Renders Figure 4: the 10-panel SCZ-genetics / HCN1 / Sst figure.
-# Data are pre-extracted by scripts/figures/export_for_R.py and
-# export_fig4_new_panels.py into CSVs in results/figures/r_panels/. This script
-# reads those CSVs and builds each panel with ggplot2; fig4_assemble.R does the
-# final layout via a single build_figure4() call.
+# Renders Figure 4: the 9-panel SCZ-genetics / HCN1 / Sst figure.
+# Data are pre-extracted into results/figures/r_panels/ by export_panels_abc.py,
+# export_panel_d_genetrack.py, export_panels_dehi.py, export_panels_ef.py and
+# export_panel_ad_concordance.py. This script reads those CSVs, builds each
+# panel with ggplot2, and hands them to build_figure4_nod() in
+# fig4_assemble_nod.R for the final layout.
 #
 # Shared style (fonts, colours, theme_panel, inset helpers) comes from
-# fig4_style.R, which also styles panels h-j in fig4_new_panels.R.
+# fig4_style.R, which also styles panels f-h in fig4_new_panels.R.
 #
 # Panel guide (top->bottom, left->right):
 #   a  genetics_vs_depletion_c  SCZ common-variant enrichment x depletion
-#   b  gene_driver_plot         Sst_25 gene drivers (specificity x MAGMA p)
+#   b  gene_driver_plot         Sst_2 gene drivers (specificity x MAGMA p)
 #   c  hcn1_locus_plot          HCN1 locus zoom + fine-mapping + gene track
-#   d  hcn1_vs_depletion_c      HCN1 expression x depletion
-#   e  sag_c                    HCN1 expression x patch-seq voltage sag
-#   f  morphology_plot          Two exemplar Sst reconstructions
-#   g  ephys_traces_plot        Voltage responses for the same two cells
-#   h  marker volcano           Depleted vs not-depleted Sst markers
-#   i  CALB1 violin             CALB1 by depletion group
-#   j  AD concordance           SCZ depletion x SEA-AD DLPFC CPS slope
+#   d  sag_c                    HCN1 expression x patch-seq voltage sag
+#   e  morphology_plot          Five exemplar Sst reconstructions
+#   f  ephys_traces_plot        Voltage responses for the same five cells
+#   g  marker volcano           Depleted vs not-depleted Sst markers
+#   h  CALB1 violin             CALB1 by depletion group
+#   i  AD concordance           SCZ depletion x SEA-AD DLPFC CPS slope
 #
-# Convergence across a, d and e (all on the same 16 Sst supertypes, sharing the
-# SEA-AD fill + depletion-outline encoding): genetics <-> depletion,
-# HCN1 expression <-> depletion, HCN1 expression <-> intrinsic sag.
-#
-# Also writes one supplement: the SCZ enrichment landscape across supertypes.
+# The builders still pass panels under their historical letters a,b,c,e,f,g,h,i,j;
+# build_figure4_nod() drops the old d (HCN1 expression x depletion) and relabels
+# the rest sequentially to a-i. Convergence across a and d (both on the same 16
+# Sst supertypes, sharing the SEA-AD fill + depletion-outline encoding):
+# genetics <-> depletion, HCN1 expression <-> intrinsic sag.
 # ===================================================================
 
 suppressPackageStartupMessages({
@@ -41,8 +41,6 @@ suppressPackageStartupMessages({
 REPO     <- "/Users/shreejoy/Github/scz_celltype_paper/genetics"
 DATA_DIR <- file.path(REPO, "results", "figures", "r_panels")
 FIGDIR   <- file.path(REPO, "results", "figures")
-# Former Panel A (enrichment landscape) is now a standalone supplement.
-OUT_SUPPA_STEM <- file.path(FIGDIR, "supp_scz_enrichment_landscape_R")
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -69,8 +67,8 @@ save_figure <- function(plot, stem, width, height, dpi = FIG_DPI) {
 # from; this stops the render if any source has been rerun since.
 source(file.path(dirname(REPO), "shared", "figure_inputs.R"))
 fi_check(DATA_DIR,
-         refresh_cmd = paste("python3 scripts/figures/export_for_R.py  (and/or",
-                             "export_fig4_new_panels.py), then re-run this script"))
+         refresh_cmd = paste("re-run the export_panels_*.py exporters for the",
+                             "stale panels, then re-run this script"))
 
 read_panel <- function(filename) {
   read_csv(file.path(DATA_DIR, filename), show_col_types = FALSE)
@@ -103,95 +101,6 @@ HCN1_COLOR    <- CALB1_COLOR  # was #1565C0; blue tied HCN1 to nothing else in
 LAB_HCN1      <- expression(italic("HCN1")*" expression ("*log[2]*" CP10K+1)")
 # Shared axis range so d-x and e-x line up (DEPLETION_LIM comes from fig4_style).
 HCN1_LIM      <- c(1.35, 3.65)
-
-
-# ====================================================================
-# A) SCZ enrichment landscape
-# ====================================================================
-# Neuronal families (used when neurons_only = TRUE in the builder).
-NEURONAL_FAMILIES <- c(
-  "Sst", "Sst Chodl", "Pvalb", "Chandelier", "Vip", "Sncg",
-  "Lamp5", "Pax6", "Lamp5 Lhx6",
-  "L2/3 IT", "L4 IT", "L5 IT", "L6 IT", "L6 IT Car3",
-  "L5 ET", "L5/6 NP", "L6 CT", "L6b")
-
-build_enrichment_landscape <- function(neurons_only = TRUE, dense_labels = FALSE) {
-  enrich   <- read_panel("panel_A_enrichment.csv")
-  families <- read_panel("panel_A_family_groups.csv")
-
-  enrich <- enrich |>
-    mutate(neg_log10_p = pmin(-log10(pmax(p_value, 1e-300)), 50))
-
-  # Optionally restrict the panel to neuronal supertypes only. Filtering is
-  # done in display space; the FDR/Bonferroni thresholds remain those of the
-  # original 503-type correction universe (defined just below).
-  if (neurons_only) {
-    enrich   <- enrich |> filter(family %in% NEURONAL_FAMILIES) |>
-                  arrange(x) |> mutate(x = row_number() - 1L)
-    families <- families |> filter(family %in% NEURONAL_FAMILIES)
-    # Recompute family min/max in the new x-coordinate space.
-    fam_ranges <- enrich |> group_by(family) |>
-      summarise(min = min(x), max = max(x), size = n(), .groups = "drop")
-    families <- families |> select(-min, -max, -size) |>
-      left_join(fam_ranges, by = "family")
-  }
-
-  y_max <- max(enrich$neg_log10_p) * 1.30
-  fam_y <- -(y_max * 0.04)
-  fam_h <-  (y_max * 0.025)
-
-  # Thresholds. FDR line at the smallest -log10(p) among BH-significant
-  # types; Bonferroni line at -log10(0.05 / 503) over the correction universe.
-  bonf_y <- -log10(0.05 / 503)
-  fdr_y  <- if (any(enrich$passes_fdr_05))
-              min(enrich$neg_log10_p[enrich$passes_fdr_05]) else NA_real_
-
-  ggplot(enrich, aes(x = x, y = neg_log10_p, fill = color)) +
-    geom_col(width = 0.85, color = "black", linewidth = 0.08) +
-    scale_fill_identity() +
-    geom_hline(yintercept = fdr_y,  color = "#888",   linetype = "dashed",  linewidth = 0.25) +
-    geom_hline(yintercept = bonf_y, color = "#4B0082", linetype = "dotdash", linewidth = 0.3) +
-    annotate("text", x = max(enrich$x) - 0.5, y = bonf_y + 0.5,
-             label = "Bonferroni 0.05", hjust = 1, size = 2.0,
-             color = "#4B0082", fontface = "bold") +
-    annotate("text", x = max(enrich$x) - 0.5, y = fdr_y + 0.5,
-             label = "FDR 0.05", hjust = 1, size = 2.0,
-             color = "#555", fontface = "bold") +
-    # Label every Bonferroni-significant supertype above its bar (90°-rotated).
-    geom_text(data = filter(enrich, passes_bonf_503),
-              aes(x = x, y = neg_log10_p + y_max * 0.015, label = supertype),
-              angle = 90, hjust = 0, vjust = 0.5,
-              size = 1.8, color = "black", inherit.aes = FALSE) +
-    # Family colorbar at the bottom.
-    geom_rect(data = families,
-              aes(xmin = min - 0.4, xmax = max + 0.4,
-                  ymin = fam_y, ymax = fam_y + fam_h,
-                  fill = color),
-              color = "black", linewidth = 0.1, inherit.aes = FALSE) +
-    # Family labels. Default: wide groups (≥4 types) horizontal, narrow ones 45°.
-    # dense_labels (all-137 panel): angle every group so the many narrow,
-    # long-named non-neuronal families stay legible instead of over-printing.
-    (if (dense_labels)
-       geom_text(data = families,
-                 aes(x = (min + max) / 2, y = fam_y - fam_h * 0.7, label = family),
-                 inherit.aes = FALSE, size = 2.0, hjust = 1, vjust = 1, angle = 45)
-     else list(
-       geom_text(data = filter(families, size >= 4),
-                 aes(x = (min + max) / 2, y = fam_y - fam_h * 0.6, label = family),
-                 inherit.aes = FALSE, size = 2.8, hjust = 0.5, vjust = 1),
-       geom_text(data = filter(families, size < 4),
-                 aes(x = (min + max) / 2, y = fam_y - fam_h * 1.2, label = family),
-                 inherit.aes = FALSE, size = 2.4, hjust = 1, vjust = 1, angle = 45))) +
-    scale_x_continuous(expand = expansion(add = c(0.5, 0.5))) +
-    coord_cartesian(ylim = c(fam_y - fam_h * (if (dense_labels) 3.4 else 2), y_max),
-                    clip = "off") +
-    labs(x = NULL, y = LAB_GWAS) +
-    theme_panel() +
-    theme(axis.text.x = element_blank(),
-          axis.ticks.x = element_blank(),
-          legend.position = "none",
-          plot.margin = margin(5, 6, if (dense_labels) 16 else 10, 6))
-}
 
 
 # ====================================================================
@@ -674,12 +583,14 @@ build_ephys_traces_plot <- function() {
 # ====================================================================
 # C (restored)) Sst_25 gene-driver scatter
 # ====================================================================
-# The original gene-driver panel: which genes drive Sst_25's SCZ enrichment.
-# X = gene specificity in Sst_25 (log10); Y = -log10 SCZ MAGMA gene p. Drivers
-# (Sst_25-specific AND GWAS-significant) in red, other genes grey, HCN1 called
-# out in blue. Guide lines: Sst_25 specificity 90th-pct (vertical), MAGMA
-# FDR 0.05 and genome-wide 5e-8 (horizontal). Data: panel_C_gene_drivers /
-# _top_labels / _meta (from export_for_R.py). Used by the 7-panel variant.
+# Panel b: which genes drive Sst_2's SCZ enrichment. X = gene specificity in
+# Sst_2 (log10); Y = -log10 SCZ MAGMA gene p. Drivers (Sst_2-specific AND
+# GWAS-significant) are filled, other genes grey, HCN1 called out. Guide lines:
+# Sst_2 specificity 90th percentile (vertical), MAGMA FDR 0.05 and genome-wide
+# 5e-8 (horizontal). Data: panel_C_gene_drivers / _top_labels / _meta, from
+# export_panels_abc.py. Sst_2 is both the most SCZ-enriched Sst supertype and
+# the most significantly depleted, so this panel names the type that sits at
+# the corner of panel a.
 GENOME_WIDE_NEG_LOG10P <- -log10(5e-8)   # 7.30
 
 build_gene_driver_plot <- function() {
@@ -743,7 +654,6 @@ build_gene_driver_plot <- function() {
 # ====================================================================
 # Assemble & save
 # ====================================================================
-enrichment_landscape    <- build_enrichment_landscape()
 hcn1_locus_plot         <- build_hcn1_locus_plot()
 morphology_plot         <- build_morphology_plot()
 ephys_traces_plot       <- build_ephys_traces_plot()
@@ -753,57 +663,10 @@ panel_label_kwargs <- list(
   label_x = 0.0, label_y = 1.0,  hjust = -0.3, vjust = 1.3)
 
 
-# Supplement: SCZ enrichment landscape (former Panel A), on its own.
-save_figure(enrichment_landscape, OUT_SUPPA_STEM, FIG_WIDTH_IN, 2.8)
-message(glue("→ Saved {OUT_SUPPA_STEM}.{{png,pdf,svg}}  (former Panel A)"))
-
 
 # Panel b of Figure 4. (Built here, where the gene-driver panel was
 # originally introduced for the retired 7-panel variant.)
 gene_driver_plot         <- build_gene_driver_plot()
-
-# ====================================================================
-# Standalone: HCN1 expression vs SCZ Sst depletion (16 Sst supertypes)
-# ====================================================================
-# Simple Fig-4-style scatter: the more HCN1 a Sst supertype expresses, the
-# more it is depleted in SCZ. x = mean HCN1 expression (log2 CP10K+1) from
-# panel_E; y = compositional depletion (−β) from panel_B; joined on supertype.
-build_hcn1_vs_depletion <- function(show_legend = TRUE) {
-  panel_b <- read_panel("panel_B_genetics_vs_depletion.csv")
-  panel_e <- read_panel("panel_E_hcn1_vs_sag.csv")
-
-  df <- panel_b |>
-    select(supertype, comp_beta, depleted_fdr20, color) |>
-    inner_join(select(panel_e, supertype, HCN1_expr), by = "supertype") |>
-    add_depletion_status() |>
-    mutate(HCN1_expr_log2 = HCN1_expr / log(2),
-           depletion      = -comp_beta)   # depleted supertypes point up
-
-  rp <- spearman_rp(df$HCN1_expr_log2, df$depletion)
-
-  ggplot(df, aes(x = HCN1_expr_log2, y = depletion)) +
-    geom_smooth(method = "lm", formula = y ~ x, color = "#444",
-                fill = "#888", alpha = 0.18, linewidth = 0.3,
-                linetype = "dashed", se = TRUE) +
-    geom_hline(yintercept = 0, linetype = "dotted", color = "#aaa", linewidth = 0.2) +
-    geom_point(aes(fill = color, color = depleted_status, stroke = depleted_status),
-               shape = 21, size = 2.8, alpha = 0.92) +
-    geom_text_repel(aes(label = supertype), size = LBL_GENE,
-                    box.padding = 0.25, point.padding = 0.20,
-                    max.overlaps = 30, segment.color = "#999",
-                    segment.size = 0.2, force = 3, min.segment.length = 0) +
-    scale_fill_identity() +
-    depletion_scales(show_legend = show_legend) +
-    inset_spearman(rp$rho, rp$p, corner = "top-left", size = LBL_STAT) +
-    coord_cartesian(xlim = HCN1_LIM, ylim = DEPLETION_LIM) +
-    labs(x = LAB_HCN1, y = LAB_DEPL) +
-    theme_panel() +
-    (if (show_legend)
-       theme(legend.position = c(0.98, 0.02),
-             legend.justification = c("right", "bottom"))
-     else theme(legend.position = "none"))
-}
-
 
 # ====================================================================
 # Compact-form panels a, d and e. `compact = TRUE` drops the in-panel
@@ -813,9 +676,6 @@ build_hcn1_vs_depletion <- function(show_legend = TRUE) {
 # ====================================================================
 genetics_vs_depletion_c <- build_genetics_vs_depletion(compact = TRUE)
 sag_c                   <- build_hcn1_expression_vs_sag(compact = TRUE)
-# The depleted/not-depleted outline encoding is identical in every scatter, so
-# it is described once in the figure legend rather than repeated in-panel.
-hcn1_vs_depletion_c     <- build_hcn1_vs_depletion(show_legend = FALSE)
 
 
 # ====================================================================
@@ -825,7 +685,6 @@ hcn1_vs_depletion_c     <- build_hcn1_vs_depletion(show_legend = FALSE)
 # Builders are shared with the standalone renderer via fig4_new_panels.R.
 # ====================================================================
 source(file.path(REPO, "scripts", "figures", "fig4_new_panels.R"))
-source(file.path(REPO, "scripts", "figures", "fig4_assemble.R"))
 source(file.path(REPO, "scripts", "figures", "fig4_assemble_nod.R"))
 
 figure_full <- build_figure4_nod(list(
