@@ -15,8 +15,16 @@ seconds, which is an easy trap to fall into when rejoining.
 """
 import pandas as pd
 
-UP = "/Users/shreejoy/Github/human_int_patch_seq"
-GEN = "/Users/shreejoy/Github/scz_celltype_paper/genetics"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+UP = _os.environ.get("PATCHSEQ_REPO",
+                     _os.path.expanduser("~/Github/human_int_patch_seq"))
+
 OUT = f"{GEN}/results/tables/supp_T6_patchseq_sst_annotations.csv"
 
 # the five reconstructions shown in panels e/f, depth-ordered

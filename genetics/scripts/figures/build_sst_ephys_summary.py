@@ -28,8 +28,16 @@ The two counts are reported separately so the distinction is visible.
 """
 import pandas as pd
 
-UP = "/Users/shreejoy/Github/human_int_patch_seq"
-GEN = "/Users/shreejoy/Github/scz_celltype_paper/genetics"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+UP = _os.environ.get("PATCHSEQ_REPO",
+                     _os.path.expanduser("~/Github/human_int_patch_seq"))
+
 SRC = f"{UP}/data/patchseq/patchseq_combined.csv"
 OUT = f"{GEN}/results/tables/sst_supertype_ephys_summary.csv"
 

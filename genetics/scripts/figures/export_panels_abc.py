@@ -32,12 +32,20 @@ import pandas as pd
 from scipy import stats
 from statsmodels.stats.multitest import multipletests
 
-W = "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/intermediates"
-GEN = "/Users/shreejoy/Github/scz_celltype_paper/genetics"
-SRC = "/Users/shreejoy/Github/scz_cell_type_enrichment"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+W = f"{GEN}/results/intermediates"
+
+SRC = _os.environ.get("SCZ_ENRICHMENT_REPO",
+                      _os.path.expanduser("~/Github/scz_cell_type_enrichment"))
 GLOC = f"{SRC}/linking_cell_types_to_brain_phenotypes/Data/NCBI37.3.gene.loc.extendedMHCexcluded"
 SUMSTATS = f"{GEN}/data/gwas/bigdeli_eur_scz_sum_stats.gz"
-OUT = "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/figures/r_panels"
+OUT = f"{GEN}/results/figures/r_panels"
 TARGET = "Sst_2"
 
 names = pd.read_csv(f"{W}/namemap_a9only.csv").set_index("safe_name").cell_type

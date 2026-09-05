@@ -22,9 +22,17 @@ import subprocess
 
 import pandas as pd
 
-GEN = "/Users/shreejoy/Github/scz_celltype_paper/genetics"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+
 W = f"{GEN}/results/intermediates"
-SRC = "/Users/shreejoy/Github/scz_cell_type_enrichment"
+SRC = _os.environ.get("SCZ_ENRICHMENT_REPO",
+                      _os.path.expanduser("~/Github/scz_cell_type_enrichment"))
 GLOC = f"{SRC}/linking_cell_types_to_brain_phenotypes/Data/NCBI37.3.gene.loc.extendedMHCexcluded"
 MAGMA = f"{GEN}/data/magma/magma_mac/magma"
 GENES_RAW = {

@@ -26,8 +26,16 @@ suppressPackageStartupMessages({
   library(ggrepel); library(cowplot)
 })
 
-TABLES <- "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/tables"
-FIGDIR <- "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/figures"
+# Repo-relative: resolve this script's own location, so it runs from any clone.
+# Rscript exposes the path via --file=; the fallback assumes the repo root cwd.
+.script_dir <- function() {
+  a <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+  if (length(a)) dirname(normalizePath(sub("^--file=", "", a[1]))) else NA_character_
+}
+.sd <- .script_dir()
+GEN    <- normalizePath(if (!is.na(.sd)) file.path(.sd, "..", "..") else "genetics")
+TABLES <- file.path(GEN, "results", "tables")
+FIGDIR <- file.path(GEN, "results", "figures")
 BASE <- 12
 
 runs <- c("DLPFC + Bigdeli (main figure)", "DLPFC + PGC3", "MTG + Bigdeli")

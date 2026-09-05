@@ -20,7 +20,14 @@ import gzip
 
 import pandas as pd
 
-GEN = "/Users/shreejoy/Github/scz_celltype_paper/genetics"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+
 REFGENE = f"{GEN}/data/gwas/ncbiRefSeq_hg38.txt.gz"
 OUT = f"{GEN}/results/figures/r_panels"
 

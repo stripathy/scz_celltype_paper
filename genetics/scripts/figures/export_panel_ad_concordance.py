@@ -20,7 +20,14 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-REPO = "/Users/shreejoy/Github/scz_celltype_paper"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+REPO = PAPER
 SCZ_CRUMBLR = (f"{REPO}/shared/snrnaseq_de/nicole_scz_snrnaseq_betas"
                "/final_results_crumblr_7_cohorts.csv")
 AD_CRUMBLR = f"{REPO}/crossdisorder/results/crumblr_results_supertype_neurons.csv"

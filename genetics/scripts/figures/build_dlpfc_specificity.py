@@ -13,12 +13,21 @@ import scipy.sparse as sp
 import pandas as pd
 import glob
 
-W = "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/intermediates"
-SRC = "/Users/shreejoy/Github/scz_cell_type_enrichment"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+W = f"{GEN}/results/intermediates"
+SRC = _os.environ.get("SCZ_ENRICHMENT_REPO",
+                      _os.path.expanduser("~/Github/scz_cell_type_enrichment"))
 GLOC = f"{SRC}/linking_cell_types_to_brain_phenotypes/Data/NCBI37.3.gene.loc.extendedMHCexcluded"
 BLOCK = 8000
 
-files = sorted(glob.glob("/Users/shreejoy/Downloads/*A9_RNAseq_final-nuclei.2024-02-13.h5ad"))
+files = sorted(glob.glob(_os.environ.get("SEAAD_A9_GLOB",
+        _os.path.expanduser("~/Downloads/*A9_RNAseq_final-nuclei.2024-02-13.h5ad"))))
 assert len(files) == 3, files
 
 sums, counts, genes = {}, {}, None

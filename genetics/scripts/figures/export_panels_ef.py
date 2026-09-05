@@ -21,10 +21,18 @@ import json
 
 import pandas as pd
 
-W = "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/intermediates"
-GEN = "/Users/shreejoy/Github/scz_celltype_paper/genetics"
-UP = "/Users/shreejoy/Github/human_int_patch_seq"
-OUT = "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/figures/r_panels"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+W = f"{GEN}/results/intermediates"
+
+UP = _os.environ.get("PATCHSEQ_REPO",
+                     _os.path.expanduser("~/Github/human_int_patch_seq"))
+OUT = f"{GEN}/results/figures/r_panels"
 
 sys.path.insert(0, UP)
 from patchseq_builder.morphology.download import parse_swc            # noqa: E402

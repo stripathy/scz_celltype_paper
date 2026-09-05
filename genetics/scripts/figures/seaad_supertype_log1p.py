@@ -16,8 +16,16 @@ import scipy.sparse as sp
 import pandas as pd
 import time
 
-H5 = "/Users/shreejoy/Github/shared_data/nicole_sea_ad_snrnaseq_reference.h5ad"
-OUT = "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/intermediates/seaad_supertype_log1p_mean.csv"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+H5 = _os.environ.get("SEAAD_MTG_H5AD",
+     _os.path.expanduser("~/Github/shared_data/nicole_sea_ad_snrnaseq_reference.h5ad"))
+OUT = f"{GEN}/results/intermediates/seaad_supertype_log1p_mean.csv"
 BLOCK = 8000
 
 f = h5py.File(H5, "r")

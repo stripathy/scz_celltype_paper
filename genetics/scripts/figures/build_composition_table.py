@@ -17,7 +17,14 @@ Read by: export_panels_abc.py (panel a)
 import numpy as np
 import pandas as pd
 
-GEN = "/Users/shreejoy/Github/scz_celltype_paper/genetics"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+
 CRUMBLR = (f"{GEN}/../shared/snrnaseq_de/nicole_scz_snrnaseq_betas"
            "/final_results_crumblr_7_cohorts.csv")
 OUT = f"{GEN}/results/tables/gwas_vs_casecontrol_composition.csv"

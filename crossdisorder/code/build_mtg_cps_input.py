@@ -11,13 +11,17 @@ DLPFC input. All 80 DLPFC donors are present in the MTG cohort, so the two runs
 end up on the same donors with the same covariates and differ only in which
 region was dissected.
 """
+import os
+
 import pandas as pd
 
-MTG_OBS = ("/Users/shreejoy/Github/SCZ_Xenium/data/reference/"
+XEN = os.environ.get("XENIUM_BASE", os.path.expanduser("~/Github/SCZ_Xenium"))
+XD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MTG_OBS = (f"{XEN}/data/reference/"
            "SEAAD_MTG_RNAseq_obs_lean.csv")
-DLPFC_IN = ("/Users/shreejoy/Github/scz_celltype_paper/crossdisorder/results/"
+DLPFC_IN = (f"{XD}/results/"
             "crumblr_input_supertype_neurons.csv")
-OUT = ("/Users/shreejoy/Github/scz_celltype_paper/crossdisorder/results/"
+OUT = (f"{XD}/results/"
        "crumblr_input_mtg_supertype_neurons.csv")
 
 NEURONAL_CLASSES = ("Neuronal: Glutamatergic", "Neuronal: GABAergic")

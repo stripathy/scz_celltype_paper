@@ -21,8 +21,15 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-GEN = "/Users/shreejoy/Github/scz_celltype_paper/genetics"
-XD = "/Users/shreejoy/Github/scz_celltype_paper/crossdisorder"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+
+XD = f"{PAPER}/crossdisorder"
 I = f"{GEN}/results/intermediates"
 PANELS = f"{GEN}/results/figures/r_panels"
 TABLES = f"{GEN}/results/tables"

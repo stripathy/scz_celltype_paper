@@ -19,7 +19,14 @@ suppressPackageStartupMessages({
   library(readr); library(dplyr); library(ggplot2); library(cowplot); library(ggrepel)
 })
 
-GEN   <- "/Users/shreejoy/Github/scz_celltype_paper/genetics"
+# Repo-relative: resolve this script's own location, so it runs from any clone.
+# Rscript exposes the path via --file=; the fallback assumes the repo root cwd.
+.script_dir <- function() {
+  a <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+  if (length(a)) dirname(normalizePath(sub("^--file=", "", a[1]))) else NA_character_
+}
+.sd <- .script_dir()
+GEN   <- normalizePath(if (!is.na(.sd)) file.path(.sd, "..", "..") else "genetics")
 d     <- read_csv(file.path(GEN, "results/tables/scz_enrichment_seaad125_bigdeli_dlpfc.csv"),
                   show_col_types = FALSE)
 BASE  <- 7

@@ -12,7 +12,11 @@ suppressPackageStartupMessages({
   library(dplyr); library(readr)
 })
 
-if (!exists("FIG4_REPO")) FIG4_REPO <- "/Users/shreejoy/Github/scz_celltype_paper"
+if (!exists("FIG4_REPO")) {
+  .a <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+  .d <- if (length(.a)) dirname(normalizePath(sub("^--file=", "", .a[1]))) else NA_character_
+  FIG4_REPO <- normalizePath(if (!is.na(.d)) file.path(.d, "..", "..", "..") else ".")
+}
 # Follow the caller's DATA_DIR when there is one. This was previously a
 # hardcoded absolute path, which silently kept panels g-i on an old snapshot
 # while a-f moved to a new one -- the two halves of the figure disagreed and

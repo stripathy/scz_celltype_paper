@@ -19,10 +19,12 @@ Run standalone to refresh provenance without re-exporting anything:
 """
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
-PAPER = Path("/Users/shreejoy/Github/scz_celltype_paper")
+# Repo-relative, so the manifest can be refreshed from any clone.
+PAPER = Path(__file__).resolve().parents[3]
 GEN = PAPER / "genetics"
 OUT = GEN / "results" / "figures" / "r_panels"
 
@@ -40,8 +42,9 @@ EXEMPLARS = ("1079568285", "819770858", "1037461069", "758996755", "797048104")
 SWC = [PATCHSEQ / "swc" / f"{i}_upright.swc" for i in EXEMPLARS]
 NWB = [PATCHSEQ / "nwb" / f"{i}.nwb" for i in EXEMPLARS]
 
-XEN = Path("/Users/shreejoy/Github/SCZ_Xenium")
-REF_H5AD = Path("/Users/shreejoy/Github/shared_data/nicole_sea_ad_snrnaseq_reference.h5ad")
+XEN = Path(os.environ.get("XENIUM_BASE", os.path.expanduser("~/Github/SCZ_Xenium")))
+REF_H5AD = Path(os.environ.get("SEAAD_MTG_H5AD",
+    os.path.expanduser("~/Github/shared_data/nicole_sea_ad_snrnaseq_reference.h5ad")))
 SCZ_CRUMBLR = PAPER / "shared/snrnaseq_de/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv"
 AD_CRUMBLR = PAPER / "crossdisorder/results/crumblr_results_supertype_neurons.csv"
 
@@ -52,7 +55,8 @@ AD_CRUMBLR = PAPER / "crossdisorder/results/crumblr_results_supertype_neurons.cs
 GSA = GEN / "results" / "intermediates" / "T_a9only_bigdeli.gsa.out"
 BIGDELI_GENES = GEN / "data" / "gwas" / "magma_bigdeli" / "bigdeli.step2.genes.out"
 BIGDELI_SS = GEN / "data" / "gwas" / "bigdeli_eur_scz_sum_stats.gz"
-A9 = sorted(Path("/Users/shreejoy/Downloads").glob(
+A9 = sorted(Path(os.environ.get("SEAAD_A9_DIR",
+    os.path.expanduser("~/Downloads"))).glob(
     "*A9_RNAseq_final-nuclei.2024-02-13.h5ad"))
 COMPOS = TABLES / "gwas_vs_casecontrol_composition.csv"
 EPHYS = TABLES / "sst_supertype_ephys_summary.csv"

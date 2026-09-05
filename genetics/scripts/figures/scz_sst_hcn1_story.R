@@ -38,7 +38,16 @@ suppressPackageStartupMessages({
 # ────────────────────────────────────────────────────────────────────
 # Paths
 # ────────────────────────────────────────────────────────────────────
-REPO     <- "/Users/shreejoy/Github/scz_celltype_paper/genetics"
+# Repo-relative: resolve this script's own location, so the render runs from
+# any clone. Rscript exposes it via --file=; fall back to the cwd convention.
+# Repo-relative: resolve this script's own location, so it runs from any clone.
+# Rscript exposes the path via --file=; the fallback assumes the repo root cwd.
+.script_dir <- function() {
+  a <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+  if (length(a)) dirname(normalizePath(sub("^--file=", "", a[1]))) else NA_character_
+}
+.sd <- .script_dir()
+REPO     <- normalizePath(if (!is.na(.sd)) file.path(.sd, "..", "..") else "genetics")
 DATA_DIR <- file.path(REPO, "results", "figures", "r_panels")
 FIGDIR   <- file.path(REPO, "results", "figures")
 

@@ -19,9 +19,16 @@ import pandas as pd
 from scipy import stats
 import glob
 
-W = "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/intermediates"
-OUT = "/Users/shreejoy/Github/scz_celltype_paper/genetics/results/figures/r_panels"
-GEN = "/Users/shreejoy/Github/scz_celltype_paper/genetics"
+import os as _os
+
+# Repo-relative, so the chain runs from any clone. External data that is not in
+# the repo is still resolved by absolute path or an environment override below.
+GEN = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+PAPER = _os.path.dirname(GEN)
+
+W = f"{GEN}/results/intermediates"
+OUT = f"{GEN}/results/figures/r_panels"
+
 
 VULNERABLE = ["Sst_25", "Sst_22", "Sst_2", "Sst_20", "Sst_3"]
 NOT_DEPLETED = ["Sst_19", "Sst_9", "Sst_23", "Sst_11", "Sst_13",
@@ -29,7 +36,8 @@ NOT_DEPLETED = ["Sst_19", "Sst_9", "Sst_23", "Sst_11", "Sst_13",
 KEEP = set(VULNERABLE + NOT_DEPLETED)
 
 mats, sts, donors, genes = [], [], [], None
-for path in sorted(glob.glob("/Users/shreejoy/Downloads/*A9_RNAseq_final-nuclei.2024-02-13.h5ad")):
+for path in sorted(glob.glob(_os.environ.get("SEAAD_A9_GLOB",
+        _os.path.expanduser("~/Downloads/*A9_RNAseq_final-nuclei.2024-02-13.h5ad")))):
     with h5py.File(path, "r") as f:
         d = f["obs/Supertype"]
         cats = np.array([x.decode() if isinstance(x, bytes) else x
