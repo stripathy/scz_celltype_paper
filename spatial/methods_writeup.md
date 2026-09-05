@@ -147,7 +147,6 @@ The depth model is a `GradientBoostingRegressor` (n_estimators=300, max_depth=5,
 
 Predictions are deliberately **not clamped** to [0, 1]. Cells in white matter receive depth > 1 and cells above the pia receive depth < 0, providing natural tissue boundary detection without requiring hard cutoffs.
 
-![Depth model diagnostics](output/depth_model_normalized_diagnostics.png)
 *Figure 7. Depth model training and validation. Predicted vs actual normalized depth for train and test (held-out donor) sets, with R² and MAE metrics.*
 
 ### 3.4 Depth coordinate system
@@ -379,7 +378,6 @@ SST/PVALB in Supplementary Fig. S_percell.
 
 | Document | Focus |
 |----------|-------|
-| [SCZ Compositional Findings](scz_compositional_findings.md) | Disease effects, snRNAseq concordance, confidence tiers |
 | [Depth-Stratified Analysis Report](output/depth_proportions/DEPTH_STRATIFIED_ANALYSIS_REPORT.md) | Per-layer and CLR depth × diagnosis results with figures |
 | [Supertype Classification Confidence](output/marker_analysis/SUPERTYPE_CLASSIFICATION_CONFIDENCE_REPORT.md) | Per-supertype confidence ratings and Sst fragility analysis |
 | [Panel Design & Supertype Classification](output/marker_analysis/XENIUM_PANEL_DESIGN_AND_SUPERTYPE_CLASSIFICATION.md) | Cross-platform marker adequacy, add-on gene recommendations |

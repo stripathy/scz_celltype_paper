@@ -1,16 +1,18 @@
-# Export spec — Sst cell-level counts (for the cell-count confound test)
+# Export spec: Sst cell-level counts (cell-count confound test)
 
-Paste everything below the line into a Claude session on the cluster that has the
-full per-dataset h5ad objects.
+What was exported from the seven per-cohort snRNA-seq objects for the
+cell-count confound test, and in what format. That test is reserve material
+(`reserve/sst_strata_supp/`), not in the paper. What arrived is inventoried in
+`transcriptomic/data/stratum_sst_cells_export/MANIFEST_sst_cells.md`.
 
 ---
 
-## Task
+## What was exported
 
-Export **cell-level raw counts for Sst interneuron nuclei only**, one file per
-cohort, for the seven snRNA-seq datasets in our SCZ meta-analysis. This feeds a
-sensitivity analysis that requires subsampling individual nuclei, which cannot be
-done from the pseudobulks we already exported.
+**Cell-level raw counts for Sst interneuron nuclei only**, one file per cohort,
+for the seven snRNA-seq datasets in the SCZ meta-analysis. This feeds a
+sensitivity analysis that requires subsampling individual nuclei, which the
+pseudobulk export cannot support.
 
 **Cohorts (7):** Batiuk, HBCC, McLean, MSSM1, MSSM2, Multiome, OFC
 

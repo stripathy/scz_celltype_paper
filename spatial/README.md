@@ -75,6 +75,31 @@ renderers run from a clean clone with no external data.
 `_xenium_exclusions.R` defines the types too rare to test, dropped from every
 Xenium figure.
 
+## Modules
+
+### `depth_model.py`
+MERFISH-trained cortical depth prediction from K=50 neighborhood composition features.
+- GradientBoostingRegressor; R² ≈ 0.897 on the three held-out donors (the deployed split). The GroupKFold out-of-fold R² quoted in SM1 is a different, stricter estimate — see the validation table below.
+- Predictions NOT clamped to [0,1] (cells outside cortex can be < 0 or > 1)
+- `smooth_layers_spatial()`: 3-step spatial layer smoothing (within-domain majority vote, vascular border trim, BANKSY-anchored L1 contiguity)
+
+### `banksy_domains.py`
+BANKSY-based spatial domain classification (replaces older K-NN Leiden approach).
+- BANKSY clustering (λ=0.8, res=0.3) for spatially coherent domains
+- Classifies: Cortical, Vascular (>50% Endo+VLMC), WM (>40% Oligo + deep)
+- L1 border detection: shallow non-neuronal clusters correctly identified as L1 cortex
+- Used by pipeline step 05
+
+### `spatial_domains.py` (legacy)
+Original K-NN composition → PCA → Leiden domain classifier. Superseded by
+`banksy_domains.py`. Retained for `VASCULAR_TYPES` and `NON_NEURONAL_TYPES` constants.
+
+### `loading.py`
+Data loading for 10x Xenium .h5 files with cell boundary CSV centroids.
+
+### `metadata.py`
+Subject metadata loading (handles non-standard Excel XML format).
+
 ## Validation (the SM1 numbers)
 
 `code/analysis/validation/` holds the checks the Supplementary Methods quote.

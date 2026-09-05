@@ -6,7 +6,7 @@
 # so a renumber cannot silently invalidate the draft. Run it after any pipeline
 # change and before pasting text into the Doc.
 #
-# Reference: manuscript/drafting_history/figure5_section_DRAFT.md (VERSION 0 is the working base).
+# Reference: the Fig-5 results draft (removed 2026-09-04; tag pre-prune-2026-09-04) (VERSION 0 is the working base).
 source("transcriptomic/scripts/fig5/_common.R")
 
 fails <- 0L

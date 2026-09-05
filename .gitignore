@@ -61,17 +61,13 @@ transcriptomic/results/sst_strata_gsea/pseudobulk/*
 !transcriptomic/results/sst_strata_gsea/pseudobulk/interaction_meta.csv
 !transcriptomic/results/sst_strata_gsea/pseudobulk/interaction_gsea.csv
 !transcriptomic/results/sst_strata_gsea/pseudobulk/module_score_tests.csv
-!transcriptomic/results/sst_strata_gsea/archive_exploratory/
-transcriptomic/results/sst_strata_gsea/archive_exploratory/*
-!transcriptomic/results/sst_strata_gsea/archive_exploratory/README.md
 
 # ---- Parked 8th cohort (GSE158516): code + README only ----
 reserve/gse158516/data/
 reserve/gse158516/output/
 
-# ---- Reading material: PDFs / slide decks are not ours to redistribute ----
-background/relevant papers/
-background/talks/*.pptx
+# ---- Reading material and internal notes: not part of the paper ----
+background/
 
 # R side-effect file from non-interactive ggsave sessions
 Rplots.pdf

@@ -51,7 +51,7 @@ commands.
 | [`crossdisorder/`](crossdisorder/README.md) | Whether the SCZ-depleted Sst supertypes also decline in Alzheimer's (the AD axis of Fig 4i) |
 | [`snrnaseq/`](snrnaseq/README.md) | Slot for the upstream snRNA-seq pipeline, plus a composition robustness check (S6) |
 | [`shared/`](shared/README.md) | Cross-component interfaces: the snRNA-seq DE seam, and the figure-input staleness guard |
-| [`manuscript/`](manuscript/figures/main/README.md) | The rendered figures, and a record of the drafting decisions |
+| [`manuscript/figures/`](manuscript/figures/main/README.md) | The rendered figures, main and supplementary |
 | [`reserve/`](reserve/README.md) | Analyses built and deliberately left out of the paper |
 
 The snRNA-seq DE and composition meta-analysis is produced by a separate

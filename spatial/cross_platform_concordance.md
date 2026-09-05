@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document assesses how well the Xenium spatial transcriptomics measurements agree with independent reference datasets — the SEA-AD MERFISH spatial atlas and a snRNA-seq schizophrenia meta-analysis. It establishes the measurement credibility that underpins all downstream disease analyses. For SCZ-specific findings and their interpretation, see [SCZ Compositional Findings](scz_compositional_findings.md).
+This document assesses how well the Xenium spatial transcriptomics measurements agree with independent reference datasets — the SEA-AD MERFISH spatial atlas and a snRNA-seq schizophrenia meta-analysis. It establishes the measurement credibility that underpins all downstream disease analyses. The SCZ compositional results themselves are in `output/crumblr/` (see its README) and in Figure 3.
 
 ---
 
@@ -57,7 +57,6 @@ The correlation classifier (step 02b) achieves r = 0.80 against MERFISH proporti
 
 | Document | Focus |
 |----------|-------|
-| [SCZ Compositional Findings](scz_compositional_findings.md) | Disease effects, snRNAseq concordance, confidence tiers |
 | [Methods: Cell Typing, Depth Inference, and Validation](methods_writeup.md) | Pipeline methods, classifier validation, depth model, QC calibration |
 | [Depth-Stratified Analysis Report](output/depth_proportions/DEPTH_STRATIFIED_ANALYSIS_REPORT.md) | Per-layer and CLR depth × diagnosis results with figures |
 | [Supertype Classification Confidence](output/marker_analysis/SUPERTYPE_CLASSIFICATION_CONFIDENCE_REPORT.md) | Per-supertype confidence ratings and Sst fragility analysis |

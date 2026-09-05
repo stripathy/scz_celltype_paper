@@ -1,24 +1,25 @@
-# Cluster export spec: supertype pseudobulks for the Sst-strata analysis
+# Export spec: per-cohort supertype pseudobulks (Supplementary Fig. S8)
 
-Paste everything below this line into the Claude session on the cluster.
+What was exported from the seven per-cohort snRNA-seq objects to feed the Sst
+depletion-strata analysis, and in what format. The objects live on the cluster
+that holds the full per-dataset data; the exports they produce are too large to
+track here, so this is the record of how they were made. What arrived is
+inventoried in `transcriptomic/data/stratum_pseudobulks_export/MANIFEST.md`.
 
 ---
 
-I need you to export per-cohort pseudobulk count files into a standardized format
-for transfer to another machine, where they feed a stratified DE/GSEA analysis of
-Sst interneuron supertypes (schizophrenia cell-types paper, Figure 5). Work
-iteratively: inspect the inputs first, adapt to their actual format, and verify
-every claim programmatically — never assume. Do not modify any source file.
+Per-cohort pseudobulk counts were exported into one standardized format so they
+could be transferred off the cluster and feed the stratified DE/GSEA analysis of
+Sst supertypes. Source files were read only, never modified.
 
 ## Input situation
 
-Somewhere on this cluster there are pseudobulk files for seven snRNA-seq cohorts:
-one file (or set of files) per cohort, containing per-donor × per-supertype
-pseudobulk expression for ALL supertypes mixed together in each file. I will tell
-you the paths, or you may need to locate them — ask me if the location is unclear.
-Before doing anything else, open one file and report its structure: format, axes,
-dimensions, how donor and supertype are encoded (column names? separate metadata?),
-gene identifier type, and whether values are raw integer counts or normalized.
+Each of the seven cohorts had its own pseudobulk file (or set of files) holding
+per-donor x per-supertype expression, with all supertypes mixed together in one
+file and no shared convention between cohorts. Formats, axis order, donor and
+supertype encoding, gene identifier type, and whether values were raw counts or
+normalized all differed, so each cohort was inspected before export rather than
+assumed.
 
 ## Required outputs
 

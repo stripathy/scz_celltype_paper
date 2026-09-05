@@ -52,7 +52,7 @@ from sklearn.metrics import (
 )
 
 # ── Paths ──
-# This repo is authoritative for the Xenium pipeline (see SCZ_XENIUM_RETIREMENT.md);
+# This repo is authoritative for the Xenium pipeline;
 # the script used to resolve against the upstream SCZ_Xenium checkout.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))          # .../spatial
