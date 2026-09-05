@@ -12,13 +12,8 @@ The pipeline is modular — each step reads/updates per-sample h5ad files:
 | 01 | `pipeline/01_run_qc.py` | Cell-level QC (Kwon et al. approach), adds `qc_pass` column |
 | 02 | `pipeline/02_run_mapmycells.py` | MapMyCells hierarchical annotation → `class_label`, `subclass_label`, `supertype_label` |
 | 02b | `pipeline/02b_run_correlation_classifier.py` | Two-stage Pearson correlation reclassification + doublet detection |
-| 03 | `pipeline/03_export_transcripts.py` | Export per-gene transcript coordinates (for viewer) |
 | 04 | `pipeline/04_run_depth_prediction.py` | Retrain MERFISH depth model, predict cortical depth → `predicted_norm_depth` |
 | 05 | `pipeline/05_run_spatial_domains.py` | BANKSY spatial domain classification + layer assignment + spatial smoothing → `layer` column |
-| 06 | `pipeline/06_export_viewer.py` | Export JSON for interactive HTML viewer |
-| 07 | `pipeline/07_export_boundaries.py` | Export cell + nucleus boundary polygons for viewer |
-
-> **Note:** Nuclear doublet resolution is an optional side investigation and is not part of the main pipeline. See `nuclear_resolution/README.md` for details.
 
 ## Samples
 
@@ -44,20 +39,11 @@ BANKSY-based spatial domain classification (replaces older K-NN Leiden approach)
 Original K-NN composition → PCA → Leiden domain classifier. Superseded by
 `banksy_domains.py`. Retained for `VASCULAR_TYPES` and `NON_NEURONAL_TYPES` constants.
 
-### `analysis.py`
-Depth-stratified SCZ vs Control comparison with MERFISH validation.
-- Cell type fractions per sample per depth stratum
-- Mann-Whitney U tests with FDR correction
-- Validation against MERFISH reference proportions
-
 ### `loading.py`
 Data loading for 10x Xenium .h5 files with cell boundary CSV centroids.
 
 ### `metadata.py`
 Subject metadata loading (handles non-standard Excel XML format).
-
-### `plotting.py`
-Spatial visualization with rasterized color-blended images (dark backgrounds, 20μm bins).
 
 ## Key Output Files
 
@@ -113,18 +99,16 @@ adjustText, cell_type_mapper
 - MapMyCells precomputed stats: `precomputed_stats.20231120.sea_ad.MTG.h5`
 - Subject metadata: `data/sample_metadata.xlsx`
 
-## Nuclear Resolution (`code/nuclear_resolution/`)
+## Validation (`code/analysis/validation/`)
 
-Optional side investigation into using nuclear-only transcript counts to arbitrate doublet calls. Empirically shown to have negligible impact on downstream compositional analysis — the simplified QC pipeline (spatial QC + 5th-percentile margin filter + doublet exclusion) produces equivalent results. See `nuclear_resolution/README.md` for details.
+The checks behind the Supplementary Methods numbers: depth-model
+cross-validation and its anti-circularity baseline, the marker-anchor check,
+the MERFISH classification benchmark, and the Harmony-vs-centroid comparison
+that motivated the two-stage classifier. See the table in `../README.md`.
 
-## Archive
+## Removed 2026-09-04
 
-Legacy code is preserved in `code/archive/` for reference:
-- `stale_analysis/` — Archived diagnostic and analysis scripts (harmony transfer, edgepython DE, nsforest markers, calibration, crumblr builders, proportion comparisons). Removed dependencies: harmonypy, edgepython, fitz, nsforest, markdown
-- `label_transfer.py` — Old kNN-based label transfer (superseded by MapMyCells)
-- `layers.py` — Old density-based layer segmentation (superseded by depth model)
-- `legacy_runners/` — Old monolithic pipeline runners
-- `ood_methods/` — Exploratory OOD detection approaches (superseded by BANKSY domains)
-- `spatial_domain_exploration/` — Experimental spatial domain scripts
-- `banksy_exploration/` — BANKSY parameter tuning, validation, and batch runner (logic now in `modules/banksy_domains.py`)
-- `curved_strips/` — Curved cortex strip identification pipeline (experimental)
+The exploratory and presentation scripts, the probe-panel assessment, the
+steps were removed when the repo was pruned to the code behind the paper. The
+viewer itself lives in the upstream `SCZ_Xenium` repo. Everything removed is
+recoverable from the git tag `pre-prune-2026-09-04`.
