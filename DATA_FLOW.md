@@ -59,8 +59,7 @@ External hub (~/Github/shared_data/, per ~/Github/DATA_LAYOUT.md):
 |---|---|---|
 | snrnaseq → transcriptomic | `transcriptomic/data/DE_genes_all_cells_scz.csv` → `shared/snrnaseq_de/` | real file held in `shared/snrnaseq_de/` (was `~/Downloads/`; moved in 2026-07-31) |
 | snrnaseq → transcriptomic | `transcriptomic/data/meta_results_cohorts_subclass.csv` → `shared/snrnaseq_de/` | `scz_pathway_enrichment/data/…` |
-| snrnaseq → genetics + spatial | `shared/snrnaseq_de/nicole_scz_snrnaseq_betas/` | `SCZ_Xenium/data/nicole_scz_snrnaseq_betas/` |
-| ↳ spatial consumes | `spatial/data/nicole_scz_snrnaseq_betas` → `shared/snrnaseq_de/` | (as above) |
+| snrnaseq → genetics, transcriptomic, snrnaseq/composition_sensitivity | `shared/snrnaseq_de/nicole_scz_snrnaseq_betas/` | `SCZ_Xenium/data/nicole_scz_snrnaseq_betas/` |
 | ↳ genetics consumes | `genetics/scripts/figures/build_composition_table.py` reads `shared/snrnaseq_de/…` | (as above) |
 | spatial → transcriptomic | `transcriptomic/scripts/09` reads `../spatial/output/de/de_results_subclass.csv` | `SCZ_Xenium/output/de/…` (symlinked) |
 | RNAscope data (reserve) | `reserve/histology/coordinates` | `sgACC_cell_depth_analysis/coordinates` |

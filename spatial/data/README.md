@@ -7,32 +7,32 @@ Large files are excluded from git — see download instructions below.
 
 ```
 data/
-├── raw/                          # Raw Xenium output files (from GEO)
-├── reference/                    # Allen Brain Cell Atlas reference datasets
-├── nicole_scz_snrnaseq_betas/    # snRNAseq SCZ differential expression betas (Kwon et al.)
-├── merscope_4k_probe_testing/    # MERSCOPE 4K probe benchmark data
-├── sample_metadata.xlsx          # Subject metadata (age, sex, diagnosis, PMI)
-└── xenium_probes.xlsx            # Xenium probe panel info
+├── raw/              # Raw Xenium output files (from GEO)
+├── reference/        # Allen Brain Cell Atlas reference datasets
+└── sample_metadata.xlsx   # Subject metadata (age, sex, diagnosis, PMI) — tracked
 ```
 
 ## What You Need
 
 Not all data is required for every use case. Here's a quick guide:
 
-| Dataset | Size | Core pipeline | Analysis scripts | Validation plots |
-|---------|------|:---:|:---:|:---:|
-| Raw Xenium cell matrices + boundaries | 809 MB | **Required** | — | — |
-| Raw Xenium transcript coordinates (.zarr.zip) | ~33 GB | Optional (step 03 only) | — | — |
-| SEA-AD MERFISH reference | 3.1 GB | **Required** (step 04) | — | Used if available |
-| MapMyCells precomputed stats | 251 MB | **Required** (step 02) | — | — |
-| SEA-AD snRNAseq reference | 33.8 GB | Not needed | — | Used if available |
-| Gene symbol mappings | <1 MB | **Required** (step 02) | — | — |
+| Dataset | Size | Core pipeline | Supp Figs S2 / S3 |
+|---------|------|:---:|:---:|
+| Raw Xenium cell matrices + boundaries | 809 MB | **Required** | **Required** |
+| SEA-AD MERFISH reference | 3.1 GB | **Required** (step 04) | **Required** (S3) |
+| MapMyCells precomputed stats | 251 MB | **Required** (step 02) | — |
+| SEA-AD snRNAseq reference | 33.8 GB | — | **Required** (S2 c, e) |
+| Gene symbol mappings | <1 MB | **Required** (step 02) | — |
 
-**Minimum for core pipeline (steps 00-02b, 04-05):** ~4.1 GB (cell matrices + MERFISH + MapMyCells stats + gene mappings)
+**Minimum for the core pipeline (steps 00–02b, 04–05):** ~4.1 GB — cell
+matrices, MERFISH, MapMyCells stats and the gene mappings.
 
-**With transcript viewer (+ steps 03, 06-07):** ~37 GB (adds zarr files)
+**Everything, including both supplementary figures:** ~38 GB.
 
-**With all validation plots:** ~71 GB (adds snRNAseq reference)
+Neither supplementary figure needs any of this to *render*: their input CSVs are
+committed, so `plot_markers_resolvability_combined.R` and
+`plot_xenium_merfish_composite.R` run from a clean clone. The downloads below are
+only needed to rebuild those inputs from the raw data.
 
 The pipeline and analysis scripts check for reference file availability at runtime. Scripts that use snRNAseq or MERFISH references will raise a clear error with download instructions if the file is missing, so you can run whatever you have data for.
 
@@ -49,19 +49,15 @@ The pipeline and analysis scripts check for reference file availability at runti
 Each sample has 4 files:
 - `cell_feature_matrix.h5` — Gene expression counts (541 features: 300 genes + controls) **[Required]**
 - `cell_boundaries.csv.gz` — Cell boundary polygons **[Required]**
-- `nucleus_boundaries.csv.gz` — Nucleus boundary polygons **[Required for step 07]**
-- `transcripts.zarr.zip` — Molecule-level transcript coordinates **[Optional — only needed for interactive viewer (step 03) and nuclear doublet resolution (see `code/nuclear_resolution/`)]**
+- `nucleus_boundaries.csv.gz` — Nucleus boundary polygons **[Optional]**
+- `transcripts.zarr.zip` — Molecule-level transcript coordinates **[Not needed]** — these feed the interactive cell browser, which lives in the upstream `SCZ_Xenium` repo
 
 ```bash
 mkdir -p data/raw
 cd data/raw
 
-# Download cell matrices and boundaries only (~809 MB):
+# Cell matrices and boundaries (~809 MB) — everything this repo needs:
 wget -r -np -nd -A "*.h5,*.csv.gz" \
-  https://ftp.ncbi.nlm.nih.gov/geo/series/GSE307nnn/GSE307404/suppl/
-
-# Also download transcript coordinates if you want the interactive viewer (~33 GB):
-wget -r -np -nd -A "*.zarr.zip" \
   https://ftp.ncbi.nlm.nih.gov/geo/series/GSE307nnn/GSE307404/suppl/
 ```
 
@@ -112,11 +108,11 @@ pip install "cell_type_mapper @ git+https://github.com/AllenInstitute/cell_type_
 
 ---
 
-## Step 4: SEA-AD snRNAseq Reference (Optional)
+## Step 4: SEA-AD snRNAseq Reference
 
 **Source:** [Gabitto et al. (2024)](https://doi.org/10.1038/s41593-024-01774-5) — SEA-AD MTG single-nucleus RNA-seq dataset.
 
-**Used for:** Validation plots only — ground-truth cell type proportions and cross-modal concordance with Xenium. **Not required for the core pipeline.** Analysis scripts check for this file at runtime and will skip or raise a clear error if it's missing.
+**Used for:** the panel-vs-transcriptome resolvability benchmark behind Supplementary Fig. S2 panels c and e — leave-one-donor-out classification on the full transcriptome versus the 300-gene panel. **Not required for the core pipeline.** Scripts check for this file at runtime and raise a clear error if it is missing.
 
 ```bash
 # Download the full SEA-AD MTG snRNAseq dataset (~33.8 GB)
@@ -129,7 +125,7 @@ aws s3 cp \
   data/reference/ --no-sign-request
 ```
 
-**Subsetting:** The pipeline uses only the 5 neurotypical reference donors: `H18.30.001`, `H18.30.002`, `H19.30.001`, `H19.30.002`, `H200.1023` (137,303 cells x 36,601 genes). Subsetting is performed in code, producing `data/reference/seaad_mtg_snrnaseq_reference.h5ad`.
+**Subsetting:** only the 5 neurotypical reference donors are used: `H18.30.001`, `H18.30.002`, `H19.30.001`, `H19.30.002`, `H200.1023` (137,303 cells x 36,601 genes). `code/pipeline/create_snrnaseq_reference.py` does the subsetting, writing `data/reference/seaad_mtg_snrnaseq_reference.h5ad`.
 
 **Provenance note:** This is the full SEA-AD snRNAseq dataset subset to 5 neurotypical reference donors. The Allen Institute provides a version of this dataset, but it lacks the complete set of SEA-AD supertypes. This subset retains all supertype annotations needed for proportion validation.
 
@@ -141,14 +137,6 @@ aws s3 cp \
 
 `sample_metadata.xlsx` is included in the repository. Contains donor demographics (age, sex, PMI, RIN) and diagnosis (SCZ vs. Control) for all 24 samples.
 
-### snRNAseq SCZ Betas
-
-`nicole_scz_snrnaseq_betas/scz_coefs.xlsx` contains differential expression coefficients from Kwon et al. snRNAseq meta-analysis, used for cross-modal concordance analysis with Xenium crumblr results.
-
-### MERSCOPE Data
-
-`merscope_4k_probe_testing/` contains MERSCOPE spatial transcriptomics data for cross-platform benchmarking.
-
 ---
 
 ## Summary
@@ -156,10 +144,8 @@ aws s3 cp \
 | Dataset | Size | Required for | Source |
 |---------|------|-------------|--------|
 | Xenium cell matrices + boundaries | 809 MB | Core pipeline (steps 00-05) | [GEO GSE307404](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE307404) |
-| Xenium transcript coordinates | ~33 GB | Viewer (step 03) | [GEO GSE307404](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE307404) |
 | SEA-AD MERFISH | 3.1 GB | Depth model (step 04) | [Allen Brain Cell Atlas](https://sea-ad-spatial-transcriptomics.s3.us-west-2.amazonaws.com/middle-temporal-gyrus/all_donors-h5ad/SEAAD_MTG_MERFISH.2024-12-11.h5ad) |
 | MapMyCells stats | 251 MB | Cell type annotation (step 02) | [Allen Brain Cell Atlas](https://allen-brain-cell-atlas.s3.us-west-2.amazonaws.com/mapmycells/SEAAD/20240831/precomputed_stats.20231120.sea_ad.MTG.h5) |
-| SEA-AD snRNAseq | 33.8 GB | Validation plots only (optional) | [Allen Brain Cell Atlas](https://sea-ad-single-cell-profiling.s3.us-west-2.amazonaws.com/MTG/RNAseq/SEAAD_MTG_RNAseq_final-nuclei.2024-02-13.h5ad) |
-| **Minimum required** | **~4.1 GB** | | |
-| **Full pipeline + viewer** | **~37 GB** | | |
-| **Everything** | **~71 GB** | | |
+| SEA-AD snRNAseq | 33.8 GB | Resolvability benchmark, Supp Fig S2 c/e | [Allen Brain Cell Atlas](https://sea-ad-single-cell-profiling.s3.us-west-2.amazonaws.com/MTG/RNAseq/SEAAD_MTG_RNAseq_final-nuclei.2024-02-13.h5ad) |
+| **Minimum (core pipeline)** | **~4.1 GB** | | |
+| **Everything** | **~38 GB** | | |

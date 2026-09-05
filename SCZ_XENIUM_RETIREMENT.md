@@ -74,11 +74,12 @@ policy, and whether `sczxenium.netlify.app` already appears in a preprint or gra
   `763e6655fc55839f177d57aa98dc5453`, the reinstated 2026-04-01 state. Analysis set
   742,103 cortical → 356,313 neuronal / 385,790 non-neuronal. Corrected Lieber map
   cluster 9 = MGE, cluster 12 = CGE.
-- **The viewer port is ~90% done.** All 17 front-end files (156 KB) are already at
-  `spatial/output/viewer/`, verified byte-identical to `SCZ_Xenium`. `Makefile`,
-  `package.json`, `playwright.config.js`, `tests/` and exporters 03/06/07 are
-  already tracked. The only blocker is root `.gitignore:12` `spatial/output/`.
-  The port is a `git add -f` on 17 paths — **1–3 hours, not 50 GB.**
+- **The viewer port was abandoned on 2026-09-04, in the other direction.** The
+  17 front-end files under `spatial/output/viewer/` were never tracked here, and
+  the harness that would have supported them — `Makefile`, `package.json`,
+  `playwright.config.js`, `tests/` and exporters 03/06/07 — was removed when the
+  paper repo was pruned, after verifying each file byte-identical to its
+  `SCZ_Xenium` copy. The viewer now lives in exactly one repo.
 - **Netlify**: manual `make deploy`, no CI/CD. siteId
   `78988b9e-d4c1-4dc6-8572-fe326d73bd2c`, recorded in exactly one untracked place
   (`SCZ_Xenium/output/deploy/.netlify/state.json`). Live URL believed to be

@@ -4,7 +4,7 @@ Self-contained component, in the same sense as `histology/`: it owns one externa
 dataset and the analysis on it, and exports a single result that other components
 consume.
 
-**The question.** Figure 4j asks whether the upper-layer Sst supertypes we find
+**The question.** Figure 4i asks whether the upper-layer Sst supertypes we find
 compositionally depleted in schizophrenia are the same ones that decline as
 Alzheimer's disease advances. If so, they are plausibly an intrinsically
 vulnerable population rather than a SCZ-specific casualty.
@@ -39,7 +39,7 @@ data/
   SEAAD_INPUTS.md            where the large per-nucleus metadata comes from
 results/
   crumblr_input_supertype_neurons.csv     per-donor supertype counts
-  crumblr_results_supertype_neurons.csv   the AD axis of Figure 4j
+  crumblr_results_supertype_neurons.csv   the AD axis of Figure 4i
 ```
 
 ## Running it
@@ -61,8 +61,8 @@ files.
 `results/crumblr_results_supertype_neurons.csv` is read by
 `genetics/scripts/figures/export_panel_ad_concordance.py`, which joins it against the
 7-cohort SCZ crumblr betas to produce
-`genetics/results/figures/r_panels/panel_ad_concordance_{sst,stats}.csv` — the
-Figure 4j panel data. The panel CSVs stay under `genetics/` because the Figure 4
+`genetics/results/figures/r_panels/panel_ad_concordance_sst.csv` — the
+Figure 4i panel data. The panel CSVs stay under `genetics/` because the Figure 4
 renderer lives there; only the analysis lives here.
 
 That join is recorded in `genetics/results/figures/r_panels/MANIFEST.tsv`, so

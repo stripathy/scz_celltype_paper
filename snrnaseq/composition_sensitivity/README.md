@@ -1,13 +1,15 @@
 # snRNA-seq composition: pooling-strategy and single-dataset sensitivity
 
 Does the cell-type abundance result of Fig. 3a depend on how the seven per-dataset crumblr
-estimates are pooled, or on any one dataset? For the 109 neuronal supertypes this folder
+estimates are pooled, or on any one dataset? This is **Supplementary Fig. S6**. For the
+109 neuronal supertypes this folder
 compares the fixed-effect meta-analysis used in the paper against a random-effects
 meta-analysis and two mega-analyses that fit all 469 donors in a single model (dataset as a
 random intercept, without and with a dataset-specific random SCZ slope), reports each
 dataset's own estimate alongside the Xenium estimate, and runs a leave-one-dataset-out
-fixed-effect meta-analysis. Output: one supplementary figure
-(`results/supp_composition_pooling.png`, legend in `..._legend.md`) and the tables behind it.
+fixed-effect meta-analysis. Output: the supplementary figure
+(`manuscript/figures/supplementary/S06_composition_pooling.{png,pdf}`, written in place by
+`02`; legend in `results/supp_composition_pooling_legend.md`) and the tables behind it.
 
 A dataset-as-fixed-covariate mega-analysis is also fit and kept in the results CSV, but is
 not plotted: it is numerically indistinguishable from the random-intercept version
@@ -37,9 +39,9 @@ Xenium row of panel a. Step 0 needs Nicole's raw export, which is **not** tracke
 |---|---|---|
 | `data/neuron_counts_469donors.csv` | yes | Analysis table: one row per donor, `dataset, donor, dx, age, sex, PMI` + 109 supertype counts. Built by `00` from the raw export. |
 | `data/neuronal_supertypes_109.csv` | yes | The 109 neuronal supertypes, in Fig. 3a order. Defines what `00` selects and what `02` plots. |
-| `data/seaad_supertype_colors.json` | yes | Supertype palette of Figs 1b/3a/4. Copy of `genetics/data/seaad_supertype_colors.json`, which lives under an untracked data directory. |
+| `data/seaad_supertype_colors.json` | yes | Supertype palette of Figs 1b/3a/4. Same file as `genetics/data/seaad_supertype_colors.json`. |
 | `7_cohorts_metadata_names.csv` | no | Nicole's raw per-donor counts + metadata (donor rows, cell-type columns, both neuronal and non-neuronal). Pass its path to `00`; the default is `~/Downloads/`. |
-| `spatial/data/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv` | no | The published FE meta-analysis. Optional: when present, `01` cross-checks the rebuilt FE estimates against it and uses it for the "FE meta-analysis (paper)" row; when absent, `01` uses its own FE meta-analysis for that row and says so. |
+| `shared/snrnaseq_de/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv` | no | The published FE meta-analysis. Optional: when present, `01` cross-checks the rebuilt FE estimates against it and uses it for the "FE meta-analysis (paper)" row; when absent, `01` uses its own FE meta-analysis for that row and says so. |
 
 **Running it on your own copy of the data.** Point `00` at your export and add `--write`, then
 re-run `01`, `01b` and `02`. Without `--write`, `00` only reports whether it reproduces the
@@ -60,7 +62,7 @@ that dataset's model, so the meta-analyses pool 5–7 datasets per supertype.
 | `results/composition_pooling_sensitivity.csv` | long table: supertype × method (FE, RE, three mega models, published FE), with FDR, k, I², Cochran's Q |
 | `results/composition_lodo.csv` | FE meta-analysis with each dataset omitted in turn |
 | `results/composition_subclass_estimates.csv`, `composition_subclass_lodo.csv` | the same at subclass level (18 neuronal subclasses), for the composite Sst statement in the text |
-| `results/supp_composition_pooling.{png,pdf}` + `_legend.md` | the figure, its legend, verified key numbers and provenance |
+| `manuscript/figures/supplementary/S06_composition_pooling.{png,pdf}` | the figure (written in place; legend and verified numbers in `results/supp_composition_pooling_legend.md`) |
 
 The rebuilt fixed-effect meta-analysis reproduces Nicole's published
 `final_results_crumblr_7_cohorts.csv` exactly (Spearman ρ = 1.00, identical β and P).

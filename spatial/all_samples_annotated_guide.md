@@ -4,10 +4,9 @@ Structure, columns, and recommended usage of the merged Xenium spatial
 transcriptomics object for the Kwon et al. SCZ cohort — the single object every
 spatial number in this paper derives from.
 
-For pipeline methodology see [`methods_writeup.md`](methods_writeup.md); for the
-compositional findings see
-[`scz_compositional_findings.md`](scz_compositional_findings.md); for which
-object state is canonical and why, see [`../DATA_FLOW.md`](../DATA_FLOW.md).
+For pipeline methodology see [`methods_writeup.md`](methods_writeup.md); for
+which object state is canonical and why, see
+[`../DATA_FLOW.md`](../DATA_FLOW.md).
 
 ---
 
@@ -176,7 +175,7 @@ The other two sets are kept for comparison only.
 ### Nuclear re-segmentation
 
 Populated for all 24 samples from the optional nuclear-resolution step
-(`spatial/code/nuclear_resolution/`), which re-counts transcripts inside the
+(removed 2026-09-04; recoverable from tag `pre-prune-2026-09-04`), which re-counts transcripts inside the
 nuclear boundary to re-adjudicate whole-cell doublet calls.
 
 | Column | Type | Description |

@@ -15,6 +15,11 @@ The file (~35 MB, 222K rows) is symlinked to `shared/snrnaseq_de/DE_genes_all_ce
 
 Figure scripts do not read this path. They read committed snapshots under `figure_inputs/`, refreshed by `scripts/00_refresh_figure_inputs.R` and checksum-guarded — see `figure_inputs/README.md`.
 
+`stratum_pseudobulks_export/` and `stratum_sst_cells_export/` hold the manifests
+for the per-cohort exports behind Supplementary Fig. S8. The exports themselves
+(parquet counts and Sst-cell h5ads, ~1.6 GB) are git-ignored; the specs that
+produced them are in `shared/snrnaseq_de/EXPORT_SPEC_*.md`.
+
 External data referenced by scripts (not redistributed here):
-- `~/Github/scz_cell_type_enrichment/data/gwas/scz_gwas_gene_set_no_mhc.csv` — 484 PGC3 SCZ GWAS genes (Trubetskoy 2022), MHC excluded.
-- MSigDB collections via the `msigdbr` R package (cached locally on first use).
+- MSigDB collections via the `msigdbr` R package, cached on first use under
+  `results/sst_strata_gsea/.cache/` — used by the S8 GSEA steps.

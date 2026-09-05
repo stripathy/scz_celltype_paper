@@ -1,5 +1,14 @@
 # Methods: Cell Typing, Depth Inference, and Platform Validation
 
+This is the long-form account behind **Supplementary Methods SM1**.
+
+> **On the inline figures.** They point into `spatial/output/`, which is
+> git-ignored, so they render only on a machine that has run the pipeline. Some
+> were produced by presentation scripts removed on 2026-09-04; those are
+> recoverable from the git tag `pre-prune-2026-09-04`. The prose stands on its
+> own, and the numbers it quotes are reproduced by the scripts in
+> `code/analysis/validation/`.
+
 ## 1. Overview
 
 We mapped cell types in 24 human DLPFC Xenium sections (12 SCZ, 12 control; 1.3M cells; 300-gene panel) to the SEA-AD MTG taxonomy (24 subclasses, 137 supertypes). The core challenge is cross-platform label transfer: Xenium's 300 genes capture only ~1% of the transcriptome measured by the snRNA-seq reference (137,303 cells × 36,601 genes), and platform-specific artifacts (optical detection limits, probe specificity) make standard integration approaches unreliable.
@@ -26,20 +35,12 @@ Step 02b: Two-stage correlation classifier
     → Stage 1: Subclass assignment via Pearson correlation (24 types)
     → Stage 2: Supertype assignment within subclass
     → QC: Flag bottom 5% margin per sample + spatial doublets
-    → Save centroids to disk for optional nuclear resolution (see code/nuclear_resolution/)
-
-Step 03: Export transcript coordinates (for viewer)
 
 Step 04: Cortical depth model (trained on MERFISH)
 Step 05: Spatial domain annotation + layer assignment
 
-Step 06: Viewer export (per-sample JSON + standalone HTML)
-Step 07: Cell + nucleus boundary polygon export
-
-Optional: Nuclear doublet resolution → code/nuclear_resolution/
-    → See nuclear_resolution/README.md for details (not part of numbered sequence)
-
 Analysis: Cortical cells → crumblr compositional regression (SCZ vs Control)
+          Cortical cells → pseudobulk edgeR differential expression
 ```
 
 | QC Step | Cells | Lost | % Lost |
@@ -48,7 +49,7 @@ Analysis: Cortical cells → crumblr compositional regression (SCZ vs Control)
 | Step 01: spatial QC (`qc_pass`) | 1,298,687 | 40,464 | 3.0% |
 | **Step 02b: `corr_qc_pass` (default gate)** | **1,225,037** | **114,114** | **8.5%** |
 
-*Cell counts reflect all 24 samples. `corr_qc_pass` combines spatial QC (step 01), 5th-percentile margin filter, and doublet suspect exclusion. An optional nuclear doublet resolution step (in `code/nuclear_resolution/`, not part of the numbered pipeline) can produce `hybrid_qc_pass` but was found to have negligible impact on downstream biology. Br2039 is excluded from downstream disease comparisons due to high white matter content (65%).*
+*Cell counts reflect all 24 samples. `corr_qc_pass` combines spatial QC (step 01), the 5th-percentile margin filter, and doublet suspect exclusion. A nuclear doublet resolution step was also trialled; it had negligible impact on downstream biology and its code was removed on 2026-09-04 (tag `pre-prune-2026-09-04`). Br2039 is retained in all analyses despite high white matter content (65%).*
 
 ### 2.2 Centroid construction from HANN exemplars
 
@@ -67,7 +68,7 @@ The 300-gene panel provides sufficient marker resolution to validate assignments
 
 ### 2.4 QC: margin filtering and spatial doublet detection
 
-**Margin filtering:** The bottom 5th percentile of subclass correlation margins per sample are flagged as low-confidence. Per-sample thresholds account for variation in data quality across sections. This threshold was calibrated against SEA-AD MERFISH ground-truth labels, where cells below the 5th percentile have ~80% subclass accuracy — see `docs/pipeline_qc_audit.md` for the full calibration analysis.
+**Margin filtering:** The bottom 5th percentile of subclass correlation margins per sample are flagged as low-confidence. Per-sample thresholds account for variation in data quality across sections. This threshold was calibrated against SEA-AD MERFISH ground-truth labels, where cells below the 5th percentile have ~80% subclass accuracy.
 
 **Spatial doublet detection** identifies cells with biologically implausible marker co-expression:
 - *Glut+GABA doublets:* Cells expressing 4+ of 7 GABAergic markers (GAD1, GAD2, SLC32A1, SST, PVALB, VIP, LAMP5) while also expressing glutamatergic markers. False-positive rate validated at 0.098% in snRNA-seq.
@@ -92,7 +93,7 @@ We benchmarked against Harmony + kNN label transfer (the standard cross-dataset 
 
 ### 2.6 Nuclear doublet resolution (optional)
 
-> **Note:** This step was empirically shown to have negligible impact on downstream compositional analysis (see `docs/pipeline_qc_audit.md`). The simplified QC pipeline (spatial QC + 5th-percentile margin filter + doublet exclusion) is now the default. This section is retained for scientific interest.
+> **Note:** This step was empirically shown to have negligible impact on downstream compositional analysis. The simplified QC pipeline (spatial QC + 5th-percentile margin filter + doublet exclusion) is now the default. This section is retained for scientific interest.
 
 **Motivation:** Inspection of doublet cells revealed that mixed-type marker transcripts concentrate in the cytoplasmic compartment, suggesting most doublets arise from mRNA spillover between neighboring cells during segmentation rather than true co-expression. Since nuclei are spatially more isolated, nuclear-restricted transcripts should be less affected by spillover.
 
@@ -120,7 +121,7 @@ The overall resolution rate is **75.8%** (range: 68-83% across samples). Resolve
 ![Nuclear doublet marker evidence](output/presentation/nuclear_doublet_marker_evidence.png)
 *Figure 6. Marker expression evidence for doublet resolution. Resolved doublets show high whole-cell but low nuclear marker scores. Persistent doublets maintain high scores in both compartments.*
 
-**Impact on downstream biology:** The nuclear resolution machinery does not meaningfully change compositional SCZ vs Control results. Switching from `hybrid_qc_pass` to `corr_qc_pass` changes the snRNAseq meta-analysis correlation from r=0.405 to r=0.397, with identical top FDR-significant cell types. See `docs/pipeline_qc_audit.md` for the full comparison.
+**Impact on downstream biology:** The nuclear resolution machinery does not meaningfully change compositional SCZ vs Control results. Switching from `hybrid_qc_pass` to `corr_qc_pass` changes the snRNAseq meta-analysis correlation from r=0.405 to r=0.397, with identical top FDR-significant cell types.
 
 ---
 
@@ -327,7 +328,7 @@ The snRNA proxy does not flatter the panel through read depth: Xenium captures c
 The top disease signals are robust across QC configurations. At the supertype level with the default pipeline (corr QC, 5th-percentile margin), 5 supertypes reach FDR < 0.05 (L5/6 NP_3, L2/3 IT_8, L6b_5, Pax6_3, Pvalb_13) and 8 reach FDR < 0.10. Effect sizes correlate with Nicole's snRNAseq meta-analysis at r = 0.432 (all supertypes) and r = 0.466 (neuronal only).
 
 The same top hits persist regardless of:
-- **QC gate**: Switching between `corr_qc_pass` and the legacy `hybrid_qc_pass` (which includes nuclear doublet resolution) changes median |delta logFC| by only 0.0065 across all 106 shared supertypes, with no cell type changing direction of effect (see `docs/pipeline_qc_audit.md`).
+- **QC gate**: Switching between `corr_qc_pass` and the legacy `hybrid_qc_pass` (which includes nuclear doublet resolution) changes median |delta logFC| by only 0.0065 across all 106 shared supertypes, with no cell type changing direction of effect.
 - **Margin threshold**: Varying the margin filter from 1st to 10th percentile sharpens the signal but does not change the top hits.
 - **Classifier hierarchy**: Flat vs hierarchical correlation classifier yields the same disease signals.
 - **Doublet handling**: Including or excluding resolved doublets has negligible impact.

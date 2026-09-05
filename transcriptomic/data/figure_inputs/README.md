@@ -8,11 +8,10 @@ directory is a subdirectory of `data/`, so it escapes the single-level
 
 ## Every Figure 2 script reads from here
 
-`01_volcano_per_celltype.R`, `07_forest_plots.R`, `08_meta_vs_xenium_scatter.R`,
-`09_composite_figure.R`, `12_marker_norm_expr.R` and `16_de_vs_proportion.R` all
-resolve their inputs through `fig_input()` in `scripts/_figure_inputs.R`. No live
-paths to `SCZ_Xenium/output/` or `shared/` remain in the figure code — that split
-is what previously let script 09 render stale numbers while 07 and 08 read fresh
+`09_composite_figure.R` and `12_marker_norm_expr.R` resolve their inputs through
+`fig_input()` in `scripts/_figure_inputs.R`. No live paths to `SCZ_Xenium/output/`
+or `shared/` remain in the figure code — that split is what previously let the
+composite render stale numbers while the standalone panel scripts read fresh
 ones.
 
 ## Refreshing after an upstream rerun
@@ -28,7 +27,7 @@ longer matches the manifest, naming the file and the refresh command. When the
 canonical source is absent (fresh clone, collaborator machine) the check is
 skipped and the snapshot is used as-is.
 
-After refreshing, re-render scripts 01, 07, 08, 09, 12, 16.
+After refreshing, re-run `12_marker_norm_expr.R` and then `09_composite_figure.R`.
 
 ## Contents
 

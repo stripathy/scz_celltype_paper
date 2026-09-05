@@ -62,27 +62,27 @@ analysis moved to the supplement -- its renderer `reserve/sst_strata_supp/figS_s
 is kept and now writes `reserve_strata_controls.*` to `transcriptomic/results/`.
 
 The small figure-input CSVs are committed (force-added past the `spatial/output/`
-ignore rule), so the three renderers run from a clean clone with no external data.
-The two ~20 MB per-cell tables behind the S3 violins and the retired depth-by-diagnosis figure are **not** committed —
-regenerate them with the `build_*` steps below, which need the Xenium h5ads.
+ignore rule), so every renderer here runs from a clean clone with no external
+data. The two ~20 MB per-cell tables behind the S3 violins and the retired
+depth-by-diagnosis figure are **not** committed — regenerate them with the
+`build_*` steps below, which need the Xenium h5ads.
 
-**All three were regenerated from the reinstated 2026-04-01 Xenium dataset** (see
+**S2 and S3 were regenerated from the reinstated 2026-04-01 Xenium dataset** (see
 `SCZ_Xenium/archive/README.md`). S2's resolvability panels (c, e) are
 dataset-independent in practice — they read only the 300-gene panel list from the
 Xenium object and are otherwise leave-one-donor-out CV on the snRNAseq reference.
 
 **Numbering follows order of first citation in SM1**: S2 is cited in the
-cell-type classification and resolvability sections, S3 in the validation section. S2 supersedes three earlier figures, which are now its panels: the former
-S4 (panel marker genes), S5 (panel resolvability) and S6 (Lieber/Kwon agreement).
-Their standalone generators still exist and still work —
-`plot_xenium_marker_figure.R`, `plot_panel_resolvability_supplement.R` and
-`plot_lieber_celltype_diagonal.py` — but are no longer part of the submission set.
-S3 likewise merges the former Xenium-vs-MERFISH scatter figure with the standalone
-per-supertype depth figure; its supertype median-depth scatter was dropped, since
-panels d and e make the same comparison per supertype with the full distribution.
-`plot_celltyping_validation_supplement.R` and `plot_supertype_depth_platform.R`
-still build those two as standalones but are no longer part of the submission set.
-**Three S-numbers are freed by the two merges; renumber S4–S14 before submission.**
+cell-type classification and resolvability sections, S3 in the validation
+section.
+
+Each of S2 and S3 merges figures that were once separate. S2 absorbed three —
+panel marker genes, panel resolvability, and Lieber/Kwon agreement — and S3
+merged the Xenium-vs-MERFISH scatter with the standalone per-supertype depth
+figure, dropping its median-depth scatter since panels d and e make the same
+comparison with the full distribution. The five standalone generators were
+removed on 2026-09-04 and are recoverable from the git tag
+`pre-prune-2026-09-04`.
 
 S2 and S3 are both rendered on a 7.1 in canvas.
 
@@ -107,8 +107,8 @@ Rscript code/analysis/plot_supertype_depth_casecontrol.R
 
 ## Not in this folder
 
-S1, S4, S5 and S7 are Nicole's figures and live outside the repo (see
-`manuscript/SUPPLEMENT_PLAN.md`).
+S1, S4, S5 and S7 are Nicole's figures, built from her snRNA-seq DE and
+composition analyses, and live outside this repo.
 
 S8 is rendered by `transcriptomic/scripts/fig5/08_figure5.R` straight into this
 folder; see `transcriptomic/scripts/fig5/README.md` for the pipeline behind it. To

@@ -85,11 +85,11 @@ mega <- bind_rows(
   extract(eBayes(dream(cobj, ~ dx + age_z + sex + pmi_z + (1 + dx | dataset), info, quiet = TRUE))) |> mutate(method = "mega: random intercept + SCZ slope"))
 
 # ------------------------------------------------- published FE meta (Nicole's result)
-# Optional cross-check: spatial/data/nicole_scz_snrnaseq_betas/ is not tracked in the repo
-# (it is Nicole's own output directory). When the file is there the rebuilt FE estimates are
-# compared against it and it supplies the "published FE meta" row; otherwise the rebuilt FE
-# meta-analysis is used for that row.
-pub_path <- file.path(ROOT, "spatial/data/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv")
+# Optional cross-check against the published meta-analysis, read through the canonical
+# seam in shared/snrnaseq_de/ (git-ignored; see its README). When the file is there the
+# rebuilt FE estimates are compared against it and it supplies the "published FE meta"
+# row; otherwise the rebuilt FE meta-analysis is used for that row.
+pub_path <- file.path(ROOT, "shared/snrnaseq_de/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv")
 if (file.exists(pub_path)) {
   pub <- read_csv(pub_path, show_col_types = FALSE) |>
     transmute(supertype = CellType, beta = estimate, se = se, p = pval, method = "published FE meta")

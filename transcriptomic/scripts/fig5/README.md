@@ -158,5 +158,5 @@ expansion in panel e (`add = c(1.75, 0.55)`, sized for the longest gene name).
   pipeline reads it. (An earlier version of that comparison read the top-level
   copies, which by then held pseudobulk output — it was comparing the pseudobulk
   result with itself. Point any such comparison at `archive_ivw/`.)
-- `supp/` holds supplement scripts at varying readiness; see
-  `manuscript/FIGURE5_FINALIZATION_PLAN.md` for which are proposed for the paper.
+- `../../../reserve/sst_strata_supp/` holds the supplement and sensitivity scripts, none of them in the paper; see
+  `reserve/sst_strata_supp/README.md` for what each one showed and why it was held back.

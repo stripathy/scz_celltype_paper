@@ -40,14 +40,14 @@ guarded by `MANIFEST.tsv` + `fig_input()`. Check both against their sources with
 python3 shared/verify_provenance.py
 ```
 
-⚠️ **The Xenium DE values in the manuscript draft predate these tables.** They came
+⚠️ **Xenium DE values quoted anywhere older than 2026-08-06 predate these tables.** They came
 from a run whose object state no longer exists on disk and is not reproducible —
 `de_results_subclass.archive_2026-06-04_preApril.csv` in the processing repo. Every
 one of the seven named gene × cell-type results shifts slightly (e.g. SST in Sst:
 −0.318, P 0.0522 then vs **−0.328, P 0.0524** now), sign-concordance across the 166
 testable pairs moves 126/166 → **120/166**, and DE burden rises 94 → **208** hits at
-FDR < 0.10. No conclusion reverses; the digits need updating. Do not reconcile the
-draft against the archived table — reconcile it against these.
+FDR < 0.10. No conclusion reverses; the digits need updating. Reconcile against these tables,
+not against the archived one. Figure 2 was re-rendered onto them on 2026-09-04.
 
 Other archived DE tables in the processing repo (`archive_2026-02-24`,
 `archive_2026-02-22`, `_hybrid`) are earlier 23-donor no-PMI runs. They are kept as

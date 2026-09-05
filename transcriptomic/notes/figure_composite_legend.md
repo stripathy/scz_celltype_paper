@@ -1,7 +1,7 @@
-# Composite figure legend (script 09)
+# Figure 2 legend (09_composite_figure.R)
 
 Nature Neuroscience style (terse; description only, no interpretation).
-Figure file: `results/09_composite.{png,pdf}` (7.1 × 6.625 in, 400 dpi; 10 panels, a–j).
+Figure file: `manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}` (7.1 × 6.625 in, 400 dpi; 10 panels, a–j).
 
 Layout: one interneuron marker per row across four views (volcano → forest →
 per-donor expression → exemplar cells), then a transcriptome-wide overview.
@@ -49,10 +49,10 @@ P < 0.05 (FDR ≥ 0.10); n.s., pooled estimate not significant.
 
 **Supplementary.** *Per-cell SST/PVALB reduction across normalisations* (raw
 dots, grain density, library-normalised, library size; negative-binomial mixed
-model) is in **Supplementary Fig. S_percell**. (PVALB in Pvalb cells is shown as
+model) is in the per-cell normalisation figure, which is not in the paper (`reserve/percell_normalisation/`). (PVALB in Pvalb cells is shown as
 main-figure row 2, e–h, so there is no separate PVALB supplement.) The
 fully-labelled DE-vs-proportion scatter (all subclasses) is
-`scripts/16_de_vs_proportion.R`.
+the panel-i inset, which `09` builds internally.
 
 ---
 
@@ -85,7 +85,7 @@ fully-labelled DE-vs-proportion scatter (all subclasses) is
 | Panel j — fit line | none (identity dashed line only; geom_smooth removed) | `build_scatter()`, script 09 |
 | Sig. symbols | \*\*\* FDR<0.01, \*\* FDR<0.05, \* FDR<0.10 | `ast()` in script 09 |
 | `•` symbol | nominal P<0.05 AND FDR≥0.10 (drawn only when NOT starred) | `is_dot()` in script 09 |
-| **Suppl. S_percell** (NB mixed model, grain density `m_area`) | SST 0.72× (p = 0.002), PVALB 0.87× (p = 0.086) | `results/tables/S_percell_stats.csv`; `scripts/11` + `scripts/13` |
+| Per-cell normalisation check (NB mixed model, grain density `m_area`) — **not in the paper** | SST 0.72x (p = 0.002), PVALB 0.87x (p = 0.086) | `reserve/percell_normalisation/S_percell_stats.csv` |
 | **"frontal cortical"** | **UNVERIFIED — no brain-region/tissue field in the meta/cohort tables** | external (source studies); OFC = orbitofrontal is consistent |
 
 Regenerate by loading the CSVs above and recomputing (e.g. the verification block

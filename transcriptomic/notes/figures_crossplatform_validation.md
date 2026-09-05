@@ -1,30 +1,28 @@
-# Figure generation & cross-platform validation (scripts 07–14)
+# Figure 2 — generation and cross-platform validation
 
-Documentation + data provenance for the figures that present the snRNA-seq SCZ
-DE meta-analysis and validate it against an independent Xenium spatial dataset.
-Scripts 07 and 08 are standalone components; **script 09 is the publication
-composite**, laid out one interneuron marker per row — volcano → forest → CP1K
-boxplot → exemplar cells — for SST (a–d) and PVALB (e–h), then a transcriptome-wide
-DE-burden butterfly with a DE-vs-proportion inset (i) and the concordance scatter
-(j); script 10 produces the exemplar-cell inputs that panels d/h read.
+Documentation and data provenance for **Figure 2**, which presents the snRNA-seq
+SCZ DE meta-analysis and validates it against an independent Xenium spatial
+dataset. `09_composite_figure.R` builds all ten panels, laid out one interneuron
+marker per row — volcano, forest, CP1K boxplot, exemplar cells — for SST (a–d)
+and PVALB (e–h), then a transcriptome-wide DE-burden butterfly with a
+DE-vs-proportion inset (i) and the concordance scatter (j).
 
-| Script | Figure(s) / output | What it shows |
+| Script | Output | What it does |
 |---|---|---|
-| `scripts/07_forest_plots.R` | `results/figures/07_forest_composite.{png,pdf}` | Per-gene forest plots: each snRNA-seq cohort + pooled meta + Xenium replication |
-| `scripts/08_meta_vs_xenium_scatter.R` | `results/figures/08_meta_vs_xenium_scatter*.{png,pdf}`, `08b_*_uniform*.{png,pdf}` | Concordance scatter of meta logFC vs Xenium logFC across all testable gene×cell-type pairs |
 | `scripts/10_xenium_exemplar_cells.py` | `results/tables/exemplar_*.csv` | Per-cell boundary + marker-molecule coordinates for the panel d/h exemplar cells (run **before** 09) |
-| `scripts/09_composite_figure.R` | `results/figures/09_composite.{png,pdf}` | **Publication composite (7.1 × 6.625 in, 10 panels a–j)**, one marker per row: **Row 1 SST in Sst** — volcano (a), SST/Sst forest (b), CP1K boxplot (c), exemplar cells (d); **Row 2 PVALB in Pvalb** — volcano (e), PVALB/Pvalb forest (f), CP1K boxplot (g), exemplar cells (h); **Row 3** — DE-gene-count butterfly per subclass with a DE-genes-vs-proportion inset (i), concordance scatter (j) |
-| `scripts/11_grain_density.py` | `results/tables/percell_grain_density.csv` | Per-cell grain-density input (canonical cells, 24 donors) → panel d/h exemplar selection + Supplementary |
-| `scripts/12_marker_norm_expr.R` | `results/tables/marker_norm_expr.csv` (+ `_stats`) | Per-donor CP1K (counts/1,000 transcripts) + edgeR p for SST (**panel c**) and PVALB (**panel g**); FGFR3 also computed (former composite gene, now spare/supplement) |
-| `scripts/13_supp_percell_metrics.R` | `results/figures/S_percell_metrics.{png,pdf}` | **Supplementary**: per-cell SST/PVALB across normalisations (raw, grains/cell-area, lib-norm, library size) |
-| `scripts/16_de_vs_proportion.R` | `results/figures/de_vs_proportion_subclass.{png,pdf}` | Standalone fully-labelled DE-genes (FDR<0.10) vs cell-type-proportion scatter (subclass; Xenium proportion proxy) — minimal version is the panel-i inset |
+| `scripts/12_marker_norm_expr.R` | `results/tables/marker_norm_expr{,_stats}.csv` | Per-donor CP1K (counts per 1,000 transcripts) + edgeR p for SST (panel c) and PVALB (panel g) |
+| `scripts/09_composite_figure.R` | `manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}` | **The figure** (7.1 × 6.625 in, 10 panels a–j) |
 
-The validation figures (07, 08, and the cross-platform panels of 09 — forests
-b/f, CP1K c/g, scatter j) all ask the same question
-from different angles: **does the snRNA-seq discovery DE replicate on an
-independent spatial-transcriptomics platform?** The composite figure legend
-(final wording + per-value provenance) lives in
-[`notes/figure_composite_legend.md`](figure_composite_legend.md).
+Panels b/f (forests), c/g (CP1K) and j (scatter) all ask the same question from
+different angles: **does the snRNA-seq discovery DE replicate on an independent
+spatial-transcriptomics platform?** The figure legend, with per-value provenance,
+is in [`figure_composite_legend.md`](figure_composite_legend.md).
+
+Sections 3 and 4 below describe the forest and scatter panels. They were once
+standalone scripts (`07_forest_plots.R`, `08_meta_vs_xenium_scatter.R`) that
+`09` re-implemented internally; the standalones were removed on 2026-09-04 and
+are recoverable from the git tag `pre-prune-2026-09-04`. The methods they
+document are still exactly what `09` does.
 
 ---
 
@@ -106,7 +104,7 @@ Neither input stores a usable SE directly, so both are derived from the test sta
   then `SE = logFC / t`. This is a Wald-equivalent approximation; it is mildly
   biased for very large/small F but fine for the moderate effects shown.
 
-### The meta diamond (script 07)
+### The meta diamond
 The pooled estimate shown as the black diamond is **recomputed** in-script via
 `metafor::rma(yi = cohort logFC, sei = cohort SE, method = "DL")` (DerSimonian–
 Laird random effects) from the 7 cohorts. Its **position** (estimate + 95% CI)
@@ -118,10 +116,10 @@ project rather than a re-derived p-value. (The two agree closely.)
 Xenium is **never** pooled into the meta-analysis. It is shown only as
 independent replication (the green triangle in 07; the y-axis in 08). This
 preserves the discovery/replication separation — see
-`archive/notes/findings.md` discussion (archived 2026-08-06). (An 8-cohort sensitivity pool was explored
+the archived pathway-analysis notes (removed 2026-09-04; tag `pre-prune-2026-09-04`). (An 8-cohort sensitivity pool was explored
 earlier but is not the primary analysis.)
 
-### Significance markers (script 07)
+### Significance markers
 Applied per row:
 | Marker | Meaning |
 |---|---|
@@ -138,20 +136,19 @@ Applied per row:
   significant, under-powered per study); the pooled meta shows **asterisks**.
   Note Xenium's FDR is across only the 300-gene panel.
 
-### Cell-class colour scheme (script 08)
+### Cell-class colour scheme
 `CLASS_COL`: Excitatory `#117733` (green), Inhibitory `#882255` (magenta),
 Glia `#DDCC77` (yellow). Class assignment is hard-coded in the `EXC`/`INH`/`GLI`
 vectors at the top of script 08 — update these if the subclass set changes.
 
-### Inclusion threshold (script 08)
+### Inclusion threshold
 `PADJ_THR` (default 0.10) filters input B to the meta-DE genes. Passing a CLI
 arg overrides it and adds an `_fdrNN` suffix to the output filenames so multiple
-cutoffs coexist (e.g. `Rscript scripts/08_meta_vs_xenium_scatter.R 0.05` →
-`08_meta_vs_xenium_scatter_fdr05.png`).
+cutoffs were once rendered side by side; the paper uses FDR < 0.10.
 
 ---
 
-## 3. Figure 07 — forest plots
+## 3. Panels b and f — forest plots
 
 **How to read**: one panel per (gene, cell type). Top→bottom: the 7 snRNA-seq
 cohorts (grey squares, sorted by effect), the pooled `snRNA-seq meta` diamond
@@ -159,20 +156,13 @@ cohorts (grey squares, sorted by effect), the pooled `snRNA-seq meta` diamond
 Bars are 95% CIs. Panel letters top-left, gene name (italic) as the subtitle,
 markers per the table above.
 
-**Composite panels** (curated in the `panels` tribble near the bottom of the
-script): A. SST/Sst, B. PVALB/Pvalb, C. BDNF/L2_3 IT, D. FKBP5/OPC,
-E. CX3CR1/Micro-PVM, F. SMAD1/Pvalb. Edit that tribble to change the panel set.
-
-**Run**:
-```bash
-cd ~/Github/scz_celltype_paper/transcriptomic
-Rscript scripts/07_forest_plots.R                  # 6-panel composite
-Rscript scripts/07_forest_plots.R GAD1 Sst         # any single (gene, cell type)
-```
+Figure 2 shows two: **SST in Sst** (panel b) and **PVALB in Pvalb** (panel f).
+The `FOREST` constant at the top of `09` defines which (gene, cell type) pairs
+are drawn.
 
 ---
 
-## 4. Figure 08 — concordance scatter
+## 4. Panel j — concordance scatter
 
 **How to read**: each point is a (gene, cell type) pair where the gene is
 meta-DE (padj < PADJ_THR) AND on the Xenium panel AND tested in that subclass.
@@ -193,12 +183,6 @@ plotting section): the 5 significant forest-panel pairs + SERPING1/Astro,
 ABCG2/Endo, VGF/Lamp5. The script warns if a requested pair is absent from the
 testable set (e.g. PVALB/Pvalb, whose meta padj > 0.1, cannot appear).
 
-**Run**:
-```bash
-Rscript scripts/08_meta_vs_xenium_scatter.R        # padj < 0.10 (primary)
-Rscript scripts/08_meta_vs_xenium_scatter.R 0.05   # stricter sensitivity
-```
-
 **Current numbers** (padj < 0.10): 166 pairs, 61 both-up / 65 both-down /
 40 discordant, 76% directionally concordant, Pearson r = 0.73, slope = 0.79,
 binomial p = 7e-12. At padj < 0.05: 109 pairs, 78% concordant, r = 0.78.
@@ -211,10 +195,10 @@ binomial p = 7e-12. At padj < 0.05: 109 pairs, 78% concordant, r = 0.78.
 
 ---
 
-## 5. Figure 09 — publication composite
+## 5. The composite
 
 The single multi-panel figure for the paper
-(`results/figures/09_composite.{png,pdf}`, **7.1 × 6.625 in, 400 dpi**). Width
+(`manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}`, **7.1 × 6.625 in, 400 dpi**). Width
 `FIG_W = 7.1` in (NN double-column) and height `FIG_H = 6.625` in. It reuses the
 inputs (§1) and methods (§2) of 07/08 and adds the butterfly + inset and exemplar
 cells. Layout = **one interneuron marker per row** (volcano → forest → CP1K boxplot
@@ -268,7 +252,7 @@ together, not piecemeal:
 - **Panel-i inset**: `build_de_prop_inset()` (reads `INPUT_CRUMBLR`) draws # DE
   genes (FDR<0.10) vs mean per-donor Xenium proportion across ≥1-DE subclasses;
   minimal styling (semi-transparent fit, 1%/10% log stops, ρ, no point labels except
-  Astro/L5 IT/Vip/L6b). Standalone fully-labelled version = `scripts/16`.
+  Astro/L5 IT/Vip/L6b).
 - **Butterfly legend** sits at `c(0.70, 0.16)` (right of the bar-tip count labels),
   keys `unit(9,"pt")`.
 - **Exemplar pair (d/h)**: `Control` / `SCZ` column headers on **row 1 only** (a
@@ -282,8 +266,8 @@ together, not piecemeal:
 ```bash
 cd ~/Github/scz_celltype_paper/transcriptomic
 python scripts/10_xenium_exemplar_cells.py   # panel d/h exemplar inputs (if not present)
-Rscript scripts/09_composite_figure.R         # -> results/09_composite.{png,pdf}
-cp results/09_composite.png results/09_composite.pdf results/figures/  # snapshot
+Rscript scripts/09_composite_figure.R
+# -> ../manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}  (written in place)
 ```
 
 ---
@@ -331,7 +315,7 @@ inside it, for panels d/h.
   final stage matches the *displayed* in-polygon grain density to the target so
   the drawn dots are representative and the Control>SCZ direction holds. Depth/
   layer is **reported, not used**. Molecules clipped by point-in-polygon.
-  Grain-density input is produced by `scripts/11_grain_density.py`.
+  Grain-density input is produced by `reserve/percell_normalisation/11_grain_density.py`.
 - **Outputs**: `exemplar_<gene>_<dx>_{boundary,nucleus,dots}.csv` (recentred µm
   coords) and `exemplar_cells_meta.csv` (sample, `cell_index`, `grain_density_target`,
   `ecc_target`, `marker_count`, `n_dots_in_poly`, `grain_density`,
@@ -371,8 +355,6 @@ When upstream DE results change, to refresh the figures:
    **re-run script 10 first** — it regenerates `results/tables/exemplar_*.csv`
    that panels d/h read.
 5. Re-run the figures and copy outputs into `results/figures/`:
-   - `Rscript scripts/07_forest_plots.R`
-   - `Rscript scripts/08_meta_vs_xenium_scatter.R`
    - `Rscript scripts/09_composite_figure.R`   (after step 4)
 6. Re-verify every cited number against source data (per the project's
    numerical-precision rule) and refresh the provenance table in
@@ -410,7 +392,7 @@ When upstream DE results change, to refresh the figures:
   NOT strengthen after library-size normalisation (0.87×, p=0.060, n.s.) —
   consistent with the modest edgeR effect (logFC −0.22, p=0.044). The SST
   reduction, by contrast, is robust (raw 0.70×, p=0.002; library-normalised
-  0.76×, p=0.011). Values: `results/tables/S_percell_stats.csv` (`scripts/13`).
+  0.76x, p=0.011). Values: `reserve/percell_normalisation/S_percell_stats.csv`.
 - **Five Xenium sections** have transcript-level molecule export (Control:
   `Br6432`, `Br8667`; SCZ: `Br2039`, `Br5746`, `Br5973`), so exemplars are drawn
   from those; `Br6432`/`Br5973` are used as the most group-representative pair.

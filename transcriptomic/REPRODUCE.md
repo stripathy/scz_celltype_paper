@@ -70,17 +70,19 @@ R 4.5.1 with:
 
 ```bash
 cd scz_celltype_paper/transcriptomic
-Rscript scripts/09_composite_figure.R     # writes results/09_composite.{png,pdf}
+Rscript scripts/09_composite_figure.R
+# writes ../manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}
 ```
 
-Compare `results/09_composite.png` against the committed reference
-`results/figures/09_composite.png`. The figure legend — and a table verifying
+The renderer writes the submission figure in place, so a successful run replaces
+`manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}`; `git diff --stat` on
+that path is the check that it changed as expected. The figure legend — and a table verifying
 every cited number against source — is in `notes/figure_composite_legend.md`.
 
 ## Exact vs functional reproduction
 
 - **Functional** (identical panels, numbers, layout): the steps above suffice.
-  All on-figure statistics (n = 166, r = 0.73, 76% concordant, the DE counts,
+  All on-figure statistics (n = 166, r = 0.73, 72% concordant, the DE counts,
   the forest estimates) are computed from the committed `data/figure_inputs/`
   CSVs at run time, so a fresh clone reproduces them exactly.
 - **Pixel-exact** also requires the same package versions (above) and the same
