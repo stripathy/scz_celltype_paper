@@ -203,6 +203,12 @@ Rscript scripts/08_meta_vs_xenium_scatter.R 0.05   # stricter sensitivity
 40 discordant, 76% directionally concordant, Pearson r = 0.73, slope = 0.79,
 binomial p = 7e-12. At padj < 0.05: 109 pairs, 78% concordant, r = 0.78.
 
+> **Superseded 2026-08-06.** The figure inputs were refreshed onto the
+> reinstated April Xenium object with a PMI covariate. The concordance is now
+> **72%** with Pearson r = 0.73 (slope 0.81, sign-test P = 8.4e-9). The
+> paragraph above records the pre-refresh run; `Fig2_cross_platform_de` and
+> `notes/figure_composite_legend.md` carry the current numbers.
+
 ---
 
 ## 5. Figure 09 — publication composite

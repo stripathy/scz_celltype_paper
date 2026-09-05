@@ -1,92 +1,83 @@
-# transcriptomic/ — Figure 2 and its supplements
+# transcriptomic/ — Figure 2 and Supplementary Fig. S8
 
-Cell-type-specific differential expression in schizophrenia, across a 7-cohort
-snRNAseq meta-analysis and the Xenium spatial dataset. This component builds
-**Figure 2** and **Supplementary Fig. S7**, and nothing else.
+Cell-type-specific differential expression in schizophrenia, across the
+seven-cohort snRNA-seq meta-analysis and the Xenium spatial dataset. This
+component builds **Figure 2** (cross-platform DE) and **Supplementary Fig. S8**
+(the Sst depletion-strata analysis), and nothing else.
 
-Everything exploratory — the GSEA / gene-ontology / pathway analyses and the
-narrative figures built on them — is parked in
-[`archive/`](archive/README.md). None of it entered the manuscript.
+The exploratory GSEA / gene-ontology / pathway work that once lived here was
+removed on 2026-09-04; none of it entered the manuscript. It is recoverable
+from the git tag `pre-prune-2026-09-04`.
 
 ## Figure 2
 
-| Panels | What | Built by |
+Ten panels, all assembled by one script.
+
+| Panels | What | Data from |
 |---|---|---|
-| a, e | Volcano, meta log₂FC vs −log₁₀ P, coloured by direction × FDR tier | `01_volcano_per_celltype.R` |
-| b, f | Forest: 7 cohorts, pooled DerSimonian–Laird diamond, Xenium triangle | `07_forest_plots.R` |
+| a, e | Volcano, meta log₂FC vs −log₁₀ *P*, coloured by direction × FDR tier | `data/figure_inputs/DE_genes_all_cells_scz.csv` |
+| b, f | Forest: seven cohorts, pooled DerSimonian–Laird diamond, Xenium triangle | `meta_results_cohorts_subclass_forest.csv` + Xenium DE |
 | c, g | Per-donor CP1K expression, Control vs SCZ (12 vs 12) | `12_marker_norm_expr.R` |
 | d, h | Representative Xenium cells at the pooled group-median transcript density | `10_xenium_exemplar_cells.py` |
-| i | Up/down DE-gene counts per subclass, FDR < 0.10 with the FDR < 0.05 subset | `09_composite_figure.R` |
-| i inset | DE-gene count vs mean per-donor Xenium proportion | `16_de_vs_proportion.R` |
-| j | snRNAseq meta vs Xenium log₂FC, the 166 pairs at meta FDR < 0.10 | `08_meta_vs_xenium_scatter.R` |
-| — | assembles all ten panels | `09_composite_figure.R` |
+| i | Up/down DE-gene counts per subclass, FDR < 0.10 with the FDR < 0.05 subset | meta DE |
+| i inset | DE-gene count vs mean per-donor Xenium proportion | Xenium crumblr input |
+| j | snRNA-seq meta vs Xenium log₂FC, the pairs at meta FDR < 0.10 | meta DE ∩ Xenium DE |
 
-`09_composite_figure.R` rebuilds every panel internally, so it alone regenerates
-the figure. The numbered scripts above are standalone, fully-labelled,
-large-format renderers of the same panels — useful when a panel needs to be
-inspected or redrawn on its own.
-
-## Supplementary Fig. S7
-
-Per-cell marker counts within the Xenium Sst and Pvalb populations, modelled with
-negative-binomial mixed models under four normalisations. Cited in the Methods
-for the four ratios it reports (SST 0.70× raw / 0.76× library-normalised;
-PVALB 0.86× / 0.87×).
-
+```bash
+cd transcriptomic
+python3 scripts/10_xenium_exemplar_cells.py   # panels d, h   (needs the Xenium h5ads)
+Rscript scripts/12_marker_norm_expr.R         # panels c, g   (needs Xenium pseudobulk)
+Rscript scripts/09_composite_figure.R         # the figure
+# -> manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}
 ```
-11_grain_density.py -> results/tables/percell_grain_density.csv
-                    -> 13_supp_percell_metrics.R
-                    -> results/tables/S_percell_stats.csv
-                       results/figures/S_percell_metrics.{png,pdf}
+
+`09_composite_figure.R` builds every panel internally and reads only committed
+CSVs, so **the figure regenerates from a clone with R alone** — see
+[`REPRODUCE.md`](REPRODUCE.md). Steps 10 and 12 are only needed when their
+inputs change; their outputs are committed under `results/tables/`.
+
+`00_refresh_figure_inputs.R` resyncs `data/figure_inputs/` from the canonical
+upstream sources and rewrites `MANIFEST.tsv`. `_figure_inputs.R` checks that
+manifest on every read and halts the render if a source has moved on, so the
+figure cannot quietly go stale.
+
+## Supplementary Fig. S8 — Sst depletion strata
+
+A nine-step pipeline in [`scripts/fig5/`](scripts/fig5/README.md) asking how the
+SCZ transcriptional state of Sst interneurons differs between the supertypes
+depleted in Figure 3 and those that persist. It was built as Figure 5 and moved
+to the supplement on 2026-09-01, so it is still laid out as a main figure.
+
+```bash
+# from the repo root, in order; ~50 min total
+Rscript transcriptomic/scripts/fig5/01_strata.R
+# ... through ...
+Rscript transcriptomic/scripts/fig5/08_figure5.R    # -> manuscript/figures/supplementary/S08_sst_strata
+Rscript transcriptomic/scripts/fig5/09_verify.R     # must PASS
 ```
+
+`09_verify.R` asserts every number quoted in the draft against its source table.
+Run it after any change to the pipeline.
+
+Its supplements and sensitivity analyses are not in the paper and live in
+[`../reserve/sst_strata_supp/`](../reserve/sst_strata_supp/).
 
 ## Layout
 
 ```
-scripts/     00_refresh_figure_inputs.R   resync data/figure_inputs/ from canonical sources
-             _figure_inputs.R             fig_input() — the staleness guard every figure reads through
-             01, 07, 08, 09, 10, 12, 16   Figure 2 (see the table above)
-             11, 13                       Supplementary Fig. S7
-data/
-  figure_inputs/                          committed input snapshots + MANIFEST.tsv
-notes/
-  figure_composite_legend.md              final legend wording + per-value provenance
-  figures_crossplatform_validation.md     data provenance and update checklist
-results/
-  figures/, tables/                       curated snapshots
-archive/                                  parked exploratory work — see its README
+data/figure_inputs/   committed Fig 2 inputs + MANIFEST.tsv (staleness guard)
+data/stratum_*_export/  manifests for the cluster exports behind S8 (the
+                        parquet/h5ad payloads are gitignored)
+scripts/              Fig 2 chain (00, 09, 10, 12, _figure_inputs)
+scripts/fig5/         the S8 pipeline (01-09 + _common.R)
+results/tables/       committed Fig 2 panel inputs (exemplars, CP1K)
+results/sst_strata_gsea/  committed S8 statistics
+notes/                figure legend + cross-platform validation write-ups
 ```
 
-## Running it
+## Cross-component seams
 
-```bash
-cd transcriptomic
-python3 scripts/10_xenium_exemplar_cells.py   # panel d/h exemplar tables — run BEFORE 09
-Rscript  scripts/09_composite_figure.R        # the figure
-```
-
-The standalone panel renderers (`01`, `07`, `08`, `16`) and the S7 chain
-(`11` then `13`) can be run in any order.
-
-## Input snapshots and the staleness guard
-
-Every figure script reads its inputs through `fig_input()`, which **refuses to
-run** when a committed snapshot no longer matches the source it came from. That
-guard exists because of a real incident: a figure once showed 76% cross-platform
-sign concordance while the manuscript said 72%, because the snapshot and the
-source had silently diverged.
-
-After any upstream DE, crumblr or meta-analysis rerun:
-
-```bash
-Rscript scripts/00_refresh_figure_inputs.R    # resync + rewrite MANIFEST.tsv
-python3 ../shared/verify_provenance.py        # confirm every set is consistent
-```
-
-`data/figure_inputs/DE_genes_all_cells_scz.csv` is Supplementary Table **T2**.
-
-## Dependencies
-
-R: `readr`, `dplyr`, `tidyr`, `purrr`, `stringr`, `ggplot2`, `cowplot`, `ggrepel`.
-Python: `pandas`, `numpy`, `anndata`/`scanpy` (for the Xenium exemplar and
-grain-density steps, which read the annotated h5ads).
+- **In:** the snRNA-seq meta-analysis and per-cohort tables, via
+  `shared/snrnaseq_de/` (Endresz et al., in prep).
+- **In:** Xenium DE, crumblr input and supertype depth from `spatial/output/`.
+- **Out:** nothing. Both figures are terminal.

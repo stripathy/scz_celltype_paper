@@ -542,7 +542,13 @@ full <- plot_grid(row1, row2, row3, ncol = 1, rel_heights = c(2, 2, 2.625))
 
 FIG_H <- 6.625 # 7.1 x 6.625 in. Rows 1-2 (SST a-d, PVALB e-h) = 2.00 in each;
                # butterfly + scatter (i,j) = 2.625 in (rel_heights are inches).
-ggsave("results/09_composite.png", full, width = FIG_W, height = FIG_H,
+# Written straight into the submission folder, as the supplementary figures are
+# (manuscript/figures/supplementary/README.md); the figure number lives in
+# FIGSTEM. Previously this wrote to results/ and was hand-copied to
+# results/figures/, and the copy drifted a data refresh behind.
+MAINFIG <- "../manuscript/figures/main"
+FIGSTEM <- "Fig2_cross_platform_de"
+ggsave(file.path(MAINFIG, paste0(FIGSTEM, ".png")), full, width = FIG_W, height = FIG_H,
        dpi = 400, bg = "white")
-ggsave("results/09_composite.pdf", full, width = FIG_W, height = FIG_H, bg = "white")
+ggsave(file.path(MAINFIG, paste0(FIGSTEM, ".pdf")), full, width = FIG_W, height = FIG_H, bg = "white")
 cat(sprintf("Saved results/09_composite.{png,pdf}  (%.1f x %.1f in)\n", FIG_W, FIG_H))

@@ -1,7 +1,7 @@
-# Reproducing the composite figure (Fig. 09)
+# Reproducing Figure 2
 
-Checklist to regenerate `results/figures/09_composite.{png,pdf}` — the
-7.1 × 6.625 in publication composite — on another machine.
+Checklist to regenerate `manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}`
+— the 7.1 × 6.625 in publication composite — on another machine.
 
 ## TL;DR
 
@@ -13,8 +13,9 @@ any external file — just R:
 
 ```bash
 cd scz_celltype_paper/transcriptomic
-Rscript scripts/09_composite_figure.R     # -> results/09_composite.{png,pdf}
-# compare to the committed reference: results/figures/09_composite.png
+Rscript scripts/09_composite_figure.R
+# -> ../manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}
+# The script writes the submission figure in place, so there is no copy to drift.
 ```
 
 ## 1. The code (travels with git)
