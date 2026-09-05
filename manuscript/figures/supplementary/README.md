@@ -58,7 +58,7 @@ cited nowhere in the Doc and moved to `../not_in_current_version/` (their render
 now write there, so re-running them cannot drop a stray file into this folder);
 and the Sst depletion-group controls figure
 (nuclei imbalance, cell-matched draws, interaction NES), dropped 2026-09-01 when the
-analysis moved to the supplement -- its renderer `fig5/supp/figS_strata_controls.R`
+analysis moved to the supplement -- its renderer `reserve/sst_strata_supp/figS_strata_controls.R`
 is kept and now writes `reserve_strata_controls.*` to `transcriptomic/results/`.
 
 The small figure-input CSVs are committed (force-added past the `spatial/output/`

@@ -61,8 +61,11 @@ is written directly into its submission location so there is no copy to drift:
   Figure 5 until 2026-09-01 and is still laid out as a main figure; the S-number
   is the `FIGSTEM` constant at the bottom of `08_figure5.R`
 - the controls figure (nuclei imbalance, cell-matched draws, interaction NES) is
-  **not in the current manuscript**; `supp/figS_strata_controls.R` still renders it
-  as `reserve_strata_controls.{png,pdf}` under results/ in case a reviewer asks
+  **not in the current manuscript**; `reserve/sst_strata_supp/figS_strata_controls.R`
+  still renders it as `reserve_strata_controls.{png,pdf}` under results/ if a
+  reviewer asks. The supplements and sensitivity analyses that used to live in
+  `supp/` moved to `reserve/sst_strata_supp/` on 2026-09-04; they still source
+  this directory's `_common.R` and still run from the repo root.
 
 | File | Written by | Used for |
 |---|---|---|

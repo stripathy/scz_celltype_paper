@@ -23,7 +23,7 @@ keep all their cells.
 Output mirrors the layout of pseudobulk/donor_stratum/ so the existing R DE code
 runs against it unchanged, one directory per random draw.
 
-Usage:  python3 transcriptomic/scripts/fig5/supp/subsample_cells.py [n_reps]
+Usage:  python3 reserve/sst_strata_supp/subsample_cells.py [n_reps]
 """
 import sys, os, warnings
 import numpy as np, pandas as pd, scipy.sparse as sp

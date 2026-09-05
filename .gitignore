@@ -66,8 +66,8 @@ transcriptomic/results/sst_strata_gsea/archive_exploratory/*
 !transcriptomic/results/sst_strata_gsea/archive_exploratory/README.md
 
 # ---- Parked 8th cohort (GSE158516): code + README only ----
-external_validation/gse158516/data/
-external_validation/gse158516/output/
+reserve/gse158516/data/
+reserve/gse158516/output/
 
 # ---- Reading material: PDFs / slide decks are not ours to redistribute ----
 background/relevant papers/
