@@ -7,7 +7,7 @@
 # (2) shared synaptic/SST/VGF component; (3) graded translation + OxPhos.
 # Sensitivity: supertype_confidence >= 0.5 cells only (label-quality concern:
 # 4/5 depleted supertypes flagged CONFIDENTLY_WRONG in this cohort's mapping).
-# Run from repo root: Rscript transcriptomic/scripts/20b_jens_stratum_gsea.R
+# Run from repo root: Rscript reserve/sst_strata_supp/20b_jens_stratum_gsea.R
 suppressPackageStartupMessages({
   library(readr); library(dplyr); library(tidyr); library(stringr); library(purrr)
   library(tibble); library(arrow); library(edgeR); library(limma)

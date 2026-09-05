@@ -59,7 +59,7 @@ files.
 ## Where the result goes
 
 `results/crumblr_results_supertype_neurons.csv` is read by
-`genetics/scripts/figures/export_fig4_new_panels.py`, which joins it against the
+`genetics/scripts/figures/export_panel_ad_concordance.py`, which joins it against the
 7-cohort SCZ crumblr betas to produce
 `genetics/results/figures/r_panels/panel_ad_concordance_{sst,stats}.csv` — the
 Figure 4j panel data. The panel CSVs stay under `genetics/` because the Figure 4

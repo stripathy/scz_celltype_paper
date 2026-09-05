@@ -30,7 +30,7 @@
 
 suppressPackageStartupMessages({library(metafor); library(data.table)})
 
-BASE <- "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516"
+BASE <- "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516"
 OUTD <- file.path(BASE, "output")
 SHARED <- "/Users/shreejoy/Github/scz_celltype_paper/shared/snrnaseq_de/nicole_scz_snrnaseq_betas"
 PER_COHORT <- "/Users/shreejoy/Downloads/SCZ_SST_7_cohort_estimates (3).csv"

@@ -17,7 +17,7 @@ plt.rcParams.update({"font.size": 15, "axes.labelsize": 17, "axes.titlesize": 18
                      "xtick.labelsize": 13, "ytick.labelsize": 13, "legend.fontsize": 13})
 
 REPO = "/Users/shreejoy/Github/scz_celltype_paper"
-OUTD = f"{REPO}/external_validation/gse158516/output"
+OUTD = f"{REPO}/reserve/gse158516/output"
 
 r = pd.read_csv(f"{OUTD}/meta8_composition.csv")
 d = pd.read_csv(f"{REPO}/spatial/output/depth_platform/supertype_depth_platform_summary.csv")

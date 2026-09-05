@@ -13,7 +13,7 @@ suppressPackageStartupMessages({
   library(crumblr); library(variancePartition); library(limma); library(data.table)
 })
 
-BASE <- "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516"
+BASE <- "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516"
 OUTD <- file.path(BASE, "output")
 
 # Optional prefix selects a donor subset written by 12_sensitivity_under70.py

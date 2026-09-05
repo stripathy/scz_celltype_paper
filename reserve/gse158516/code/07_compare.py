@@ -25,7 +25,7 @@ import pandas as pd
 from scipy import stats
 
 BASE = "/Users/shreejoy/Github/scz_celltype_paper"
-OUTD = f"{BASE}/external_validation/gse158516/output"
+OUTD = f"{BASE}/reserve/gse158516/output"
 SHARED = f"{BASE}/shared/snrnaseq_de"
 
 VULNERABLE_SST = ["Sst_2", "Sst_3", "Sst_20", "Sst_22", "Sst_25"]
@@ -151,7 +151,7 @@ for level, mtab in [("supertype", mc), ("subclass", mc_sub)]:
 
 hdr("8. Aggregate vulnerable-Sst proportion, control vs SCZ")
 counts = pd.read_csv(f"{OUTD}/counts_supertype.csv", index_col=0)
-sm = pd.read_csv(f"{BASE}/external_validation/gse158516/data/sample_metadata.csv")
+sm = pd.read_csv(f"{BASE}/reserve/gse158516/data/sample_metadata.csv")
 sm = sm.set_index("Deidentified ID").loc[counts.index]
 comp_map = (pd.read_csv(f"{OUTD}/celltype_compartment.csv")
             .drop_duplicates("cell_type").set_index("cell_type")["compartment"])

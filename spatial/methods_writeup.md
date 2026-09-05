@@ -368,7 +368,7 @@ implementation; **re-run it whenever the annotations are regenerated** (it reads
 
 A complementary per-cell **grain-density** readout — marker transcripts per cell
 area (grains/100 µm², the Dienel et al. 2023 per-neuron mRNA measure) — is
-produced by `transcriptomic/scripts/11_grain_density.py`; it selects the
+produced by `reserve/percell_normalisation/11_grain_density.py`; it selects the
 composite's exemplar cells (panels d/h) and is shown across normalisations for
 SST/PVALB in Supplementary Fig. S_percell.
 

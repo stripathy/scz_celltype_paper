@@ -25,7 +25,7 @@ DATA = "/Users/shreejoy/Github/shared_data/GSE158516"
 QC = f"{DATA}/per_sample_qc"
 STAGE = f"{DATA}/per_sample_final"
 OUT = f"{DATA}/GSE158516_annotated.h5ad"
-META = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/data/sample_metadata.csv"
+META = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/data/sample_metadata.csv"
 
 LABEL_COLS = ["class", "subclass", "supertype", "class_confidence",
               "subclass_confidence", "supertype_confidence",

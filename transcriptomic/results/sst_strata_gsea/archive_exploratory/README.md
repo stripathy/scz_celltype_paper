@@ -2,7 +2,7 @@
 
 - `fig1..fig6*.png`, `gsea_stratum_comparison.csv`, `module_genes_xenium_concordance.csv`
   Exploratory figures from the original single-script exploration (archived as
-  `transcriptomic/scripts/archive/fig5_superseded/17_sst_strata_gsea.R`).
+  `the superseded single-script exploration, removed 2026-09-04; see tag pre-prune-2026-09-04`).
 - `figS_sst_strata_mockup.(png|pdf)` — the figure's filename before it became a
   main figure; current output is `figure5_sst_strata.(png|pdf)`.
 - `*_TOPLEVEL_COPY.csv` — copies of the pseudobulk GSEA/signature tables that

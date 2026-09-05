@@ -34,7 +34,7 @@ QC = "/Users/shreejoy/Github/shared_data/GSE158516/per_sample_qc"
 MODE = sys.argv[1] if len(sys.argv) > 1 else "proportional"
 REF = f"/Users/shreejoy/Github/shared_data/GSE158516/reference/seaad_mtg_{MODE}.h5ad"
 SUFFIX = "" if MODE == "proportional" else f"_{MODE}"
-OUTD = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/output"
+OUTD = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/output"
 DATA = "/Users/shreejoy/Github/shared_data/GSE158516"
 
 N_HVG = 3000

@@ -75,3 +75,7 @@ background/talks/*.pptx
 
 # R side-effect file from non-interactive ggsave sessions
 Rplots.pdf
+
+# Hand-editing SVGs of the main figures: the patch-seq traces make Figure 4's
+# ~25 MB. PNG + PDF are the deliverables.
+manuscript/figures/main/*.svg

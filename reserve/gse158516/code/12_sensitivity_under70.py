@@ -21,7 +21,7 @@ import polars as pl
 from brisc import Pseudobulk
 
 DATA = "/Users/shreejoy/Github/shared_data/GSE158516"
-BASE = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516"
+BASE = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516"
 OUTD = f"{BASE}/output"
 FORMULA = "~ diagnosis + age + PMI + log2(num_cells) + log2(library_size)"
 COEF = "diagnosisSchizophrenia"

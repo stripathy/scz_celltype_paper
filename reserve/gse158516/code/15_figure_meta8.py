@@ -14,7 +14,7 @@ import pandas as pd
 plt.rcParams.update({"font.size": 15, "axes.labelsize": 17, "axes.titlesize": 18,
                      "xtick.labelsize": 13, "ytick.labelsize": 13, "legend.fontsize": 13})
 
-BASE = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516"
+BASE = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516"
 OUTD = f"{BASE}/output"
 HEADLINE = ["Sst_2", "Sst_3", "Sst_20", "Sst_22", "Sst_25", "L6b_1", "L6b_2", "L6b_4"]
 C7, C8, CNEW = "0.35", "#C44E52", "#4C72B0"

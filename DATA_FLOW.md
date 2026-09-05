@@ -1,49 +1,57 @@
 # Data flow & dependency graph
 
-How the four analysis components depend on each other. **Every cross-component
-edge is realized as a git-ignored symlink** (so the wiring is executable, not
-just prose) and listed in the Seams table. The upstream root — the student's
-snRNA-seq pipeline — is not in the repo yet; its outputs are symlinked into
+How the analysis components depend on each other. **Every cross-component edge
+is realized as a git-ignored symlink** (so the wiring is executable, not just
+prose) and listed in the Seams table. The upstream root — the snRNA-seq
+pipeline — is not in the repo yet; its outputs are symlinked into
 `shared/snrnaseq_de/` from their current scattered locations.
+
+For the figure-to-script map, start from the root [`README.md`](README.md).
 
 ## Dependency graph (data flows downward)
 
 ```
-              snrnaseq/   ← student's pipeline (Endresz et al.); NOT in repo yet
+              snrnaseq/   <- upstream pipeline (Endresz et al.); NOT in repo yet
             (upstream root)
-                 │  exports → shared/snrnaseq_de/
-                 │    DE_genes_all_cells_scz.csv         (meta DE)
-                 │    meta_results_cohorts_subclass.csv  (per-cohort DE)
-                 │    nicole_scz_snrnaseq_betas/         (composition, crumblr)
-   ┌─────────────┼──────────────────┬───────────────────────┐
-   │ DE          │ DE + composition │ composition           │
-   ▼             ▼                  ▼                        │
-transcriptomic/  spatial/         genetics/                 │
-   ▲   ▲         │  Xenium DE ──►  │  GWAS set ──► transcriptomic/ (script 04)
-   │   └─────────┘  (run_de.R→09)  │  franken_taxonomy/ (canonical cell-type axis)
-   │                               │  enrichment
-   └───────────────┬──────────────┘
-                   ▼
-                figures/  = INDEX of the paper's final figures (each component
-                           produces its own, e.g. the composite in
-                           transcriptomic/); no separate convergence figure.
-                   ▲
-histology/ (standalone RNAscope FISH SST density) ──────────┘
+                 |  exports -> shared/snrnaseq_de/
+                 |    DE_genes_all_cells_scz.csv         (meta DE)
+                 |    meta_results_cohorts_subclass.csv  (per-cohort DE)
+                 |    nicole_scz_snrnaseq_betas/         (composition, crumblr)
+   +-------------+------------------+-----------------------+
+   | DE          | DE + composition | composition           | composition
+   v             v                  v                       v
+transcriptomic/  spatial/         genetics/            crossdisorder/
+   ^   ^         |  Xenium DE      |  MAGMA enrichment       |  AD CPS slopes
+   |   +---------+  + crumblr      |  fine-mapping           |
+   |                 |             |  patch-seq              |
+   |                 +-------------+-------------------------+
+   |                               |
+   |                               v
+   +----------------------> manuscript/figures/
+                              main/          Fig 2 (transcriptomic), Fig 4 (genetics)
+                              supplementary/ S2, S3 (spatial), S6 (snrnaseq),
+                                             S8 (transcriptomic), S9, S10 (genetics)
+
+Figures 1 and 3 are assembled outside this repo; spatial/ supplies the annotated
+Xenium objects and crumblr tables they draw on.
+
+reserve/ consumes genetics/ and transcriptomic/ outputs but feeds nothing.
 
 External hub (~/Github/shared_data/, per ~/Github/DATA_LAYOUT.md):
-   SEA-AD / Siletti / MERFISH references ──► genetics/, spatial/  (symlinked, not absorbed)
+   SEA-AD / MERFISH references ----> genetics/, spatial/  (symlinked, not absorbed)
 ```
 
 ## Per-component inputs → outputs
 
-| component | key inputs (← from) | produces → (consumed by) |
+| component | key inputs (<- from) | produces -> (consumed by) |
 |---|---|---|
-| `snrnaseq/` *(TBD)* | raw 7-cohort snRNA-seq | DE betas, composition betas → everyone downstream |
-| `genetics/` | composition betas (← snrnaseq), GWAS set (owns), taxonomy (owns), SEA-AD ref (← shared_data) | cell-type enrichment, `franken_taxonomy/`, GWAS set → transcriptomic, figures |
-| `spatial/` | Xenium raw, DE + composition betas (← snrnaseq), SEA-AD/MERFISH ref (← shared_data) | Xenium DE (`build_de_input.py` + `run_de.R`, pseudobulk edgeR), crumblr composition → transcriptomic, figures |
-| `transcriptomic/` | DE betas (← snrnaseq), GWAS set (← genetics), Xenium DE (← spatial) | composite figure, GSEA/pathway results → figures |
-| `histology/` | RNAscope FISH counts (self-contained) | SST density results → figures |
-| `figures/` | — (index only) | pointers to each component's final paper figures |
+| `snrnaseq/` *(TBD)* | raw 7-cohort snRNA-seq | DE betas, composition betas -> everyone downstream |
+| `genetics/` | composition betas (<- snrnaseq), AD slopes (<- crossdisorder), GWAS set + patch-seq (owns), SEA-AD DLPFC ref (<- shared_data) | Fig 4, S9, S10, T6; the vulnerable-vs-not marker table -> reserve/ |
+| `spatial/` | Xenium raw, SEA-AD/MERFISH ref (<- shared_data) | Xenium DE + crumblr composition -> transcriptomic, Figs 1-3; S2, S3; SM1 |
+| `transcriptomic/` | DE betas (<- snrnaseq), Xenium DE + depth (<- spatial) | Fig 2, S8 |
+| `crossdisorder/` | SEA-AD DLPFC/MTG metadata + CPS (self-contained) | AD crumblr slopes -> genetics (Fig 4i, S10b) |
+| `snrnaseq/composition_sensitivity/` | per-donor counts (<- snrnaseq), Xenium crumblr (<- spatial) | S6 |
+| `reserve/` | genetics + transcriptomic outputs | nothing in the paper |
 
 ## Internal seams (realized symlinks = the edges)
 
@@ -53,10 +61,9 @@ External hub (~/Github/shared_data/, per ~/Github/DATA_LAYOUT.md):
 | snrnaseq → transcriptomic | `transcriptomic/data/meta_results_cohorts_subclass.csv` → `shared/snrnaseq_de/` | `scz_pathway_enrichment/data/…` |
 | snrnaseq → genetics + spatial | `shared/snrnaseq_de/nicole_scz_snrnaseq_betas/` | `SCZ_Xenium/data/nicole_scz_snrnaseq_betas/` |
 | ↳ spatial consumes | `spatial/data/nicole_scz_snrnaseq_betas` → `shared/snrnaseq_de/` | (as above) |
-| ↳ genetics consumes | `genetics/scripts/13` code → `shared/snrnaseq_de/…` (repointed) | (as above) |
+| ↳ genetics consumes | `genetics/scripts/figures/build_composition_table.py` reads `shared/snrnaseq_de/…` | (as above) |
 | spatial → transcriptomic | `transcriptomic/scripts/09` reads `../spatial/output/de/de_results_subclass.csv` | `SCZ_Xenium/output/de/…` (symlinked) |
-| genetics → transcriptomic | `transcriptomic/scripts/04` reads `../genetics/data/gwas/…`; `genetics/data/gwas/*` symlinked | `scz_cell_type_enrichment/data/gwas/…` |
-| histology data | `histology/coordinates` | `sgACC_cell_depth_analysis/coordinates` |
+| RNAscope data (reserve) | `reserve/histology/coordinates` | `sgACC_cell_depth_analysis/coordinates` |
 | Xenium object → spatial | `spatial/output/all_samples_annotated.h5ad` | `SCZ_Xenium/output/all_samples_annotated.h5ad` (schema: [`spatial/all_samples_annotated_guide.md`](spatial/all_samples_annotated_guide.md)) |
 
 ## Xenium dataset state (which object the numbers come from)
@@ -91,17 +98,21 @@ python3 shared/verify_provenance.py
 ## External inputs (documented, not re-wired here)
 
 Per `~/Github/DATA_LAYOUT.md`, `genetics/` and `spatial/` symlink large
-SEA-AD / Siletti / MERFISH references from `~/Github/shared_data/` and
+SEA-AD / MERFISH references from `~/Github/shared_data/` and
 project-canonical locations. These stay external (the hub serves non-SCZ
 projects too) and are re-created when each pipeline is set up to run in place.
 
 ## Build order (topological)
 
 1. `snrnaseq/` → exports DE + composition betas into `shared/snrnaseq_de/`
-2. `genetics/`, `spatial/` (need composition + refs; genetics also GWAS + taxonomy)
-3. `transcriptomic/` (needs DE + GWAS + Xenium DE)
-4. `histology/` (independent — any time)
-5. `figures/` — index of the final figures each component already produces
+2. `spatial/` (Xenium pipeline → DE, crumblr, depth) and `crossdisorder/`
+   (AD slopes); both need only their own raw data plus the references
+3. `genetics/` (needs composition betas + AD slopes + GWAS + the SEA-AD DLPFC reference)
+4. `transcriptomic/` (needs DE betas + Xenium DE and depth)
+5. `snrnaseq/composition_sensitivity/` (needs per-donor counts + Xenium crumblr)
+
+Figures are written in place by the renderers at each step, into
+`manuscript/figures/`; there is no separate assembly step.
 
 ## Current state
 

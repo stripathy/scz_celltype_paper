@@ -698,6 +698,9 @@ figure_full <- build_figure4_nod(list(
   i = build_violin("CALB1"),               # CALB1 by depletion group
   j = build_ad_concordance(show_legend = FALSE)))   # SCZ vs AD (DLPFC)
 
-OUT_FULL_STEM <- file.path(FIGDIR, "scz_sst_hcn1_figure4")
+# Written straight into the submission folder, as Figure 2 and the supplementary
+# figures are; the figure number lives in the stem.
+MAINFIG <- file.path(dirname(REPO), "manuscript", "figures", "main")
+OUT_FULL_STEM <- file.path(MAINFIG, "Fig4_scz_genetics_hcn1_sst")
 render_figure4(figure_full, OUT_FULL_STEM)
 message(glue("\u2192 Saved {OUT_FULL_STEM}.{{png,pdf,svg}}  (Figure 4, 9 panels)"))

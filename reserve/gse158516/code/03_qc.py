@@ -25,8 +25,8 @@ import polars as pl
 
 IN = "/Users/shreejoy/Github/shared_data/GSE158516/per_sample"
 OUT = "/Users/shreejoy/Github/shared_data/GSE158516/per_sample_qc"
-OUTD = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/output"
-META = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/data/sample_metadata.csv"
+OUTD = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/output"
+META = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/data/sample_metadata.csv"
 
 MIN_GENES = 500
 MAX_MITO = 0.05

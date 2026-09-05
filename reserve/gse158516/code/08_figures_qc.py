@@ -18,7 +18,7 @@ from matplotlib.colors import LogNorm
 plt.rcParams.update({"font.size": 15, "axes.labelsize": 17, "axes.titlesize": 19,
                      "xtick.labelsize": 13, "ytick.labelsize": 13, "legend.fontsize": 13})
 
-BASE = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516"
+BASE = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516"
 DATA = "/Users/shreejoy/Github/shared_data/GSE158516"
 OUTD = f"{BASE}/output"
 

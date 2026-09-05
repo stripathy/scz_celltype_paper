@@ -20,8 +20,8 @@ import numpy as np
 import pandas as pd
 
 TOT = "/Users/shreejoy/Github/shared_data/GSE158516/barcode_totals"
-META = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/data/sample_metadata.csv"
-OUTD = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/output"
+META = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/data/sample_metadata.csv"
+OUTD = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/output"
 MIN_UMI_FLOOR, MIN_GENES = 500, 250
 
 meta = pd.read_csv(META).set_index("Deidentified ID")

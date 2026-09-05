@@ -27,8 +27,8 @@ import polars as pl
 
 QC = "/Users/shreejoy/Github/shared_data/GSE158516/per_sample_qc"
 DATA = "/Users/shreejoy/Github/shared_data/GSE158516"
-OUTD = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/output"
-META = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/data/sample_metadata.csv"
+OUTD = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/output"
+META = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/data/sample_metadata.csv"
 
 MIN_CELLS = 10
 FORMULA = "~ diagnosis + age + PMI + log2(num_cells) + log2(library_size)"

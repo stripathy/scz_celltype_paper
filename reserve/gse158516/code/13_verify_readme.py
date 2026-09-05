@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-BASE = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516"
+BASE = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516"
 OUTD = f"{BASE}/output"
 SHARED = "/Users/shreejoy/Github/scz_celltype_paper/shared/snrnaseq_de"
 

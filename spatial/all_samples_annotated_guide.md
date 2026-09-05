@@ -171,7 +171,7 @@ The other two sets are kept for comparison only.
 | `corr_supertype` | category (139) | SEA-AD supertypes, assigned within subclass |
 | `corr_subclass_corr`, `corr_supertype_corr` | float32 | best Pearson correlation at each level |
 | `class_label`, `subclass_label`, `supertype_label` (+ `*_confidence`) | category / float32 | **MapMyCells HANN** labels from pipeline step 02 (100 bootstrap iterations against the SEA-AD MTG taxonomy). 82.2% identical to `corr_subclass` on QC-pass cells. |
-| `harmony_class`, `harmony_subclass`, `harmony_supertype` (+ `*_confidence`) | category / float32 | **legacy** Harmony-integration label transfer (`spatial/code/archive/stale_analysis/02c_run_harmony_transfer.py`). 59.5% identical to `corr_subclass`; it over-assigns Sst and mislabels vascular/glial types against the SEA-AD MERFISH benchmark. Do not use. |
+| `harmony_class`, `harmony_subclass`, `harmony_supertype` (+ `*_confidence`) | category / float32 | **legacy** Harmony-integration label transfer (`spatial/code/analysis/validation/02c_run_harmony_transfer.py`). 59.5% identical to `corr_subclass`; it over-assigns Sst and mislabels vascular/glial types against the SEA-AD MERFISH benchmark. Do not use. |
 
 ### Nuclear re-segmentation
 

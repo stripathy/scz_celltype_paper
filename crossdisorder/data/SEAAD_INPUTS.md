@@ -56,8 +56,8 @@ the Allen/BICCN neurotypical reference brains (`H18.30.002`, `H19.30.001`,
 ## Running it
 
 ```bash
-python3 genetics/scripts/14_seaad_dlpfc_crumblr_input.py
-Rscript genetics/scripts/14_seaad_dlpfc_crumblr.R
+python3 crossdisorder/code/build_seaad_cps_input.py
+Rscript crossdisorder/code/run_seaad_cps_crumblr.R
 ```
 
 Writes to `genetics/results/intermediates/seaad_dlpfc/`. The second step needs

@@ -1,5 +1,13 @@
 # Retiring `SCZ_Xenium` — parked decisions and plan
 
+> **Update 2026-09-04.** `scz_celltype_paper` no longer carries any viewer code.
+> The Playwright suite, Makefile, CI workflow and the three viewer export steps
+> were removed from `spatial/` when the repo was pruned to the code behind the
+> paper; all of them were byte-identical to the copies in `SCZ_Xenium`, which
+> also holds the viewer front end this repo never tracked. So the viewer lives
+> in exactly one place, and **decision D1 below is now purely a question about
+> `SCZ_Xenium`**, not about the paper repo. The rest of this document stands.
+
 **Status: parked 2026-08-06.** No action taken beyond what is already committed.
 This repo is being promoted to authoritative; `~/Github/SCZ_Xenium` will eventually
 be retired. Nothing here is urgent — it is written so the work can be picked up
@@ -129,7 +137,7 @@ Four things, none of which are the viewer:
 3. **Single-copy docs**, including one citation that is *already* broken:
    `docs/pipeline_qc_audit.md` (20 KB) is cited by `spatial/methods_writeup.md`
    (lines 70, 95, 123, 330), `spatial/README.md:363` and
-   `spatial/code/nuclear_resolution/README.md:11` — and is gitignored in **both**
+   `the nuclear-resolution notes (removed 2026-09-04; see tag pre-prune-2026-09-04):11` — and is gitignored in **both**
    repos, so it is dead for every collaborator who clones today. Also
    `docs/{sst_vulnerability_interpretive_framework, L6b_findings_synthesis,
    dienel_robustness_analysis_plan, qc_bias_high_marker_cells_plan,

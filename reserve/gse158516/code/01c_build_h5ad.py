@@ -28,8 +28,8 @@ import scipy.sparse as sp
 RAW = "/Users/shreejoy/Github/shared_data/GSE158516/raw"
 TOT = "/Users/shreejoy/Github/shared_data/GSE158516/barcode_totals"
 OUT = "/Users/shreejoy/Github/shared_data/GSE158516/per_sample"
-META = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/data/sample_metadata.csv"
-CALLS = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/output/cell_calling_comparison.csv"
+META = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/data/sample_metadata.csv"
+CALLS = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/output/cell_calling_comparison.csv"
 CHUNK = 20_000_000
 
 

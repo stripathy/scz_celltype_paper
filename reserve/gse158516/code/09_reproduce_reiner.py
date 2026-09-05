@@ -17,7 +17,7 @@ import pandas as pd
 from scipy import stats
 
 XLSX = "/Users/shreejoy/Downloads/media-2 (6).xlsx"
-OUTD = "/Users/shreejoy/Github/scz_celltype_paper/external_validation/gse158516/output"
+OUTD = "/Users/shreejoy/Github/scz_celltype_paper/reserve/gse158516/output"
 
 # Reiner cluster ID -> the SEA-AD subclass(es) it most plausibly corresponds to.
 # Their taxonomy is coarser and partly laminar; only the unambiguous ones are mapped.
