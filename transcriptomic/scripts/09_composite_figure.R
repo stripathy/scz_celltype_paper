@@ -551,4 +551,4 @@ FIGSTEM <- "Fig2_cross_platform_de"
 ggsave(file.path(MAINFIG, paste0(FIGSTEM, ".png")), full, width = FIG_W, height = FIG_H,
        dpi = 400, bg = "white")
 ggsave(file.path(MAINFIG, paste0(FIGSTEM, ".pdf")), full, width = FIG_W, height = FIG_H, bg = "white")
-cat(sprintf("Saved results/09_composite.{png,pdf}  (%.1f x %.1f in)\n", FIG_W, FIG_H))
+cat(sprintf("Saved %s/%s.{png,pdf}  (%.1f x %.1f in)\n", MAINFIG, FIGSTEM, FIG_W, FIG_H))
