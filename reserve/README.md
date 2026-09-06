@@ -21,6 +21,15 @@ the submission set, in
 [`../manuscript/figures/not_in_current_version/`](../manuscript/figures/not_in_current_version/),
 so the supplementary folder stays exactly the submission set.
 
+## The data is not on this machine
+
+The large inputs behind three of these were deleted locally on 2026-09-04 to
+reclaim disk: the GSE158516 count matrices, the Jens cohort object, and the
+SEA-AD 2026-06-22 DFC nuclei file that the AD contrast reads. All three are
+public downloads — see the READMEs below and `crossdisorder/data/SEAAD_INPUTS.md`
+for the URLs. The committed results, manifests and figures are unaffected; only
+re-running these analyses needs a re-download.
+
 ## Running any of it
 
 The strata supplements are run **from the repo root** and source the live

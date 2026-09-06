@@ -1,6 +1,7 @@
 # GSE158516 — an 8th SCZ cohort, reprocessed and parked
 
-> **STATUS: parked, not in the paper.** This cohort is **not** in the meta-analysis and is
+> **STATUS: parked, not in the paper. The count matrices were removed from
+> this machine on 2026-09-04; re-download from GEO to re-run.** This cohort is **not** in the meta-analysis and is
 > not cited in the manuscript. It was reprocessed (2026-08-14) to answer one question —
 > *would an independent 8th dataset agree with our findings?* — and the answer was yes.
 > It is kept as a reviewer-response asset and as a ready-made input if we later decide to
