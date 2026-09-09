@@ -26,7 +26,7 @@
 #
 # Output: results/09_composite.{png,pdf}
 # ============================================================================
-
+setwd("scz_celltype_paper/transcriptomic")
 suppressPackageStartupMessages({
   library(readr); library(dplyr); library(tidyr); library(ggplot2)
   library(cowplot); library(ggrepel); library(metafor); library(ggsignif)
@@ -36,11 +36,10 @@ suppressPackageStartupMessages({
 # it escapes the single-level data/*.csv ignore — see REPRODUCE.md). The cohorts
 # table is the SST+PVALB-only subset the forests need (the full 313 MB per-cohort
 # table stays external); the meta table is the full per-(cell type × gene) table.
-source("scripts/_figure_inputs.R")     # committed snapshots + staleness guard
-INPUT_META    <- fig_input("DE_genes_all_cells_scz.csv")                   # meta-analytic snRNA-seq DE (full)
-INPUT_COH     <- fig_input("meta_results_cohorts_subclass_forest.csv")     # per-cohort DE, SST+PVALB rows only
-INPUT_XENIUM  <- fig_input("de_results_subclass.csv")                      # Xenium spatial DE
-INPUT_CRUMBLR <- fig_input("crumblr_input_subclass_corr.csv")              # Xenium per-donor composition (panel i inset)
+INPUT_META    <- "data/figure_inputs/DE_genes_all_cells_scz.csv"            # meta-analytic snRNA-seq DE (full)
+INPUT_COH     <- "data/figure_inputs/meta_results_cohorts_subclass_forest.csv"  # per-cohort DE, SST+PVALB rows only
+INPUT_XENIUM  <- "data/figure_inputs/de_results_subclass.csv"              # Xenium spatial DE (snapshot of SCZ_Xenium output)
+INPUT_CRUMBLR <- "data/figure_inputs/crumblr_input_subclass_corr.csv"      # Xenium per-donor composition (panel i inset)
 
 FIG_W <- 7.1    # max total width (inches)
 
@@ -48,7 +47,7 @@ FIG_W <- 7.1    # max total width (inches)
 UP_DARK   <- "#D55E00"; UP_LIGHT   <- "#F2B58C"
 DOWN_DARK <- "#0072B2"; DOWN_LIGHT <- "#9FCAE6"
 COL_NS    <- "grey75"
-COL_POOL  <- "black";   COL_XEN    <- "#117733"; COL_COHORT <- "grey35"
+COL_POOL  <- "black";   COL_XEN <- "#1b9e77"; COL_COHORT <- "grey35"
 EXC <- c("L2_3 IT","L4 IT","L5 IT","L5 ET","L5_6 NP","L6 CT","L6 IT","L6 IT Car3","L6b")
 INH <- c("Lamp5","Pax6","Pvalb","Sncg","Sst","Sst Chodl","Vip","Chandelier")
 GLI <- c("Astro","Oligo","OPC","Micro-PVM","Endo","VLMC")
@@ -74,35 +73,53 @@ is_dot <- function(p, fdr) !is.na(p) & p < 0.05 & (is.na(fdr) | fdr >= 0.10)
 # ============================================================================
 # Load data
 # ============================================================================
+cohort_map <- c("MSSM"="MSSM 2","HBCC"="HBCC","OFC"="Fröhlich","Bat"="Batiuk",
+                "Mclean"="McLean","MtSinai"="MSSM 1","Multi"="Multiome","meta"="Meta-analysis")
+
 cat("Loading meta-analytic DE...\n")
 meta_tbl <- read_csv(INPUT_META, show_col_types = FALSE)
 
-# the two marker (gene, cell) forests, one per figure row
 FOREST <- tibble::tribble(
-  ~gene,    ~cell,    ~lab,
-  "SST",    "Sst",    "SST / Sst",
-  "PVALB",  "Pvalb",  "PVALB / Pvalb"
+  ~gene,   ~cell,   ~lab,
+  "SST",   "Sst",   "SST / Sst",
+  "PVALB", "Pvalb", "PVALB / Pvalb"
 )
 
 cat("Loading per-cohort table (large) and filtering to forest genes...\n")
 coh <- read_csv(INPUT_COH, show_col_types = FALSE) |>
   filter(genes %in% FOREST$gene, !is.na(logFC), !is.na(t), t != 0) |>
-  mutate(SE = logFC / t)
+  mutate(cohort = recode(cohort, !!!cohort_map), SE = logFC / t)
 
 cat("Loading + harmonizing Xenium DE...\n")
 ct_map <- c("Astrocyte"="Astro","L2/3 IT"="L2_3 IT","L5/6 NP"="L5_6 NP",
             "Microglia-PVM"="Micro-PVM","Oligodendrocyte"="Oligo","Endothelial"="Endo")
+
 xen_all <- read_csv(INPUT_XENIUM, show_col_types = FALSE) |>
   mutate(cell_type = ifelse(celltype %in% names(ct_map), ct_map[celltype], celltype))
-# Xenium rows for the forest genes, in cohort schema
+
 xen_forest <- xen_all |>
   filter(gene %in% FOREST$gene, !is.na(logFC), !is.na(F), F > 0) |>
   mutate(t = sign(logFC) * sqrt(F), SE = logFC / t) |>
   transmute(genes = gene, logFC, t, P.Value = PValue, adj.P.Val = FDR,
             cell_type, cohort = "Xenium", SE)
-coh <- bind_rows(coh |> select(genes, logFC, t, P.Value, adj.P.Val, cell_type,
-                               cohort = cohort, SE),
-                 xen_forest)
+
+coh <- bind_rows(
+  coh |> select(genes, logFC, t, P.Value, adj.P.Val, cell_type, cohort, SE),
+  xen_forest
+)
+
+sample_n <- read.csv("/scratch/nendresz/P1_Compositional_analysis/plotdata.csv") |>
+  filter(CellType == "Sst_25", Cohort != "Meta-analysis") |>
+  transmute(cohort = recode(Cohort, "MtSinai"="MSSM 1","MSSM"="MSSM 2",
+                            "OFC"="Fröhlich","Bat"="Batiuk","Mclean"="McLean",
+                            "Multi"="Multiome"), n) |>
+  distinct(cohort, n)
+
+xen_n <- read.csv("/scratch/nendresz/Xenium/xen_Sst_proportions.csv") |>
+  filter(subtype == "Sst_25") |> nrow()
+
+sample_n <- bind_rows(sample_n, tibble(cohort="Xenium", n=xen_n))
+coh <- coh |> left_join(sample_n, by="cohort")
 
 # ============================================================================
 # Panel A — butterfly (ggplot)
@@ -148,11 +165,12 @@ build_butterfly <- function() {
           axis.title.x = element_text(size = AXIS_TITLE),
           axis.ticks.y = element_blank(),
           axis.line.y  = element_blank(),
-          legend.position = c(0.70, 0.16),
+          legend.position = c(0.23, 0.16),
+          legend.justification = c(0.5, 0.5),
           legend.text  = element_text(size = BASE - 1.5),
           legend.key.size = unit(9, "pt"),
           legend.spacing.y = unit(0, "pt"),
-          plot.margin  = margin(2, 4, 2, 2))
+          plot.margin = margin(2, 4, 2, 6))
 }
 
 # ----------------------------------------------------------------------------
@@ -162,26 +180,21 @@ build_butterfly <- function() {
 # no point labels, two log10 % stops, "DE genes (#)" / "Cell proportion (%)".
 # Standalone version with cell-type labels: scripts/16_de_vs_proportion.R.
 # ----------------------------------------------------------------------------
+
 build_de_prop_inset <- function() {
-  nde <- meta_tbl |> group_by(cell_type) |>
-    summarise(n_de = sum(padj < 0.10, na.rm = TRUE), .groups = "drop")
-  prop <- read_csv(INPUT_CRUMBLR, show_col_types = FALSE) |>
-    mutate(p = count / total,
-           cell_type = ifelse(celltype %in% names(ct_map), ct_map[celltype], celltype)) |>
-    group_by(cell_type) |> summarise(prop = mean(p), .groups = "drop")
-  d  <- inner_join(nde, prop, by = "cell_type") |>
-    filter(n_de >= 1) |> mutate(class = class_of(cell_type))
-  rs  <- cor(d$prop, d$n_de, method = "spearman")
-  lab <- d |> filter(cell_type %in% c("Astro", "L5 IT", "Vip", "L6b")) |>
-    mutate(lbl = gsub("_", "/", cell_type))
+  nde <- meta_tbl |> group_by(cell_type) |> summarise(n_de = sum(padj < 0.10, na.rm = TRUE), .groups = "drop")
+  prop <- read_csv("/scratch/nendresz/FINAL_FIGS/Paper/df_mean_subclass_prop.csv", show_col_types = FALSE) |> transmute(cell_type = CellType, prop = mean_prop)
+  d <- inner_join(nde, prop, by = "cell_type") |> filter(n_de >= 1) |> mutate(class = class_of(cell_type))
+  rs <- cor(d$prop, d$n_de, method = "spearman")
+  lab <- d |> filter(cell_type %in% c("Astro", "L5 IT", "Vip", "L6b")) |> mutate(lbl = gsub("_", "/", cell_type))
+
   ggplot(d, aes(prop, n_de)) +
-    geom_smooth(method = "lm", se = FALSE, colour = scales::alpha("grey25", 0.3),
-                linewidth = 0.5, formula = y ~ x) +
+    geom_smooth(method = "lm", se = FALSE, colour = scales::alpha("grey25", 0.3), linewidth = 0.5, formula = y ~ x) +
     geom_point(aes(colour = class), size = 0.7, alpha = 0.9) +
     geom_text_repel(data = lab, aes(label = lbl), size = BASE * 0.28,
                     min.segment.length = 0, segment.size = 0.2, segment.colour = "grey55",
-                    box.padding = 0.28, point.padding = 0.2, force = 2, max.overlaps = Inf,
-                    seed = 3, colour = "grey15") +
+                    box.padding = 0.28, point.padding = 0.2, force = 2,
+                    max.overlaps = Inf, seed = 3, colour = "grey15") +
     annotate("text", x = max(d$prop), y = 0, label = sprintf("rho == %.2f", rs),
              parse = TRUE, hjust = 1, vjust = 0, size = BASE * 0.26, colour = "grey25") +
     scale_colour_manual(values = CLASS_COL, guide = "none") +
@@ -192,11 +205,10 @@ build_de_prop_inset <- function() {
     theme(legend.position = "none",
           axis.title.x = element_text(size = BASE - 1.5, margin = margin(t = 1)),
           axis.title.y = element_text(size = BASE - 1.5, margin = margin(r = 1)),
-          axis.text    = element_text(size = BASE - 2.5),
-          axis.line    = element_line(linewidth = 0.25),
-          axis.ticks   = element_line(linewidth = 0.25),
+          axis.text = element_text(size = BASE - 2.5),
+          axis.line = element_line(linewidth = 0.25), axis.ticks = element_line(linewidth = 0.25),
           plot.background = element_rect(fill = "white", colour = "grey70", linewidth = 0.3),
-          plot.margin  = margin(2, 3, 1, 1))
+          plot.margin = margin(2, 3, 1, 1))
 }
 
 # ============================================================================
@@ -262,80 +274,60 @@ build_volcano <- function(cell, highlight) {
 # ============================================================================
 # Panels F-H — compact forest
 # ============================================================================
-build_forest <- function(gene_sym, cell, ttl, show_xlab = FALSE) {
-  sub    <- coh |> filter(genes == gene_sym, cell_type == cell)
-  snrna  <- sub |> filter(cohort != "Xenium")
-  xen_in <- sub |> filter(cohort == "Xenium")
-  if (nrow(snrna) == 0) return(NULL)
-  re <- tryCatch(rma(yi = snrna$logFC, sei = snrna$SE, method = "DL",
-                     control = list(maxiter = 500)), error = function(e) NULL)
+build_forest <- function(gene_sym,cell,ttl,show_xlab=FALSE){
+  sub <- coh |> filter(genes==gene_sym,cell_type==cell); snrna <- sub |> filter(cohort!="Xenium"); xen_in <- sub |> filter(cohort=="Xenium")
+  if(nrow(snrna)==0) return(NULL)
+  re <- tryCatch(rma(yi=snrna$logFC,sei=snrna$SE,method="DL",control=list(maxiter=500)),error=function(e) NULL)
 
   cohort_df <- snrna |>
-    transmute(cohort, est = logFC, lo = logFC-1.96*SE, hi = logFC+1.96*SE,
-              p = P.Value, padj = adj.P.Val,
-              sig = ast(adj.P.Val), dot = is_dot(P.Value, adj.P.Val)) |>
+    transmute(cohort,est=logFC,lo=logFC-1.96*SE,hi=logFC+1.96*SE,n,p=P.Value,padj=adj.P.Val,
+              sig=ast(adj.P.Val),dot=is_dot(P.Value,adj.P.Val)) |>
     arrange(desc(est)) |>
-    mutate(y = rev(seq_along(est)) + 3, role = "cohort", colour = COL_COHORT)
+    mutate(y=rev(seq_along(est))+3,role="cohort",colour=COL_COHORT)
 
-  meta_fdr <- {r <- meta_tbl |> filter(genes == gene_sym, cell_type == cell)
-               if (nrow(r) == 1) r$padj else NA_real_}
-  pool <- if (!is.null(re)) tibble(
-    cohort = "meta", est = as.numeric(re$beta), lo = re$ci.lb, hi = re$ci.ub,
-    p = re$pval, padj = meta_fdr, sig = ast(meta_fdr), dot = FALSE,
-    y = 3, role = "pool", colour = COL_POOL) else NULL
+  meta_fdr <- {r <- meta_tbl |> filter(genes==gene_sym,cell_type==cell); if(nrow(r)==1) r$padj else NA_real_}
+  pool <- if(!is.null(re)) tibble(cohort="Meta-analysis",est=as.numeric(re$beta),lo=re$ci.lb,hi=re$ci.ub,
+                                  n=sum(snrna$n,na.rm=TRUE),p=re$pval,padj=meta_fdr,sig=ast(meta_fdr),
+                                  dot=FALSE,y=3,role="pool",colour=COL_POOL) else NULL
 
-  has_xen <- nrow(xen_in) > 0
-  xen_row <- if (has_xen) { xr <- xen_in[1,]; tibble(
-    cohort = "Xenium", est = xr$logFC, lo = xr$logFC-1.96*xr$SE,
-    hi = xr$logFC+1.96*xr$SE, p = xr$P.Value, padj = xr$adj.P.Val,
-    sig = ast(xr$adj.P.Val), dot = is_dot(xr$P.Value, xr$adj.P.Val),
-    y = 1, role = "xenium", colour = COL_XEN) } else NULL
+  has_xen <- nrow(xen_in)>0
+  xen_row <- if(has_xen){xr <- xen_in[1,]; tibble(cohort="Xenium",est=xr$logFC,lo=xr$logFC-1.96*xr$SE,
+                                                  hi=xr$logFC+1.96*xr$SE,n=xr$n,p=xr$P.Value,padj=xr$adj.P.Val,
+                                                  sig=ast(xr$adj.P.Val),dot=is_dot(xr$P.Value,xr$adj.P.Val),
+                                                  y=1,role="xenium",colour=COL_XEN)} else NULL
 
-  pd <- bind_rows(cohort_df, pool, xen_row)
-  data_lo <- min(pd$lo, na.rm=TRUE); data_hi <- max(pd$hi, na.rm=TRUE)
-  rng <- data_hi - data_lo; off <- rng*0.03
-  pd <- pd |> mutate(ast_x = ifelse(est>=0, hi+off, lo-off),
-                     ast_h = ifelse(est>=0, 0, 1),
-                     has_m = sig != "" | dot | (role=="pool" & sig==""))
-  rt <- any(pd$has_m & pd$ast_h==0); lf <- any(pd$has_m & pd$ast_h==1)
-  xlo <- data_lo - rng*(if (lf) 0.22 else 0.05)
-  xhi <- data_hi + rng*(if (rt) 0.22 else 0.05)
-  xlo <- min(xlo, -off); xhi <- max(xhi, off)
-  ylab <- pd |> select(y, cohort) |> arrange(y)
-  if (has_xen) ylab <- bind_rows(ylab, tibble(y = 2, cohort = ""))
+  pd <- bind_rows(cohort_df,pool,xen_row)
+  data_lo <- min(pd$lo,na.rm=TRUE); data_hi <- max(pd$hi,na.rm=TRUE); rng <- data_hi-data_lo; off <- rng*.03
+  pd <- pd |> mutate(ast_x=ifelse(est>=0,hi+off,lo-off),ast_h=ifelse(est>=0,0,1),
+                     has_m=sig!=""|dot|(role=="pool"&sig==""))
+  rt <- any(pd$has_m&pd$ast_h==0); lf <- any(pd$has_m&pd$ast_h==1)
+  xlo <- data_lo-rng*(if(lf).22 else .05); xhi <- data_hi+rng*(if(rt).22 else .05)
+  xlo <- min(xlo,-off); xhi <- max(xhi,off)
+  ylab <- pd |> select(y,cohort) |> arrange(y)
+  if(has_xen) ylab <- bind_rows(ylab,tibble(y=2,cohort=""))
 
-  ggplot(pd, aes(est, y, colour = I(colour))) +
-    geom_vline(xintercept = 0, linetype = "dashed", colour = "grey65", linewidth = 0.25) +
-    {if (has_xen) geom_hline(yintercept = 2, colour = "grey85",
-                             linetype = "dotted", linewidth = 0.3)} +
-    geom_segment(aes(x = lo, xend = hi, yend = y), linewidth = 0.45) +
-    geom_point(data = cohort_df, aes(est, y), shape = 15, size = 1.2) +
-    {if (!is.null(pool)) geom_point(data = pool, aes(est, y), shape = 23,
-                                    size = 2.1, fill = COL_POOL, colour = COL_POOL)} +
-    {if (has_xen) geom_point(data = xen_row, aes(est, y), shape = 17,
-                             size = 1.8, colour = COL_XEN)} +
-    geom_text(data = pd, aes(label = sig, x = ast_x, hjust = ast_h),
-              size = BASE*0.34, vjust = 0.75, colour = "grey15", fontface = "bold") +
-    geom_point(data = dplyr::filter(pd, dot), aes(ast_x, y), shape = 16,
-               size = 0.8, colour = "grey15", inherit.aes = FALSE) +
-    geom_text(data = dplyr::filter(pd, role=="pool" & sig==""),
-              aes(ast_x, y, hjust = ast_h), label = "n.s.", size = BASE*0.28,
-              vjust = 0.5, colour = "grey45", fontface = "italic", inherit.aes = FALSE) +
-    scale_y_continuous(breaks = ylab$y, labels = ylab$cohort,
-                       expand = expansion(add = 0.6)) +
-    scale_x_continuous(limits = c(xlo, xhi), breaks = scales::pretty_breaks(3),
-                       expand = expansion(mult = 0.01)) +
-    labs(x = if (show_xlab) expression("SCZ log"[2]~"FC") else NULL,
-         y = NULL, subtitle = ttl) +
-    theme_cowplot(font_size = BASE) +
-    theme(plot.subtitle = element_text(size = BASE, face = "plain",
-                                       margin = margin(b = 1)),
-          axis.text.y = element_text(size = AXIS_TEXT),
-          axis.text.x = element_text(size = AXIS_TEXT),
-          axis.title.x = element_text(size = AXIS_TITLE, margin = margin(t = 1.5)),
-          axis.line   = element_line(linewidth = 0.3),
-          axis.ticks  = element_line(linewidth = 0.3),
-          plot.margin = margin(2, 4, 2, 2))
+  ggplot(pd,aes(est,y,colour=I(colour))) +
+    geom_vline(xintercept=0,linetype="dashed",colour="grey65",linewidth=.25) +
+    {if(has_xen) geom_hline(yintercept=2,colour="grey85",linetype="dotted",linewidth=.3)} +
+    geom_segment(aes(x=lo,xend=hi,yend=y),linewidth=.45) +
+    geom_point(data=cohort_df,aes(est,y,size=n),shape=21,fill=COL_COHORT,colour=COL_COHORT,stroke=.3) +
+    {if(!is.null(pool)) geom_point(data=pool,aes(est,y,size=n),shape=23,fill=COL_POOL,colour=COL_POOL)} +
+    {if(has_xen) geom_point(data=xen_row,aes(est,y,size=n),shape=17,colour=COL_XEN)} +
+    geom_text(data=pd,aes(label=sig,x=ast_x,hjust=ast_h),size=BASE*.34,vjust=.75,
+              colour="grey15",fontface="bold") +
+    geom_point(data=filter(pd,dot),aes(ast_x,y),shape=16,size=.8,colour="grey15",inherit.aes=FALSE) +
+    geom_text(data=filter(pd,role=="pool"&sig==""),aes(ast_x,y,hjust=ast_h),label="n.s.",
+              size=BASE*.28,vjust=.5,colour="grey45",fontface="italic",inherit.aes=FALSE) +
+    scale_size_continuous(range=c(1,3.3),breaks=c(50,200,400),name="n") +
+    scale_y_continuous(breaks=ylab$y,labels=ylab$cohort,expand=expansion(add=.6)) +
+    scale_x_continuous(limits=c(xlo,xhi),breaks=scales::pretty_breaks(3),expand=expansion(mult=.01)) +
+    labs(x=if(show_xlab) expression("SCZ log"[2]~"FC (95% CI)") else NULL,y=NULL,subtitle=ttl) +
+    theme_cowplot(font_size=BASE) +
+    theme(plot.subtitle=element_text(size=BASE,face="plain",margin=margin(b=1)),
+          axis.text.y=element_text(size=AXIS_TEXT),axis.text.x=element_text(size=AXIS_TEXT),
+          axis.title.x=element_text(size=AXIS_TITLE,margin=margin(t=1.5)),
+          axis.line=element_line(linewidth=.3),axis.ticks=element_line(linewidth=.3),
+          legend.position="none",plot.margin=margin(2,4,2,2))
 }
 
 # ============================================================================
@@ -350,8 +342,12 @@ build_scatter <- function() {
            concordant = sign(meta_est) == sign(xen_logFC),
            fdr_bin = factor(ifelse(meta_padj < 0.05, "< 0.05", "0.05-0.10"),
                             levels = c("< 0.05","0.05-0.10")))
-  rr <- cor(pr$meta_est, pr$xen_logFC)
-  pc <- round(100*mean(pr$concordant))
+ct <- cor.test(pr$meta_est, pr$xen_logFC, method="spearman", exact=FALSE)
+rho <- unname(ct$estimate)
+pval <- ct$p.value
+p_lab <- if (pval < 0.001) "p<0.001" else sprintf("p==%.3f",pval)
+
+pc <- round(100*mean(pr$concordant))
   lab_pairs <- tibble::tribble(~genes,~cell_type,
     "SST","Sst","BDNF","L2_3 IT","FKBP5","OPC","CX3CR1","Micro-PVM",
     "SMAD1","Pvalb","SERPING1","Astro","FGFR3","Astro",
@@ -386,28 +382,35 @@ build_scatter <- function() {
                     nudge_x = pr$nudge_x, nudge_y = pr$nudge_y,
                     xlim = c(-lim, lim), ylim = c(-lim, lim),
                     max.overlaps = Inf, seed = 7, colour = "grey10") +
-    annotate("text", x = lim*0.97, y = -lim*0.80,
-             label = sprintf("italic(r)=='%.2f'", rr), parse = TRUE,
-             hjust = 1, size = BASE*0.34) +
-    annotate("text", x = lim*0.97, y = -lim*0.93,
-             label = sprintf("'%d%% concordant'", pc), parse = TRUE,
-             hjust = 1, size = BASE*0.30) +
+annotate("text", x = lim*0.97, y = -lim*0.76,
+         label = paste0("rho=='", sprintf("%.2f", rho), "'*','~~", p_lab),
+         parse = TRUE, hjust = 1, size = BASE*0.34) +
+annotate("text", x = lim*0.97, y = -lim*0.93,
+         label = sprintf("'%d%% concordant'", pc), parse = TRUE,
+         hjust = 1, size = BASE*0.30) +
     scale_colour_manual(values = CLASS_COL, name = NULL) +
     scale_size_manual(values = c("< 0.05" = 1.8, "0.05-0.10" = 0.7),
                       name = "meta FDR") +
     coord_cartesian(xlim = c(-lim, lim), ylim = c(-lim, lim)) +
-    labs(x = expression("snRNA-seq meta  log"[2]~"FC"),
+    labs(x = expression("snRNA-seq meta-analysis  log"[2]~"FC"),
          y = expression("Xenium  log"[2]~"FC")) +
     theme_cowplot(font_size = BASE) +
-    # cell-class (colour) and meta-FDR (size) legends removed from the panel;
-    # the encoding is described in the figure legend instead.
-    theme(legend.position = "none",
-          axis.text = element_text(size = AXIS_TEXT),
-          axis.title = element_text(size = AXIS_TITLE),
-          aspect.ratio = 1,            # keep the concordance scatter square
-          plot.margin = margin(2, 3, 2, 2))
-}
 
+    guides(
+      colour = guide_legend(title=NULL),
+      size = "none"
+    ) +
+
+    theme(
+      legend.position = c(0.98,0.25),
+      legend.justification = c(1,0),
+      legend.background = element_rect(fill="white",colour=NA),
+      axis.text = element_text(size=AXIS_TEXT),
+      axis.title = element_text(size=AXIS_TITLE),
+      aspect.ratio = 1,
+      plot.margin = margin(2,3,2,2)
+    )
+}
 # ============================================================================
 # Panel K — Xenium exemplar cells (boundary + marker molecules)
 # Requires scripts/10_xenium_exemplar_cells.py to have been run.
@@ -467,7 +470,7 @@ build_normexpr <- function(gene, title = NULL, show_x = FALSE) {
     geom_jitter(aes(fill = dx), shape = 21, colour = "grey25", size = 1.4, stroke = 0.3,
                 width = 0.13, height = 0, alpha = 0.9) +
     geom_signif(comparisons = list(c("Control", "SCZ")),
-                annotations = sprintf("italic(p)=='%.3f'", p), parse = TRUE,
+                annotations = sprintf("p=='%.3f'", p), parse = TRUE,
                 y_position = yr[2] + 0.06 * diff(yr), tip_length = 0.02,
                 textsize = BASE * 0.32, vjust = -0.1) +
     scale_fill_manual(values = NEXPR_COL) +
@@ -497,8 +500,8 @@ fPvalb <- build_forest("PVALB", "Pvalb", "PVALB / Pvalb", show_xlab = TRUE)
 bSst   <- build_normexpr("SST",   show_x = TRUE)
 bPvalb <- build_normexpr("PVALB", show_x = TRUE)
 # Butterfly (i) carries the DE-genes-vs-proportion inset in its empty bottom-left.
-pA     <- ggdraw(build_butterfly()) +
-  draw_plot(build_de_prop_inset(), x = 0.135, y = 0.085, width = 0.36, height = 0.378)
+pA <- ggdraw(build_butterfly()) +
+  draw_plot(build_de_prop_inset(), x=0.75, y=0.1, width=0.36, height=0.378)
 pJ     <- build_scatter()
 
 # Exemplar cells: shared coordinate limit -> identical zoom + identical 5 um scale
@@ -542,13 +545,7 @@ full <- plot_grid(row1, row2, row3, ncol = 1, rel_heights = c(2, 2, 2.625))
 
 FIG_H <- 6.625 # 7.1 x 6.625 in. Rows 1-2 (SST a-d, PVALB e-h) = 2.00 in each;
                # butterfly + scatter (i,j) = 2.625 in (rel_heights are inches).
-# Written straight into the submission folder, as the supplementary figures are
-# (manuscript/figures/supplementary/README.md); the figure number lives in
-# FIGSTEM. Previously this wrote to results/ and was hand-copied to
-# results/figures/, and the copy drifted a data refresh behind.
-MAINFIG <- "../manuscript/figures/main"
-FIGSTEM <- "Fig2_cross_platform_de"
-ggsave(file.path(MAINFIG, paste0(FIGSTEM, ".png")), full, width = FIG_W, height = FIG_H,
-       dpi = 400, bg = "white")
-ggsave(file.path(MAINFIG, paste0(FIGSTEM, ".pdf")), full, width = FIG_W, height = FIG_H, bg = "white")
-cat(sprintf("Saved %s/%s.{png,pdf}  (%.1f x %.1f in)\n", MAINFIG, FIGSTEM, FIG_W, FIG_H))
+ggsave("results/09_composite.png", full, width = FIG_W, height = FIG_H,
+       dpi = 300, bg = "white")
+ggsave("results/09_composite.pdf", full, width = FIG_W, height = FIG_H, bg = "white")
+cat(sprintf("Saved results/09_composite.{png,pdf}  (%.1f x %.1f in)\n", FIG_W, FIG_H))
