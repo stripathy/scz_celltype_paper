@@ -141,6 +141,10 @@ CS = pd.DataFrame({
 # frame: the most 3' variant is ~165 kb past HCN1, and none extend past its
 # 5' end. export_panel_d_genetrack.py reads the window back out of the meta.
 HCN1_START_HG38, HCN1_STOP_HG38 = 45_254_947, 45_696_380
+# HCN1 is transcribed on the minus strand (NM_021072.4), so its 5' end (TSS) is
+# HCN1_STOP_HG38 and its 3' end is HCN1_START_HG38. Variants below START are
+# therefore 3' of the gene, not upstream of it.
+HCN1_STRAND = "-"
 WIN_LO = HCN1_START_HG38 - 200_000
 WIN_HI = HCN1_STOP_HG38 + 50_000
 
@@ -170,10 +174,16 @@ cs["pos_mb"] = cs.pos_hg38 / 1e6
 cs["gwas_p"] = cs.p; cs["gwas_or"] = np.nan; cs["gene"] = np.nan
 cs["is_lead"] = cs.rsid == "rs10035564"
 hs, he = float(HCN1_START_HG38), float(HCN1_STOP_HG38)
+# Strand-aware: on the minus strand, coordinates below the gene start lie past
+# the 3' end and coordinates above the gene stop lie upstream of the TSS.
+below_lab, above_lab = (("3'_downstream", "5'_upstream") if HCN1_STRAND == "-"
+                        else ("5'_upstream", "3'_downstream"))
 cs["hcn1_location"] = np.where(cs.pos_hg38.between(hs, he), "intron",
-                               np.where(cs.pos_hg38 < hs, "5'_upstream", "3'_downstream"))
+                               np.where(cs.pos_hg38 < hs, below_lab, above_lab))
+cs["dist_to_hcn1_kb"] = np.where(cs.pos_hg38.between(hs, he), 0.0,
+                                 np.minimum(abs(cs.pos_hg38 - hs), abs(cs.pos_hg38 - he)) / 1e3)
 cs[["locus", "rsid", "chr", "pos", "pip", "gene", "gwas_p", "gwas_or", "pos_hg38",
-    "pos_mb", "neg_log10_p", "is_lead", "hcn1_location"]].to_csv(
+    "pos_mb", "neg_log10_p", "is_lead", "hcn1_location", "dist_to_hcn1_kb"]].to_csv(
     f"{OUT}/panel_D_credible_set.csv", index=False)
 
 lead = cs[cs.is_lead].iloc[0]
