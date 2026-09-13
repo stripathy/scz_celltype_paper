@@ -79,4 +79,4 @@ Ruz@meta.data <- Ruz@meta.data %>%
   )
 
 # Save final object
-saveRDS(Ruz, "Ruzicka_updated.rds")
+saveRDS(Ruz, "/project/rrg-shreejoy/nendresz/Supertypes/Ruz_updated.rds")

@@ -1,102 +1,89 @@
-setwd("P1_SCZ_DE_fresh")
+#conda activate r_env_meta_analysis
+setwd("scz_celltype_paper/snrnaseq/snRNAseq_DE")
 library(dplyr)
 library(ggplot2)
 library(tibble)
 library(ggrepel)
-
-
-library(dplyr)
-
-# Get subclass names only
-meta <- read.csv("Files/Pseudobulk_metadata_subclass_Mclean.csv")
-
-colnames(meta) <- gsub("\\.", " ", colnames(meta))
-cell_types <- colnames(meta)[1:24]
+library(metafor)
+#List cohorts
+cohorts <- c("Batiuk", "Frohlich", "MSSM1", "McLean", "MSSM2", "HBCC", "Multiome")
+#Just to get cell types
+meta <- read.csv("Files/Pseudobulk_metadata_subclass_McLean.csv")
+colnames(meta)  <- gsub("\\.", " ", colnames(meta))
+cell_types <- colnames(meta [1:24])
 cell_types <- gsub("^L2 3", "L2_3", cell_types)
 cell_types <- gsub("^L5 6", "L5_6", cell_types)
 cell_types <- gsub("^Micro PVM", "Micro-PVM", cell_types)
+print(cell_types)
 
-# Read meta result files
-files <- list.files(
-  "/scratch/nendresz/P1_SCZ_DE_fresh/Files",
-  pattern = "^meta_results_.*\\.csv$",
-  full.names = TRUE
-)
-
-results <- list()
-
-for (f in files) {
-  ct <- basename(f) %>%
-    sub("^meta_results_", "", x = .) %>%
-    sub("\\.csv$", "", x = .)
-
-  results[[ct]] <- read.csv(f)
-}
-
-# Keep subclasses only
-results_subclass <- results[names(results) %in% cell_types]
-
-names(results_subclass)
-
-
-all_sig_genes <- list()
-
-for (ct in names(results_subclass)) {
-  df <- results_subclass[[ct]]
-
-  sig_df <- df %>%
-    filter(padj < 0.05)
-
-  all_sig_genes[[ct]] <- sig_df$genes
-
-  cat(ct, ":", nrow(sig_df), "sig genes\n")
-}
-
-sig_genes_unique <- sort(unique(unlist(all_sig_genes)))
-
-
-write.csv(sig_genes_unique, "Files/sig_genes_all_cells_scz.csv")
-
-all_sig_genes_w_estimates <- list()
-
-for (ct in names(results_subclass)) {
-  df <- results_subclass[[ct]]
-
-  sig_df <- df %>%
-    filter(padj < 0.05) %>%
-    select(genes, estimate)
-
-  all_sig_genes_w_estimates[[ct]] <- sig_df
+# Get one list of all cohorts per cell types
+de_list <- list()
+for (ct in cell_types) {
+  de_list[[ct]] <- list()
+  for (cohort in cohorts) {
+    file <- paste0(
+      "Files/DE_results_",
+      cohort,
+      "_",
+      (ct),
+      ".rds"
+    )
+    de_list[[ct]][[cohort]] <- readRDS(file)
+  }
 }
 
 
-saveRDS(all_sig_genes_w_estimates, "Files/sig_genes_all_cells_scz_w_estimates.RDS")
+meta_all <- list()
 
+for (ct in cell_types) {
 
-
-#ALL GENES ALL CELL TYPES
-
-
-all_genes_df <- bind_rows(
-  results_subclass,
-  .id = "CellType"
-)
-
-
-write.csv(all_genes_df, "Files/DE_genes_all_cells_scz.csv", row.names = FALSE)
-
-
-all_genes_df <- read.csv("Files/DE_genes_all_cells_scz.csv")
-
-library(dplyr)
-
-all_genes_df <- all_genes_df %>%
-  mutate(
-    CellType = gsub("Lamp5Lhx6", "Lamp5_Lhx6", CellType),
-    cell_type = gsub("Lamp5Lhx6", "Lamp5_Lhx6", cell_type)
+  
+  message("Meta-analysis for ", ct)
+  
+  all_data <- bind_rows(
+    lapply(names(de_list[[ct]]), function(cohort) {
+      de_list[[ct]][[cohort]] %>%
+        mutate(
+          cohort = cohort,
+          SE = abs(logFC / t)
+        )
+    })
   )
-
-write.csv(all_genes_df, "Files/DE_genes_all_cells_scz.csv", row.names = FALSE)
-
-
-write.csv(all_genes_df,"/scratch/nendresz/scz_celltype_paper/transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv", row.names = FALSE)
+  
+  all_genes <- unique(all_data$genes)
+  meta_results <- list()
+  
+  for (g in all_genes) {
+    
+    df <- all_data %>%
+      filter(genes == g, !is.na(SE), SE != 0, !is.na(logFC))
+    
+    if (nrow(df) > 4) {
+      
+      res <- tryCatch({
+        model <- rma(yi = logFC, sei = SE, data = df, method = "REML")
+        
+        data.frame(
+          cell_type = ct,
+          genes = g,
+          estimate = as.numeric(model$b),
+          se = model$se,
+          pval = model$pval,
+          ci.lb = model$ci.lb,
+          ci.ub = model$ci.ub,
+          k = model$k,
+          tau2 = model$tau2,
+          I2 = model$I2
+        )
+      }, error = function(e) NULL)
+      
+      if (!is.null(res)) meta_results[[g]] <- res
+    }
+  }
+  
+  final_results <- bind_rows(meta_results)
+  final_results$padj <- p.adjust(final_results$pval, method = "fdr")
+  
+  meta_all[[ct]] <- final_results
+  
+write.csv(final_results, paste0("Files/meta_results_", ct, ".csv"))}

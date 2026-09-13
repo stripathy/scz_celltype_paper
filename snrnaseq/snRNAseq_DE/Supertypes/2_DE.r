@@ -1,5 +1,5 @@
 # run on conda activate de_env
-setwd("P1_SCZ_DE_fresh")
+setwd("scz_celltype_paper/snrnaseq/snRNAseq_DE")
 library(ggrepel)
 library(cowplot)
 library(limma)
@@ -10,12 +10,11 @@ library(dplyr)
 library(EnhancedVolcano)
 library(ggplot2)
 
-bulk_files <- c("Files/Ruz_Mclean_pseudobulk_SCZ_supertype.rds", "Files/Ruz_MtSinai_pseudobulk_SCZ_supertype.rds", "Files/OFC_pseudobulk_SCZ_supertype.rds",
-"Files/Bat_pseudobulk_SCZ_supertype.rds", "Files/MSSM_pseudobulk_SCZ_supertype.rds", "Files/HBCC_pseudobulk_SCZ_supertype.rds")
+bulk_files <- c("Files/McLean_pseudobulk_SCZ_supertype.rds", "Files/MSSM1_pseudobulk_SCZ_supertype.rds", "Files/Frohlich_pseudobulk_SCZ_supertype.rds",
+                "Files/Batiuk_pseudobulk_SCZ_supertype.rds", "Files/MSSM2_pseudobulk_SCZ_supertype.rds", "Files/HBCC_pseudobulk_SCZ_supertype.rds")
 
-meta_files <- c("Files/Pseudobulk_metadata_supertype_Mclean.csv", "Files/Pseudobulk_metadata_supertype_MtSinai.csv", "Files/Pseudobulk_metadata_supertype_OFC.csv",
-"Files/Pseudobulk_metadata_supertype_Bat.csv","Files/Pseudobulk_metadata_supertype_MSSM.csv","Files/Pseudobulk_metadata_supertype_HBCC.csv")
-
+meta_files <- c("Files/Pseudobulk_metadata_supertype_McLean.csv", "Files/Pseudobulk_metadata_supertype_MSSM1.csv", "Files/Pseudobulk_metadata_supertype_Frohlich.csv",
+                "Files/Pseudobulk_metadata_supertype_Batiuk.csv", "Files/Pseudobulk_metadata_supertype_MSSM2.csv", "Files/Pseudobulk_metadata_supertype_HBCC.csv")
 
 # Loop over each cell type
 
@@ -131,15 +130,9 @@ if (nrow(design) <= ncol(design)) {
   
   safe_type <- gsub("/", "_", type)
   # Save results per supertype
-  saveRDS(DE, paste0("Files/DE_results_", cohort, "_", safe_type, ".rds"))
+  saveRDS(DE, paste0("Supertypes/Files/DE_results_", cohort, "_", safe_type, ".rds"))
   
 }}
-
-
-
-
-
-
 
 
 
@@ -148,7 +141,7 @@ if (nrow(design) <= ncol(design)) {
 
 bulk_files <- c("Files/Multiome_pseudobulk_SCZ_supertype.rds")
 
-meta_files <- c("Files/Pseudobulk_metadata_supertype_Multi.csv")
+meta_files <- c("Files/Pseudobulk_metadata_supertype_Multiome.csv")
 
 for (i in seq_along(bulk_files)) {
   
@@ -261,7 +254,7 @@ if (nrow(design) <= ncol(design)) {
   
   safe_type <- gsub("/", "_", type)
   # Save results per supertype
-  saveRDS(DE, paste0("Files/DE_results_", cohort, "_", safe_type, ".rds"))
+  saveRDS(DE, paste0("Supertypes/Files/DE_results_", cohort, "_", safe_type, ".rds"))
   
 }}
 

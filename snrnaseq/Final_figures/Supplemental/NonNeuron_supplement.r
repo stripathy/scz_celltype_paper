@@ -1,9 +1,8 @@
 
-##### PLot 
 library(ggplot2)
 library(dplyr)
 library(ggtext) 
-setwd("FINAL_FIGS")
+setwd("P1_SCZ_paper")
 
 
 BASE <- 16
@@ -11,9 +10,9 @@ AXIS_TITLE <- BASE - 0.5
 AXIS_TEXT  <- BASE - 1
 GEOM_TEXT  <- BASE * 0.30
 
-final_results <- read.csv("Int_data/crumblr_meta_nonneurons.csv")
+final_results <- read.csv("Compositional_analysis/Files/Meta_nonneurons.csv")
 
-colours <- read.csv("/project/rrg-shreejoy/nendresz/cluster_order_and_colors.csv")
+colours <- read.csv("Compositional_analysis/Files/cluster_order_and_colors.csv")
 
 final_results$FDR <- final_results$padj
 
@@ -45,4 +44,4 @@ p3a <- ggplot(plot_df, aes(x = CellType, y = estimate, fill = cluster_color)) +
         axis.title.x = element_blank(), plot.caption = element_blank()) +
   labs(y = "SCZ abundance change (β ± SE)")
 
-ggsave("Figures/Supplement_nonneurons.png", p3a, width = 14, height = 6,  dpi = 600)
+ggsave("Final_figures/Supplemental/Figures/FigureS5_nonneurons.png", p3a, width = 14, height = 6,  dpi = 600)

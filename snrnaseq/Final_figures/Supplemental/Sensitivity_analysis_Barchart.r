@@ -1,18 +1,18 @@
 
-
 library(ggplot2)
 library(dplyr)
 library(ggtext) 
 
+setwd("P1_SCZ_paper")
 BASE <- 23
 
 AXIS_TITLE <- BASE - 0.5
 AXIS_TEXT  <- BASE - 1
 GEOM_TEXT  <- BASE * 0.30
 
-final_results <- read.csv("P1_Controls/Files/meta_noSST_genes.csv")
+final_results <- read.csv("Compositional_sensitivity_analysis/Files/meta_noSST_genes.csv")
 
-colours <- read.csv("/project/rrg-shreejoy/nendresz/cluster_order_and_colors.csv")
+colours <- read.csv("Compositional_analysis/Files/cluster_order_and_colors.csv")
 
 final_results$FDR <- final_results$padj
 
@@ -44,7 +44,7 @@ p3a <- ggplot(plot_df, aes(x = CellType, y = estimate, fill = cluster_color)) +
         axis.title.x = element_blank(), plot.caption = element_blank()) +
   labs(y = "SCZ abundance change (β ± SE)")
 
-ggsave("P1_Controls/Figures/Barchart_SCZ_meta_NoSSTDE.png", p3a, width = 21, height = 8,  dpi = 600)
+ggsave("Final_figures/Supplemental/Figures/FigureS7_Barchart_NoSSTDE.png", p3a, width = 21, height = 8,  dpi = 600)
 
 
 

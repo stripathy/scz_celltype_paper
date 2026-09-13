@@ -12,9 +12,11 @@ LEGEND_TEXT <- 11
 TEXT_SIZE <- 3.5
 PANEL_LABEL <- 16
 
+setwd("P1_SCZ_paper")
+
 # PANEL A 
-all_meta_counts <- read.csv("/scratch/nendresz/P1_Compositional_analysis/Files/7_cohorts_metadata_names.csv",row.names=1,check.names=FALSE)
-de_all_supertype <- read.csv("/scratch/nendresz/P1_SCZ_DE_fresh/Files/DE_all_cohorts_meta_supertype.csv")
+all_meta_counts <- read.csv("Compositional_analysis/Files/7_cohorts_metadata_names.csv",check.names=FALSE)
+de_all_supertype <- read.csv("snRNAseq_DE/Supertypes/Files/DE_all_cohorts_meta_supertype.csv")
 
 meta_cols <- c("Cohort","Donor","Age","Sex","Diagnosis","PMI")
 cell_cols <- setdiff(colnames(all_meta_counts),meta_cols)
@@ -72,8 +74,8 @@ p_a <- ggplot(plot_df_nonzero,aes(mean_prop,n_DE)) +
         plot.background=element_blank(),plot.margin=margin(5.5,5.5,5.5,5.5))
 
 # PANEL B 
-sup <- read.csv("/scratch/nendresz/P1_SCZ_DE_fresh/Files/DE_all_cohorts_meta_supertype.csv")
-meta <- read.csv("/scratch/nendresz/P1_SCZ_DE_fresh/Files/DE_genes_all_cells_scz.csv")
+sup <- read.csv("snRNAseq_DE/Supertypes/Files/DE_all_cohorts_meta_supertype.csv")
+meta <- read.csv("snRNAseq_DE/Files/DE_genes_all_cells_scz.csv")
 
 sst_order <- c("Sst_23","Sst_25","Sst_11","Sst_22","Sst_20","Sst_2","Sst_3","Sst_19",
                "Sst_13","Sst_10","Sst_9","Sst_5","Sst_4","Sst_12","Sst_1","Sst_7")
@@ -109,15 +111,7 @@ p_b <- ggplot(sst_forest,aes(estimate,label)) +
 p_combined <- plot_grid(p_a,p_b,labels=c("a","b"),label_size=PANEL_LABEL,label_fontface="bold",
                         nrow=1,rel_widths=c(1.3,1),align="h",axis="tb")
 
-p_combined
 
-
-ggsave("/scratch/nendresz/FINAL_FIGS/Paper/DE_abundance_and_SST_forest.png",
+ggsave("Final_figures/Supplemental/Figures/FigureS4_DE_abundance_and_SST_forest.png",
        p_combined,width=10,height=5,dpi=600,bg="white")
 
-ggsave("/scratch/nendresz/FINAL_FIGS/Paper/DE_abundance_and_SST_forest.svg",
-       p_combined,width=10,height=5,dpi=600,bg="white")
-
-       ggsave("FINAL_FIGS/SST_forest_supertypes_subclass.png",p_b,width=6,height=5,dpi=600)
-
-       ggsave("/scratch/nendresz/FINAL_FIGS/Paper/supertype_DE_vs_abundance.png",p_b,width=4.5,height=3.5,dpi=600,bg="white")
