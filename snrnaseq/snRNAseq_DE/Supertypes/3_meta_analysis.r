@@ -52,12 +52,12 @@ for(ct in cell_types_supertype){
   meta_all[[ct]] <- final_results
   write.csv(final_results,paste0("Files/meta_results_",ct,".csv"),row.names=FALSE)
 }
--
+
 meta_supertype <- bind_rows(meta_all)
 
 sup_cohorts <- bind_rows(lapply(names(de_list),function(ct)
   bind_rows(lapply(names(de_list[[ct]]),function(cohort)
-    de_list[[ct]][[cohort]] %>% mutate(cell_type=ct,cohort=cohort))))
+    de_list[[ct]][[cohort]] %>% mutate(cell_type=ct,cohort=cohort)))))
 
 write.csv(sup_cohorts,"Files/DE_results_cohorts_supertype.csv",row.names=FALSE)
 write.csv(meta_supertype,"Files/DE_meta_results_supertype.csv",row.names=FALSE)
