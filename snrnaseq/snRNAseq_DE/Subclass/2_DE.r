@@ -1,5 +1,5 @@
 # run on conda activate de_env
-setwd("P1_SCZ_DE_fresh")
+setwd("scz_celltype_paper/snrnaseq/snRNAseq_DE")
 library(ggrepel)
 library(cowplot)
 library(limma)
@@ -10,13 +10,11 @@ library(dplyr)
 library(EnhancedVolcano)
 library(ggplot2)
 
-bulk_files <- c("Files/Ruz_Mclean_pseudobulk_SCZ_subclass.rds", "Files/Ruz_MtSinai_pseudobulk_SCZ_subclass.rds", "Files/OFC_pseudobulk_SCZ_subclass.rds",
-"Files/Bat_pseudobulk_SCZ_subclass.rds", "Files/MSSM_pseudobulk_SCZ_subclass.rds", "Files/HBCC_pseudobulk_SCZ_subclass.rds")
+bulk_files <- c("Files/McLean_pseudobulk_SCZ_subclass.rds", "Files/MSSM1_pseudobulk_SCZ_subclass.rds", "Files/Frohlich_pseudobulk_SCZ_subclass.rds",
+                "Files/Batiuk_pseudobulk_SCZ_subclass.rds", "Files/MSSM2_pseudobulk_SCZ_subclass.rds", "Files/HBCC_pseudobulk_SCZ_subclass.rds")
 
-meta_files <- c("Files/Pseudobulk_metadata_subclass_Mclean.csv", "Files/Pseudobulk_metadata_subclass_MtSinai.csv", "Files/Pseudobulk_metadata_subclass_OFC.csv",
-"Files/Pseudobulk_metadata_subclass_Bat.csv","Files/Pseudobulk_metadata_subclass_MSSM.csv","Files/Pseudobulk_metadata_subclass_HBCC.csv")
-
-
+meta_files <- c("Files/Pseudobulk_metadata_subclass_McLean.csv", "Files/Pseudobulk_metadata_subclass_MSSM1.csv", "Files/Pseudobulk_metadata_subclass_Frohlich.csv",
+                "Files/Pseudobulk_metadata_subclass_Batiuk.csv",  "Files/Pseudobulk_metadata_subclass_MSSM2.csv", "Files/Pseudobulk_metadata_subclass_HBCC.csv")
 # Loop over each cell type
 
 # loop over pseudobulk files
@@ -81,9 +79,6 @@ meta <- meta %>%
   # Reorder metadata to match columns
   meta_subset <- meta[match(colnames(mat), meta$Donor), ]
   
-  #add log cells
-  meta_subset$log2_cells <- scale(log2(meta_subset[[type]]))
-
      # Skip if Diagnosis has <2 levels
   if (length(unique(meta_subset$Diagnosis)) < 2) {
     message("Skipping ", type, " because Diagnosis has <2 levels")
@@ -123,23 +118,11 @@ meta <- meta %>%
 }}
 
 
-
-
-
-
-
-
-
-
-
-
-
 #####Multi has no pmi 
-
 
 bulk_files <- c("Files/Multiome_pseudobulk_SCZ_subclass.rds")
 
-meta_files <- c("Files/Pseudobulk_metadata_subclass_Multi.csv")
+meta_files <- c("Files/Pseudobulk_metadata_subclass_Multiome.csv")
 
 # Loop over each cell type
 
@@ -156,11 +139,11 @@ colnames(meta) <- gsub("^L5 6", "L5/6", colnames(meta))
 colnames(meta) <- gsub("^Micro PVM", "Micro-PVM", colnames(meta))
 
 # get cell types 
-cell_types <- colnames(meta)[1:23]
+cell_types <- colnames(meta)[1:24]
 
 print(cell_types)
 
-meta$total_cells <- rowSums(meta [1:23])
+meta$total_cells <- rowSums(meta [1:24])
 
 for (type in cell_types) {
   
@@ -198,8 +181,6 @@ meta <- meta %>%
   # Reorder metadata to match columns
   meta_subset <- meta[match(colnames(mat), meta$Donor), ]
 
-  #add log cells
-  meta_subset$log2_cells <- scale(log2(meta_subset[[type]]))
   
      # Skip if Diagnosis has <2 levels
   if (length(unique(meta_subset$Diagnosis)) < 2) {

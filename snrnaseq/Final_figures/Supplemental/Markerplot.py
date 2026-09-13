@@ -1,3 +1,4 @@
+#mamba activate brisc
 from brisc import SingleCell,concat_obs
 import polars as pl,numpy as np,matplotlib.pyplot as plt,os
 from pathlib import Path
@@ -8,7 +9,7 @@ from matplotlib.colors import Normalize
 from matplotlib.cm import ScalarMappable
 from matplotlib.gridspec import GridSpec,GridSpecFromSubplotSpec
 
-os.chdir("/scratch/nendresz/FINAL_FIGS"); OUT=Path("."); N=3; HI="Sst_25"; HI_COL="#B8860B"
+os.chdir("P1_SCZ_paper/Final_figures/Supplemental"); OUT=Path("."); N=3; HI="Sst_25"; HI_COL="#B8860B"
 
 # -------------------- LOAD --------------------
 HBCC1=SingleCell("/scratch/nendresz/PsychAD/Data/HBCC_1_symbols.rds").with_columns_obs(pl.col("Age").cast(pl.Float64,strict=False)).filter_obs((pl.col("Age")>20)&(pl.col("Age")<70)).qc(allow_float=True,max_mito_fraction=None)
@@ -34,7 +35,7 @@ scs=[sc.with_columns_obs(pl.when(pl.col("Diagnosis").cast(pl.String).str.to_lowe
 scs=[sc.with_columns_obs(pl.col("predicted.id").cast(pl.String).str.replace(r"_[0-9].*$","").alias("Subclass")) for sc in scs]
 scs=[sc.with_columns_obs(pl.col("Subclass").replace({"Astro":"Astrocyte","Endo":"Endothelial","Lamp5_Lhx6":"Lamp5 Lhx6","Micro-PVM":"Microglia-PVM","Oligo":"Oligodendrocyte"}).alias("Subclass")) for sc in scs]
 scs=[sc.normalize() for sc in scs]; combined=concat_obs(scs,dataset_column="batch",dataset_labels=labels,flexible=True)
-markers=combined.find_markers("Subclass"); markers.write_csv(OUT/"cohort_subclass_markers.csv")
+markers=combined.find_markers("Subclass"); markers.write_csv(OUT/"Files/cohort_subclass_markers.csv")
 
 # -------------------- REFERENCE --------------------
 ref=SingleCell("/scratch/nendresz/1_SCZ_project/1_Reference/Data/MTG_ref.rds").qc(allow_float=True,max_mito_fraction=None)
@@ -135,7 +136,6 @@ size_handles=[Line2D([],[],marker="o",linestyle="",markerfacecolor="black",marke
 fig.legend(size_handles,["10%","25%","50%","90%"],title="% expressing",loc="lower left",bbox_to_anchor=(.09,.050),ncol=4,frameon=False,handletextpad=.7,columnspacing=2,handlelength=1.6,fontsize=10,title_fontsize=11)
 cax=fig.add_axes([.53,.050,.26,.014]); cb=fig.colorbar(ScalarMappable(norm=Normalize(0,1),cmap="Reds"),cax=cax,orientation="horizontal"); cb.set_ticks([0,.5,1]); cb.ax.tick_params(labelsize=9,length=2,pad=2); cb.outline.set_linewidth(.5); fig.text(.66,.073,"Scaled mean expression",ha="center",va="bottom",fontsize=11)
 
-for ext in ["png","svg","pdf"]:
-    kw={"dpi":600} if ext=="png" else {}; fig.savefig(OUT/f"four_compiled_cohort_markers.{ext}",bbox_inches="tight",facecolor="white",**kw)
-d1.write_csv(OUT/"cohort_subclass_dotplot.csv"); d2.write_csv(OUT/"reference_cohort_subclass_markers_dotplot.csv"); d3.write_csv(OUT/"cohort_sst_dotplot.csv"); d4.write_csv(OUT/"reference_cohort_sst_markers_dotplot.csv")
-plt.show()
+for ext in ["png"]:
+    kw={"dpi":600} if ext=="png" else {}; fig.savefig(OUT/f"Figures/FigureS1_four_compiled_cohort_markers.{ext}",bbox_inches="tight",facecolor="white",**kw)
+d1.write_csv(OUT/"Files/cohort_subclass_dotplot.csv"); d2.write_csv(OUT/"Files/reference_cohort_subclass_markers_dotplot.csv"); d3.write_csv(OUT/"Files/cohort_sst_dotplot.csv"); d4.write_csv(OUT/"Files/reference_cohort_sst_markers_dotplot.csv")

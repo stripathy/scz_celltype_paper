@@ -101,7 +101,7 @@ is_dot <- function(p, fdr) !is.na(p) & p < 0.05 & (is.na(fdr) | fdr >= 0.10)
 # Load data
 # ============================================================================
 cohort_map <- c("MSSM"="MSSM 2","HBCC"="HBCC","OFC"="Fröhlich","Bat"="Batiuk",
-                "Mclean"="McLean","MtSinai"="MSSM 1","Multi"="Multiome","meta"="Meta-analysis")
+                "Mclean"="McLean","MtSinai"="MSSM 1","Multi"="Multiome","meta"="Meta-analysis", "MSSM1" = "MSSM 1", "MSSM2" ="MSSM 2", "Frohlich" = "Fröhlich")
 
 cat("Loading meta-analytic DE...\n")
 meta_tbl <- read_csv(INPUT_META, show_col_types = FALSE)
@@ -139,7 +139,7 @@ sample_n <- read.csv(EXTERNAL[["sample_n_cohorts"]]) |>
   filter(CellType == "Sst_25", Cohort != "Meta-analysis") |>
   transmute(cohort = recode(Cohort, "MtSinai"="MSSM 1","MSSM"="MSSM 2",
                             "OFC"="Fröhlich","Bat"="Batiuk","Mclean"="McLean",
-                            "Multi"="Multiome"), n) |>
+                            "Multi"="Multiome", "MSSM1" = "MSSM 1", "MSSM2" ="MSSM 2", "Frohlich" = "Fröhlich"), n) |>
   distinct(cohort, n)
 
 xen_n <- read.csv(EXTERNAL[["sample_n_xenium"]]) |>
@@ -572,7 +572,7 @@ full <- plot_grid(row1, row2, row3, ncol = 1, rel_heights = c(2, 2, 2.625))
 
 FIG_H <- 6.625 # 7.1 x 6.625 in. Rows 1-2 (SST a-d, PVALB e-h) = 2.00 in each;
                # butterfly + scatter (i,j) = 2.625 in (rel_heights are inches).
-ggsave("results/09_composite.png", full, width = FIG_W, height = FIG_H,
+ggsave("results/Figures/09_composite.png", full, width = FIG_W, height = FIG_H,
        dpi = 300, bg = "white")
-ggsave("results/09_composite.pdf", full, width = FIG_W, height = FIG_H, bg = "white")
+ggsave("results/Figures/09_composite.pdf", full, width = FIG_W, height = FIG_H, bg = "white")
 cat(sprintf("Saved results/09_composite.{png,pdf}  (%.1f x %.1f in)\n", FIG_W, FIG_H))
