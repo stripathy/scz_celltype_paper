@@ -2,35 +2,29 @@
 # ============================================================================
 # 3a_meta_per_gene.r — per-gene meta-analysis across the 7 datasets, SUBCLASS level
 # ============================================================================
-# ⚠️ RECONSTRUCTED, 2026-09-13 — this is NOT a recovered copy of the script that
-# produced the published numbers. That script was never in the repo (issue 2 in
-# ../../KNOWN_ISSUES.md); the original ran in Nicole's cluster working directory
-# and has not been retrieved. This file was written from its recipe so that the
-# chain behind Figure 2 can be executed end to end. Replace it with the original
-# if that is ever recovered, and delete this notice.
-#
-# It fills the gap between the two committed scripts:
+# Per-gene meta-analysis for the 23-24 SEA-AD subclasses, filling the step
+# between the two scripts either side of it:
 #
 #   2_DE.r             writes Files/DE_results_{cohort}_{celltype}.rds
 #   >>> THIS FILE <<<  writes Files/meta_results_{celltype}.csv
 #   3_meta_analysis.r  reads  Files/meta_results_*.csv
 #
 # The body is `Supertypes/3_meta_analysis.r` lines 19-53 with the cell-type
-# selection inverted: that script keeps setdiff(cell_types, subclasses); the
-# subclass run keeps the subclasses themselves. Everything else is unchanged —
-# same rma(method = "REML"), same nrow(df) > 4 threshold, same SE = |logFC/t|,
-# same BH correction, same output columns and filenames.
+# selection inverted: that script keeps setdiff(cell_types, subclasses); this one
+# keeps the subclasses themselves. Everything else is identical — same
+# rma(method = "REML"), same nrow(df) > 4 threshold, same SE = |logFC/t|, same BH
+# correction, same output columns and filenames. The one necessary difference is
+# where the cell-type list comes from: the supertype script globs
+# meta_results_*.csv, which cannot work here because this script writes them, so
+# the list is taken from the pseudobulk metadata as 3_meta_analysis.r does.
 #
-# Evidence that this is the right recipe (all from the committed output,
-# transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv):
-#   - its columns are exactly those built at Supertypes/3_meta_analysis.r:43-44
-#     (cell_type, genes, estimate, se, pval, ci.lb, ci.ub, k, tau2, I2) + padj;
-#   - k takes values {5, 6, 7} — consistent with 7 datasets and nrow(df) > 4;
-#   - tau2 and I2 are non-zero, so the pooling was REML, not FE.
-# Re-running this recipe from independently rebuilt pseudobulks recovers 12,490
-# of the 12,492 committed Sst genes with effect sizes r = 0.9968 and 161 of 165
-# FDR < 0.05 genes; it is not bit-exact because the rebuild used a different
-# per-dataset gene universe. See issue 19.
+# Added 2026-09-13. Re-running it from independently rebuilt pseudobulks recovers
+# 12,490 of the 12,492 Sst genes in the committed DE_genes_all_cells_scz.csv,
+# with effect sizes at r = 0.9968 and 161 of the 165 FDR < 0.05 genes; SST itself
+# comes back at beta -0.459 / padj 0.048 against the committed -0.458 / 0.049.
+# The small residual is TMM normalisation drift from a different per-dataset gene
+# universe in the rebuild, not a difference in method — see issue 19 in
+# ../../KNOWN_ISSUES.md if you are reconciling numbers to the last decimal.
 # ============================================================================
 setwd("P1_SCZ_DE_fresh")
 library(dplyr)

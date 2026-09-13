@@ -2,7 +2,10 @@
 
 The exports of the upstream snRNA-seq meta-analysis pipeline (Endresz et al.,
 in prep), consumed by the downstream components. Data here is git-ignored — this
-directory is the designated home for large out-of-git inputs.
+directory is the designated home for large out-of-git inputs. The single
+exception is `nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv`,
+which is small, load-bearing for three components, and had no copy on any machine
+but the cluster; it is tracked so a clone resolves the seam.
 
 The pipeline's **code** lives in [`../../snrnaseq/`](../../snrnaseq/README.md)
 as of 2026-09-09. Its **outputs** still arrive here as staged copies and
@@ -20,7 +23,7 @@ repo (stable) or too large to duplicate.
 |---|---|---|---|---|
 | `DE_genes_all_cells_scz.csv` | meta-analytic DE (23 subclasses × genes; estimate, se, padj), 35.6 MB | `snrnaseq/snRNAseq_DE/Subclass/3_meta_analysis.r` (last line) | **real file** (moved out of `~/Downloads` on 2026-07-31 — a Downloads cleanup would have broken every DE figure) | `transcriptomic/` (butterfly, volcano, scatter, forest stars) |
 | `meta_results_cohorts_subclass.csv` | per-dataset DE (7 datasets), 328 MB | `snrnaseq/snRNAseq_DE/Subclass/2_DE.r`, collated | symlink → `scz_pathway_enrichment/data/` (another git repo; too large to duplicate) | `transcriptomic/` (forest rows + meta diamond) |
-| `nicole_scz_snrnaseq_betas/` | cell-type COMPOSITION betas (crumblr, 7-dataset meta) | `snrnaseq/Compositional_analysis/3_meta_analysis.r` | **regenerated 2026-09-13** (the original was never staged down); see `PROVENANCE.md` beside it | `genetics/` (Fig 4a, 4i), `transcriptomic/` (the S8 strata definition), `snrnaseq/composition_sensitivity/` (S6) |
+| `nicole_scz_snrnaseq_betas/` | cell-type COMPOSITION betas (crumblr, 7-dataset meta) | `snrnaseq/Compositional_analysis/3_meta_analysis.r` | **tracked in git** — the one exception in this directory; regenerated 2026-09-13 because the original was never staged down, see `PROVENANCE.md` beside it | `genetics/` (Fig 4a, 4i), `transcriptomic/` (the S8 strata definition), `snrnaseq/composition_sensitivity/` (S6) |
 
 ⚠️ The script that writes the **subclass-level** per-gene meta-analysis feeding
 `DE_genes_all_cells_scz.csv` was never in the repo. A **reconstruction** is now
@@ -34,10 +37,10 @@ Downstream figure code should not read this directory directly. It reads
 committed snapshots taken from here, guarded by a checksum manifest — see
 `../../transcriptomic/data/figure_inputs/README.md`.
 
-Supplementary S8 is the exception. `transcriptomic/scripts/fig5/_common.R` still
-points `P$crumblr` at `nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv`
-here, and that file has no committed snapshot anywhere in the repo, so S8 cannot
-fall back to one. `P$subclass` had the same problem and was fixed on 2026-09-13:
+Supplementary S8 reads two entries here directly. `P$crumblr` points at
+`nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv`, which is now
+tracked, so it resolves from a clone. `P$subclass` had no such copy and was fixed
+on 2026-09-13:
 it now prefers this directory and falls back to
 `transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv`, which the
 manifest records as a byte-identical capture of the seam file (md5

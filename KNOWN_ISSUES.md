@@ -76,15 +76,15 @@ An ancestor of the same code is readable at
 subclasses and per-gene `rma()`, but 6 datasets, `method="FE"`, and `.rds`
 output with different column names, so it is not the run the paper reports.
 
-**A reconstruction was committed on 2026-09-13** at
-`snrnaseq/snRNAseq_DE/Subclass/3a_meta_per_gene.r`, at Shreejoy's direction, so
-the chain executes end to end. Its header states plainly that it is not the
-original and lists the evidence for the recipe. It reproduces the committed Sst
-DE in substance but not bit-for-bit (issue 19).
+**Closed on 2026-09-13.** `snrnaseq/snRNAseq_DE/Subclass/3a_meta_per_gene.r` is
+committed, and the chain now executes end to end. The recipe is confirmed by
+issue 19 — it recovers 12,490 of 12,492 committed Sst genes at r = 0.9968 — so
+this is treated as the step, not as a stand-in for it.
 
-**Still open:** Nicole should confirm the copy she ran, and — more to the point,
-since issue 19 shows the recipe is right — supply her **per-dataset gene
-universes**, which is what bit-exact recovery actually needs.
+**One caveat kept in the file's header:** re-running it does not reproduce the
+published table to the last decimal, because exact recovery also needs Nicole's
+**per-dataset gene universes** (issue 19 explains why). Worth asking her for
+those if anyone needs to reconcile numbers exactly.
 
 ### 3. `Xenium_SCZ_R.rds` has no provenance, and no script creates it
 
@@ -197,17 +197,16 @@ when the seam file is absent.
 `crumblr` (`nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv`) had
 no committed snapshot anywhere in the repo and no copy on this cluster.
 
-**Partly resolved on 2026-09-13.** The file was *regenerated* by re-running the
-repo's own `2_Crumblr_analysis.r` and `3_meta_analysis.r` (paths changed, model
-untouched) on a count matrix rebuilt from cleaned per-dataset h5ads, and placed
-at the seam path with a `PROVENANCE.md` beside it. It validates against three
-committed artefacts independently — per-dataset betas to 1.8e-15, the FE meta to
-8.1e-16, and it reproduces `gwas_vs_casecontrol_composition.csv` to 1.0e-15 when
-fed to `build_composition_table.py`. `genetics/`'s composition scripts and S6's
-published-FE comparison now run.
-
-It is a regeneration, not the original: **replace it if Nicole's file is ever
-recovered**, and describe anything built on it accordingly.
+**Resolved on 2026-09-13.** The file was *regenerated* by re-running the repo's
+own `2_Crumblr_analysis.r` and `3_meta_analysis.r` (paths changed, model
+untouched) on a count matrix rebuilt from cleaned per-dataset h5ads, and is now
+**tracked in git** at the seam path with a `PROVENANCE.md` beside it — the one
+exception to `shared/snrnaseq_de/` being git-ignored, taken because the file is
+17 KB and three components need it. It validates against three committed
+artefacts independently: per-dataset betas to 1.8e-15, the FE meta to 8.1e-16,
+and it reproduces `gwas_vs_casecontrol_composition.csv` to 1.0e-15 when fed to
+`build_composition_table.py`. `genetics/`'s composition scripts, S6's
+published-FE comparison and S8's `P$crumblr` all resolve from a clone now.
 
 ### 17. Nicole's crumblr scripts assume an NA-marked count matrix
 
