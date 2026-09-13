@@ -1,8 +1,8 @@
-# snrnaseq/ — the seven-cohort snRNA-seq meta-analysis
+# snrnaseq/ — the seven-dataset snRNA-seq meta-analysis
 
 The **root of this paper's dependency graph** (Endresz et al., in prep). Every
 other component consumes its exports: cell-type composition betas and
-meta-analytic differential expression across seven SCZ snRNA-seq cohorts,
+meta-analytic differential expression across seven SCZ snRNA-seq datasets,
 469 donors, labelled against the SEA-AD supertype taxonomy.
 
 It builds **Figure 1a**, **Figure 3**, and Supplementary Figs. **S1, S4, S5 and
@@ -14,12 +14,12 @@ Supplementary Figs. **S6 and S8** in the other components.
 > correct anything that misreads intent. Open items are collected in
 > [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md).
 
-## The cohorts
+## The datasets
 
-Seven cohorts, assembled from five sources. Two naming points that otherwise
+Seven datasets, assembled from five sources. Two naming points that otherwise
 cause confusion: Ruzicka's *MtSinai* is the paper's **MSSM 1**, while PsychAD's
 *MSSM* is the paper's **MSSM 2** (they share donors — see the composition
-sensitivity work); and `OFC` throughout the code is the **Fröhlich** cohort.
+sensitivity work); and `OFC` throughout the code is the **Fröhlich** dataset.
 
 | Paper label | In the code | Source | Object built by |
 |---|---|---|---|
@@ -30,6 +30,14 @@ sensitivity work); and `OFC` throughout the code is the **Fröhlich** cohort.
 | Fröhlich | `OFC` | Fröhlich | `Label_transfer/Frohlich/` |
 | Batiuk | `Batiuk`, `Bat` | Batiuk | `Label_transfer/Batiuk/` |
 | Multiome | `Multi` | PsychENCODE2 / brainSCOPE | `Label_transfer/Multiome/` |
+
+**"Dataset", not "cohort".** The paper calls these seven units *datasets*,
+following Kiss et al.: the Mount Sinai brain bank contributes two of them, so a
+dataset is the right unit and "cohort" is reserved for a single brain bank's
+donor group (the Xenium/LIBD cohort, the RNAscope cohort). The code predates
+that convention and calls them cohorts throughout — a `Cohort` metadata column,
+`cohorts_use`, `7_cohorts_metadata_names.csv`. These READMEs follow the paper in
+prose and keep `cohort` only when naming an actual column, variable or file.
 
 Donor inclusion is applied at load time, not in a separate filtering step:
 age < 70 everywhere, plus age > 20 for HBCC, and Multiome restricted to
@@ -42,9 +50,9 @@ README for the per-script detail.
 
 | Stage | Directory | Produces |
 |---|---|---|
-| 1 | [`Label_transfer/`](Label_transfer/README.md) | SEA-AD supertype labels on all seven cohorts (`predicted.id`), as per-cohort Seurat objects |
-| 2a | [`Compositional_analysis/`](Compositional_analysis/README.md) | per-donor cell counts → crumblr per cohort → fixed-effect meta-analysis (**Fig. 3a**, **S5**) |
-| 2b | [`snRNAseq_DE/`](snRNAseq_DE/README.md) | pseudobulk → limma-voom DE per cohort → per-gene meta-analysis, at subclass and supertype level (**S4**; inputs to **Fig. 2**) |
+| 1 | [`Label_transfer/`](Label_transfer/README.md) | SEA-AD supertype labels on all seven datasets (`predicted.id`), as per-dataset Seurat objects |
+| 2a | [`Compositional_analysis/`](Compositional_analysis/README.md) | per-donor cell counts → crumblr per dataset → fixed-effect meta-analysis (**Fig. 3a**, **S5**) |
+| 2b | [`snRNAseq_DE/`](snRNAseq_DE/README.md) | pseudobulk → limma-voom DE per dataset → per-gene meta-analysis, at subclass and supertype level (**S4**; inputs to **Fig. 2**) |
 | 3 | [`Compositional_sensitivity_analysis/`](Compositional_sensitivity_analysis/README.md) | stage 1–2a repeated with Sst DE genes withheld from the reference (**S7**) |
 | 4 | [`Final_figures/`](Final_figures/README.md) | **Fig. 1a**, **Fig. 3**, **S1**, **S4**, **S5**, **S7** |
 | — | [`composition_sensitivity/`](composition_sensitivity/README.md) | a *downstream* robustness check on stage 2a, run from this repo (**S6**) |
@@ -76,7 +84,7 @@ Hodge et al. 2019 MTG taxonomy. Logged as issue 10 in
 ## Running this code
 
 **These scripts do not run from a clone.** They ran on the Alliance cluster
-against the full per-cohort objects: paths are cluster-absolute
+against the full per-dataset objects: paths are cluster-absolute
 (`/scratch/nendresz/…`, `/project/rrg-shreejoy/…`) and most scripts open with a
 `setwd()` naming a working directory that is not part of this repo. They are
 archived here so the analysis can be read and checked, not re-executed.
@@ -96,8 +104,8 @@ Consumed through [`../shared/snrnaseq_de/`](../shared/snrnaseq_de/README.md):
 | Export | Produced by | Consumed by |
 |---|---|---|
 | `DE_genes_all_cells_scz.csv` — subclass-level meta DE | `snRNAseq_DE/Subclass/3_meta_analysis.r` | `transcriptomic/` (Fig. 2, S8) |
-| `meta_results_cohorts_subclass.csv` — per-cohort DE | `snRNAseq_DE/Subclass/` | `transcriptomic/` (Fig. 2 forests) |
-| composition betas (crumblr, 7-cohort meta) | `Compositional_analysis/3_meta_analysis.r` | `genetics/` (Fig. 4a, 4i), `transcriptomic/` (S8 strata), `composition_sensitivity/` (S6) |
+| `meta_results_cohorts_subclass.csv` — per-dataset DE | `snRNAseq_DE/Subclass/` | `transcriptomic/` (Fig. 2 forests) |
+| composition betas (crumblr, 7-dataset meta) | `Compositional_analysis/3_meta_analysis.r` | `genetics/` (Fig. 4a, 4i), `transcriptomic/` (S8 strata), `composition_sensitivity/` (S6) |
 
 `snRNAseq_DE/Subclass/3_meta_analysis.r` writes `DE_genes_all_cells_scz.csv`
 straight into `transcriptomic/data/figure_inputs/` at its last line, so that

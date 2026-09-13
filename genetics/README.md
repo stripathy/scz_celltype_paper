@@ -13,7 +13,7 @@ SCZ common-variant association (**Bigdeli et al. 2026**, European ancestry) is
 tested for enrichment in the genes specific to each cell type, by MAGMA
 gene-property regression. Specificity is computed across the **125 supertypes
 of the SEA-AD neurotypical DLPFC (A9) taxonomy** — the region matched to the
-paper's frontal-cortex cohorts. Enrichment is then compared with the
+paper's frontal-cortex datasets. Enrichment is then compared with the
 compositional depletion measured in Figure 3, and the convergence is followed
 down to one gene (*HCN1*), one locus, and the intrinsic physiology of the
 patch-seq cells that express it.
@@ -107,7 +107,7 @@ Legend drafts sit beside the figures they describe, in `results/figures/`.
 
 ## Cross-component seams
 
-- **In:** the 7-cohort crumblr composition meta-analysis, via
+- **In:** the 7-dataset crumblr composition meta-analysis, via
   `shared/snrnaseq_de/nicole_scz_snrnaseq_betas/` (panels a and i).
 - **In:** the Alzheimer's pseudo-progression slopes from `crossdisorder/`
   (panel i, and S10b).

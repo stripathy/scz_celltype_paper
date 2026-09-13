@@ -1,7 +1,7 @@
 # scz_celltype_paper
 
 Code and figures for a study of cell-type-specific changes in schizophrenia,
-combining a seven-cohort snRNA-seq meta-analysis, Xenium spatial
+combining a seven-dataset snRNA-seq meta-analysis, Xenium spatial
 transcriptomics, common-variant genetics and patch-seq physiology.
 
 **Headline:** upper-layer somatostatin (Sst) interneuron subtypes are
@@ -43,7 +43,7 @@ annotated Xenium objects that `spatial/` produces.
 `manuscript/figures/` in place and run from committed inputs, so those figures
 regenerate from a clean clone without the raw data. The renderers in
 `snrnaseq/Final_figures/` ran on the Alliance cluster against the full
-per-cohort objects and wrote to a working directory there — their figures are
+per-dataset objects and wrote to a working directory there — their figures are
 **not** in this repo and their chains are archived for reading, not
 re-execution. Each component's README gives the detail.
 
@@ -60,7 +60,7 @@ Open items from the 2026-09-13 audit are collected in
 | [`spatial/`](spatial/README.md) | The Xenium pipeline: cell typing, cortical depth, laminar segmentation, plus Xenium DE and composition (SM1, S2, S3; inputs to Figs 1–3) |
 | [`genetics/`](genetics/README.md) | MAGMA cell-type enrichment of SCZ common-variant risk, fine-mapping, patch-seq physiology (Fig 4, S9, S10, T6) |
 | [`crossdisorder/`](crossdisorder/README.md) | Whether the SCZ-depleted Sst supertypes also decline in Alzheimer's (the AD axis of Fig 4i) |
-| [`snrnaseq/`](snrnaseq/README.md) | The seven-cohort snRNA-seq pipeline: label transfer, composition and DE meta-analysis (Fig 1a, Fig 3, S1, S4, S5, S7), plus a composition robustness check (S6) |
+| [`snrnaseq/`](snrnaseq/README.md) | The seven-dataset snRNA-seq pipeline: label transfer, composition and DE meta-analysis (Fig 1a, Fig 3, S1, S4, S5, S7), plus a composition robustness check (S6) |
 | [`shared/`](shared/README.md) | Cross-component interfaces: the snRNA-seq DE seam, and the figure-input staleness guard |
 | [`manuscript/figures/`](manuscript/figures/main/README.md) | The rendered figures, main and supplementary |
 | [`reserve/`](reserve/README.md) | Analyses built and deliberately left out of the paper |
@@ -97,7 +97,7 @@ inputs. Re-running the *analyses* behind them needs the external data.
 Figure 1a, Figure 3 and supplementary figures S1, S4, S5 and S7 are built by
 [`snrnaseq/Final_figures/`](snrnaseq/Final_figures/README.md) and do **not**
 render from a clone — those scripts ran on the Alliance cluster against the
-full per-cohort objects, with cluster-absolute paths. They are here to be read.
+full per-dataset objects, with cluster-absolute paths. They are here to be read.
 The one committed input from that pipeline is the per-donor cell-count matrix
 behind the composition analysis,
 [`snrnaseq/Compositional_analysis/7_cohorts_metadata_names.csv`](snrnaseq/Compositional_analysis/7_cohorts_metadata_names.csv).

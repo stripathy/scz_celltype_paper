@@ -1,6 +1,6 @@
-# Label_transfer/ — SEA-AD supertype labels on all seven cohorts
+# Label_transfer/ — SEA-AD supertype labels on all seven datasets
 
-Stage 1 of the pipeline. Each cohort is mapped onto the **SEA-AD neurotypical
+Stage 1 of the pipeline. Each dataset is mapped onto the **SEA-AD neurotypical
 supertype taxonomy** by Seurat anchor transfer, and written back out as a Seurat
 object carrying a `predicted.id` column plus standardised donor metadata. Every
 later stage groups cells by `predicted.id`.
@@ -35,7 +35,7 @@ Despite the `counts_hodge` / `meta_hodge` variable names this reference is
 
 ## The chains
 
-| Directory | Cohorts produced | Scripts | Output object(s) |
+| Directory | Datasets produced | Scripts | Output object(s) |
 |---|---|---|---|
 | `Batiuk/` | Batiuk | `Label_transfer.r` | `Bat_updated.rds` |
 | `Frohlich/` | Fröhlich (`OFC`) | `1_Label_transfer.r`, `2_Compile.r` | `OFC_updated.rds` |
@@ -43,7 +43,7 @@ Despite the `counts_hodge` / `meta_hodge` variable names this reference is
 | `Multiome/` | Multiome | `Label_transfer.r` | `Multiome.rds` |
 | `PsychAD/` | HBCC + MSSM 2 | `1_py_to_R.py` → `2_Extract_matrices.r` → `3_Label_transfer.r` → `4_compile_objects.r` | `HBCC_{1,2}.rds`, `MSSM_{1..4}.rds` |
 
-`Ruz_updated.rds` holds both Ruzicka cohorts; downstream code splits it on
+`Ruz_updated.rds` holds both Ruzicka datasets; downstream code splits it on
 `Cohort == "McLean"` / `"MtSinai"`.
 
 ### Why two of them are multi-step

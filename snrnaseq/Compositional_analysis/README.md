@@ -1,19 +1,19 @@
 # Compositional_analysis/ — cell-type abundance in SCZ (Fig. 3a, S5)
 
 Stage 2a. Asks whether each cell type makes up a different fraction of the
-neuronal population in schizophrenia, per cohort, then pools the seven cohorts.
+neuronal population in schizophrenia, per dataset, then pools the seven datasets.
 This is the analysis behind **Figure 3a** and the abundance axis of **Figure 4a
 and 4i** in `genetics/`.
 
 Compositional data, so the model is [crumblr](https://github.com/GabrielHoffman/crumblr)
 (counts → CLR with precision weights) fitted by `dreamlet::dream`, one fit per
-cohort, then a fixed-effect meta-analysis across cohorts.
+dataset, then a fixed-effect meta-analysis across datasets.
 
 ## Chain
 
 ```
 1_bind_metadata.r    -> 7_cohorts_metadata_names.csv        [committed here]
-2_Crumblr_analysis.r -> crumblr_results_final_one_doc.csv   (per cohort)
+2_Crumblr_analysis.r -> crumblr_results_final_one_doc.csv   (per dataset)
 3_meta_analysis.r    -> crumblr_results_final_meta.csv      (pooled)
 ```
 
@@ -34,7 +34,7 @@ against its actual input.
 
 ### 2 — `2_Crumblr_analysis.r`
 
-Per cohort: restrict the count columns to **neuronal** supertypes, fit
+Per dataset: restrict the count columns to **neuronal** supertypes, fit
 
 ```r
 crumblr(counts) |> dream(~ scale(Age) + scale(PMI) + Diagnosis + (Sex), meta) |> eBayes()
@@ -54,8 +54,8 @@ Neuronal: Glutamatergic}`. That file is not committed — see issue 4 in
 
 ### 3 — `3_meta_analysis.r`
 
-Per cell type, pools the seven cohort estimates with
-`metafor::rma(yi = logFC, sei = SE, method = "FE")`, requiring ≥ 2 cohorts.
+Per cell type, pools the seven dataset estimates with
+`metafor::rma(yi = logFC, sei = SE, method = "FE")`, requiring ≥ 2 datasets.
 Standard errors are reconstructed as `|logFC / t|` from the crumblr output.
 Reports `estimate, se, zval, pval, I2, ci.lb, ci.ub, k`, with Benjamini-Hochberg
 FDR across cell types.

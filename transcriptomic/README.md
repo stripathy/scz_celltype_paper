@@ -1,7 +1,7 @@
 # transcriptomic/ — Figure 2 and Supplementary Fig. S8
 
 Cell-type-specific differential expression in schizophrenia, across the
-seven-cohort snRNA-seq meta-analysis and the Xenium spatial dataset. This
+seven-dataset snRNA-seq meta-analysis and the Xenium spatial dataset. This
 component builds **Figure 2** (cross-platform DE) and **Supplementary Fig. S8**
 (the Sst depletion-strata analysis), and nothing else.
 
@@ -16,7 +16,7 @@ Ten panels, all assembled by one script.
 | Panels | What | Data from |
 |---|---|---|
 | a, e | Volcano, meta log₂FC vs −log₁₀ *P*, coloured by direction × FDR tier | `data/figure_inputs/DE_genes_all_cells_scz.csv` |
-| b, f | Forest: seven cohorts, pooled DerSimonian–Laird diamond, Xenium triangle | `meta_results_cohorts_subclass_forest.csv` + Xenium DE |
+| b, f | Forest: seven datasets, pooled DerSimonian–Laird diamond, Xenium triangle | `meta_results_cohorts_subclass_forest.csv` + Xenium DE |
 | c, g | Per-donor CP1K expression, Control vs SCZ (12 vs 12) | `12_marker_norm_expr.R` |
 | d, h | Representative Xenium cells at the pooled group-median transcript density | `10_xenium_exemplar_cells.py` |
 | i | Up/down DE-gene counts per subclass, FDR < 0.10 with the FDR < 0.05 subset | meta DE |
@@ -77,7 +77,7 @@ notes/                figure legend + cross-platform validation write-ups
 
 ## Cross-component seams
 
-- **In:** the snRNA-seq meta-analysis and per-cohort tables, via
+- **In:** the snRNA-seq meta-analysis and per-dataset tables, via
   `shared/snrnaseq_de/` (Endresz et al., in prep).
 - **In:** Xenium DE, crumblr input and supertype depth from `spatial/output/`.
 - **Out:** nothing. Both figures are terminal.

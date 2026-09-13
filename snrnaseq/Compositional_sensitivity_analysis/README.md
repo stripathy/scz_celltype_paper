@@ -15,9 +15,9 @@ a labelling artefact.
 ## Chain
 
 ```
-1_Label_transfer_noSSTDE.r -> per-cohort counts, re-labelled  ({cohort}_*SST_DEgenes.csv)
+1_Label_transfer_noSSTDE.r -> per-dataset counts, re-labelled  ({dataset}_*SST_DEgenes.csv)
 2_Compile_metadata.r       -> 7_cohorts_metadata_NoSST_DEgenes_names.csv
-3_Crumblr_analysis.r       -> crumblr_results_noSSTgenes.csv  (per cohort)
+3_Crumblr_analysis.r       -> crumblr_results_noSSTgenes.csv  (per dataset)
 4_Meta_analysis.r          -> meta_noSST_genes.csv            (pooled)
 ```
 
@@ -31,14 +31,14 @@ from the feature space before anchor-finding. Otherwise the transfer is the same
 as [`../Label_transfer/`](../Label_transfer/README.md) — same reference, same
 `TransferData(refdata = ref$Supertype)`.
 
-It processes eleven objects rather than seven, because the PsychAD cohorts are
+It processes eleven objects rather than seven, because the PsychAD datasets are
 held as multiple files: `MSSM2` arrives as four parts and `HBCC` as two, and
-they are recombined into their seven cohort labels in step 2.
+they are recombined into their seven dataset labels in step 2.
 
 ### 3 — Crumblr
 
 Same neuronal restriction (via `cluster_order_and_colors.csv`) and the same
-per-cohort `dream` fit, **except** that `Sex` enters as `(1|Sex)` where the
+per-dataset `dream` fit, **except** that `Sex` enters as `(1|Sex)` where the
 primary analysis uses `(Sex)`.
 
 > That makes S7 differ from Fig. 3a in a second respect beyond the one it is
@@ -48,7 +48,7 @@ primary analysis uses `(Sex)`.
 
 ### 4 — Meta-analysis
 
-`metafor::rma(method = "FE")` across cohorts, ≥ 2 cohorts required, BH FDR.
+`metafor::rma(method = "FE")` across datasets, ≥ 2 datasets required, BH FDR.
 Same as the primary chain.
 
 Rendered by `../Final_figures/Supplemental/Sensitivity_analysis_Barchart.r`,

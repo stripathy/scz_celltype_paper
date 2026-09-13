@@ -19,8 +19,8 @@ repo (stable) or too large to duplicate.
 | file | what | written by | storage | consumed by |
 |---|---|---|---|---|
 | `DE_genes_all_cells_scz.csv` | meta-analytic DE (23 subclasses × genes; estimate, se, padj), 35.6 MB | `snrnaseq/snRNAseq_DE/Subclass/3_meta_analysis.r` (last line) | **real file** (moved out of `~/Downloads` on 2026-07-31 — a Downloads cleanup would have broken every DE figure) | `transcriptomic/` (butterfly, volcano, scatter, forest stars) |
-| `meta_results_cohorts_subclass.csv` | per-cohort DE (7 cohorts), 328 MB | `snrnaseq/snRNAseq_DE/Subclass/2_DE.r`, collated | symlink → `scz_pathway_enrichment/data/` (another git repo; too large to duplicate) | `transcriptomic/` (forest rows + meta diamond) |
-| `nicole_scz_snrnaseq_betas/` | cell-type COMPOSITION betas (crumblr, 7-cohort meta) | `snrnaseq/Compositional_analysis/3_meta_analysis.r` | symlink → `SCZ_Xenium/data/nicole_scz_snrnaseq_betas/` | `genetics/` (Fig 4a, 4i), `transcriptomic/` (the S8 strata definition), `snrnaseq/composition_sensitivity/` (S6) |
+| `meta_results_cohorts_subclass.csv` | per-dataset DE (7 datasets), 328 MB | `snrnaseq/snRNAseq_DE/Subclass/2_DE.r`, collated | symlink → `scz_pathway_enrichment/data/` (another git repo; too large to duplicate) | `transcriptomic/` (forest rows + meta diamond) |
+| `nicole_scz_snrnaseq_betas/` | cell-type COMPOSITION betas (crumblr, 7-dataset meta) | `snrnaseq/Compositional_analysis/3_meta_analysis.r` | symlink → `SCZ_Xenium/data/nicole_scz_snrnaseq_betas/` | `genetics/` (Fig 4a, 4i), `transcriptomic/` (the S8 strata definition), `snrnaseq/composition_sensitivity/` (S6) |
 
 ⚠️ The script that writes the **subclass-level** per-gene meta-analysis feeding
 `DE_genes_all_cells_scz.csv` is not in the repo — `Subclass/3_meta_analysis.r`
@@ -33,7 +33,7 @@ snapshots taken from here, guarded by a checksum manifest — see
 
 Two export specs also live here — `EXPORT_SPEC_stratum_pseudobulks.md` and
 `EXPORT_SPEC_sst_celllevel.md`. They are the instructions used to produce the
-per-cohort pseudobulk and Sst cell-level exports behind Supplementary Fig. S8,
+per-dataset pseudobulk and Sst cell-level exports behind Supplementary Fig. S8,
 run on the cluster that holds the full per-dataset objects. The exports
 themselves are too large to track; their manifests are committed under
 `transcriptomic/data/stratum_*_export/`.

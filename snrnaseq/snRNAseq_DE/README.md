@@ -1,7 +1,7 @@
 # snRNAseq_DE/ — differential expression in SCZ (Fig. 2 inputs, S4)
 
-Stage 2b. Pseudobulk differential expression per cell type per cohort, pooled
-across the seven cohorts by per-gene meta-analysis. Run twice at two
+Stage 2b. Pseudobulk differential expression per cell type per dataset, pooled
+across the seven datasets by per-gene meta-analysis. Run twice at two
 granularities:
 
 | Directory | Grouping | Feeds |
@@ -12,24 +12,24 @@ granularities:
 Both follow the same three steps and differ only in the grouping variable.
 
 ```
-1_Pseudobulk.r    -> per-cohort pseudobulk matrices + per-donor metadata
+1_Pseudobulk.r    -> per-dataset pseudobulk matrices + per-donor metadata
 2_DE.r            -> DE_results_{cohort}_{celltype}.rds     (limma-voom)
 3_meta_analysis.r -> meta_results_{celltype}.csv -> pooled tables
 ```
 
 ## 1 — Pseudobulk
 
-`Seurat::AggregateExpression(group.by = c(<celltype>, "Donor"))` on each cohort,
-saved as one matrix per cohort. Alongside it, a per-donor metadata CSV carrying
+`Seurat::AggregateExpression(group.by = c(<celltype>, "Donor"))` on each dataset,
+saved as one matrix per dataset. Alongside it, a per-donor metadata CSV carrying
 the `Donor × celltype` cell counts plus `Age, Sex, Diagnosis, PMI`.
 
 Subclass labels are derived from `predicted.id` by stripping the trailing
 supertype index (`gsub("_[0-9].*$", "", …)`), with `Lamp5_Lhx6` collapsed to
 `Lamp5Lhx6` so the underscore rule does not split it.
 
-## 2 — DE per cohort per cell type
+## 2 — DE per dataset per cell type
 
-For each cell type in each cohort:
+For each cell type in each dataset:
 
 - **donors:** keep those with **≥ 500 total cells**,
 - **genes:** keep those with ≥ 1 count in ≥ **80%** of samples,
@@ -50,10 +50,10 @@ skipped.
 > and `[1:23]` for Multiome, which lacks one subclass) rather than by name.
 > Issue 13.
 
-## 3 — Meta-analysis across cohorts
+## 3 — Meta-analysis across datasets
 
 Per cell type, per gene: `metafor::rma(yi = logFC, sei = SE, method = "REML")`,
-requiring the gene to be testable in **more than 4** of the 7 cohorts. Standard
+requiring the gene to be testable in **more than 4** of the 7 datasets. Standard
 errors reconstructed as `|logFC / t|`. FDR (BH) applied across genes within cell
 type.
 
@@ -62,10 +62,10 @@ type.
 | Output | What |
 |---|---|
 | `meta_results_{celltype}.csv` | pooled result, one file per cell type |
-| `DE_results_cohorts_supertype.csv` | all per-cohort rows, long |
+| `DE_results_cohorts_supertype.csv` | all per-dataset rows, long |
 | `DE_meta_results_supertype.csv` | all pooled rows, long |
-| `DE_all_cohorts_meta_supertype.csv` | the two above stacked, cohorts renamed to paper labels, `"Meta-analysis"` as a pseudo-cohort — this is what S4 reads |
-| `DE_all_cohorts_meta_supertype_by_subclass_cohort.xlsx` | the same split one sheet per subclass × cohort (supplementary table) |
+| `DE_all_cohorts_meta_supertype.csv` | the two above stacked, datasets renamed to paper labels, `"Meta-analysis"` as a pseudo-dataset — this is what S4 reads |
+| `DE_all_cohorts_meta_supertype_by_subclass_cohort.xlsx` | the same split one sheet per subclass × dataset (supplementary table) |
 
 `Subclass/3_meta_analysis.r` *consumes* `meta_results_*.csv` and assembles:
 

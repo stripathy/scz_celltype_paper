@@ -17,7 +17,7 @@ For the figure-to-script map, start from the root [`README.md`](README.md).
             Label_transfer/ -> Compositional_analysis/ + snRNAseq_DE/
                  |  exports -> shared/snrnaseq_de/
                  |    DE_genes_all_cells_scz.csv         (meta DE)
-                 |    meta_results_cohorts_subclass.csv  (per-cohort DE)
+                 |    meta_results_cohorts_subclass.csv  (per-dataset DE)
                  |    nicole_scz_snrnaseq_betas/         (composition, crumblr)
    +-------------+------------------+-----------------------+
    | DE          | DE + composition | composition           | composition
@@ -51,7 +51,7 @@ External hub (~/Github/shared_data/, per ~/Github/DATA_LAYOUT.md):
 
 | component | key inputs (<- from) | produces -> (consumed by) |
 |---|---|---|
-| `snrnaseq/` | raw 7-cohort snRNA-seq, SEA-AD neurotypical reference | DE betas, composition betas -> everyone downstream; Fig 1a, Fig 3, S1, S4, S5, S7 (rendered on the cluster) |
+| `snrnaseq/` | raw 7-dataset snRNA-seq, SEA-AD neurotypical reference | DE betas, composition betas -> everyone downstream; Fig 1a, Fig 3, S1, S4, S5, S7 (rendered on the cluster) |
 | `genetics/` | composition betas (<- snrnaseq), AD slopes (<- crossdisorder), GWAS set + patch-seq (owns), SEA-AD DLPFC ref (<- shared_data) | Fig 4, S9, S10, T6; the vulnerable-vs-not marker table -> reserve/ |
 | `spatial/` | Xenium raw, SEA-AD/MERFISH ref (<- shared_data) | Xenium DE + crumblr composition -> transcriptomic, Figs 1-3; S2, S3; SM1 |
 | `transcriptomic/` | DE betas (<- snrnaseq), Xenium DE + depth (<- spatial) | Fig 2, S8 |

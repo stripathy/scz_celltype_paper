@@ -32,11 +32,11 @@ assembly at the foot of `Figure_3.r` is what decides:
 | Panel | Variable | Shows | Main input |
 |---|---|---|---|
 | a | `p3a` | Abundance change per neuronal supertype, meta-analysed | `crumblr_results_final_meta.csv` |
-| b | `p3c` | Sst_25 forest across the seven cohorts | `final_results_crumblr_7_cohorts_all.csv` |
+| b | `p3c` | Sst_25 forest across the seven datasets | `final_results_crumblr_7_cohorts_all.csv` |
 | c | `p3b` | Sst_25 per-donor proportion, Control vs SCZ, with Xenium | `neuron_props_7_cohorts` + Xenium proportions |
 | d | `p3d` | Spatial rendering of Sst_25 | `Xenium_SCZ_R.rds` |
 | e | `p3h` | Abundance change vs cortical depth | Xenium crumblr + depth |
-| f | `p3f` | snRNA-seq vs Xenium concordance (Spearman) | Xenium crumblr + 7-cohort meta |
+| f | `p3f` | snRNA-seq vs Xenium concordance (Spearman) | Xenium crumblr + 7-dataset meta |
 
 ## Cross-platform inputs
 
@@ -57,13 +57,13 @@ It opens `from brisc import SingleCell` and runs under `mamba activate brisc`.
 It parses as valid Python and fails to parse as R; only the extension is wrong.
 Issue 8 in [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
-It loads all seven cohorts through `brisc`, applies the same donor filters as
+It loads all seven datasets through `brisc`, applies the same donor filters as
 the composition analysis plus a **≥ 500 cells per donor** cut and `qc()`, labels
-each cohort, and draws the combined UMAP, an Sst-only UMAP coloured by
+each dataset, and draws the combined UMAP, an Sst-only UMAP coloured by
 `predicted.id`, and the spatial panel, into one composite.
 
 `Supplemental/Markerplot.py` is likewise `brisc`-based, and draws a 2×2: marker
-expression across the seven cohorts and in the SEA-AD reference, at subclass
+expression across the seven datasets and in the SEA-AD reference, at subclass
 level (top) and Sst supertype level (bottom), with `Sst_25` highlighted. It also
 writes the underlying dot-plot tables as CSVs beside the figure.
 
