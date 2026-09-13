@@ -93,7 +93,7 @@ Environment is selected per script by a `conda activate` comment in the header
 (`crumblr_env`, `de_env`, `r_env_meta_analysis`, `py_anndata_env`, `brisc`).
 
 The one committed input is
-[`Compositional_analysis/7_cohorts_metadata_names.csv`](Compositional_analysis/7_cohorts_metadata_names.csv)
+[`Compositional_analysis/Files/7_cohorts_metadata_names.csv`](Compositional_analysis/Files/7_cohorts_metadata_names.csv)
 — the per-donor cell-count matrix with age, sex, diagnosis and PMI for all 469
 donors, which is what stage 2a actually fits.
 

@@ -32,7 +32,7 @@ Output: **`7_cohorts_metadata_names.csv`** — one row per donor (469), columns
 supertype. **This file is committed**, so the model in step 2 can be read
 against its actual input.
 
-### 2 — `2_Crumblr_analysis.r`
+### 2 — `Code/Neurons/1_Crumblr_analysis.r`
 
 Per dataset: restrict the count columns to **neuronal** supertypes, fit
 

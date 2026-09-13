@@ -89,7 +89,7 @@ lists what to obtain and from where.
 **Independently reproduced.** On 2026-09-13 the composition chain behind Figure
 3a and S6 was rebuilt from a separate set of cleaned per-dataset h5ads and
 compared against the committed artefacts. The Figure-3a input matrix
-(`snrnaseq/Compositional_analysis/7_cohorts_metadata_names.csv`) came back
+(`snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv`) came back
 **identical in all 61,908 donor x supertype counts** (2,399,784 cells), with Age,
 Sex and PMI matching exactly; re-fitting the crumblr models reproduced the
 per-dataset, leave-one-dataset-out and subclass estimates to **1e-15**. The
@@ -130,7 +130,7 @@ render from a clone — those scripts ran on the Alliance cluster against the
 full per-dataset objects, with cluster-absolute paths. They are here to be read.
 The one committed input from that pipeline is the per-donor cell-count matrix
 behind the composition analysis,
-[`snrnaseq/Compositional_analysis/7_cohorts_metadata_names.csv`](snrnaseq/Compositional_analysis/7_cohorts_metadata_names.csv).
+[`snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv`](snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv).
 
 ## Repository history
 

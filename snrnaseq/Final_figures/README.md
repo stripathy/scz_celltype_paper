@@ -12,7 +12,7 @@ in [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
 | Figure | Script | Writes |
 |---|---|---|
-| **Fig. 1a** (UMAPs) | `Figure_1a_UMAP.r` — **this is Python**, see below | `combined_umap_spatial.{png,svg}`, `combined_sst_umap_predicted_id.png` |
+| **Fig. 1a** (UMAPs) | `Code/Figure_1.py` — **this is Python**, see below | `combined_umap_spatial.{png,svg}`, `combined_sst_umap_predicted_id.png` |
 | **Fig. 1a** (counts) | `Figure_1a_Barchart.r` | `1a.{png,svg}`, `cohort_donor_counts.png`, `snrnaseq_xenium_cell_counts.png` |
 | **Fig. 3** | `Figure_3.r` | `Figure3_composite.{png,svg}` plus each panel standalone |
 | **S1** | `Supplemental/Markerplot.py` | `four_compiled_cohort_markers.{png,…}` |
@@ -51,7 +51,7 @@ This matters more than a usual missing input — `DATA_FLOW.md` documents a
 superseded Xenium object with MGE and CGE transposed. Issue 3 in
 [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
-## `Figure_1a_UMAP.r` is Python
+## `Code/Figure_1.py` is Python
 
 It opens `from brisc import SingleCell` and runs under `mamba activate brisc`.
 It parses as valid Python and fails to parse as R; only the extension is wrong.
