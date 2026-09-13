@@ -31,15 +31,30 @@ Rscript scripts/09_composite_figure.R         # the figure
 # -> manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}
 ```
 
-`09_composite_figure.R` builds every panel internally and reads only committed
-CSVs, so **the figure regenerates from a clone with R alone** — see
+`09_composite_figure.R` builds every panel internally — see
 [`REPRODUCE.md`](REPRODUCE.md). Steps 10 and 12 are only needed when their
 inputs change; their outputs are committed under `results/tables/`.
 
+⚠️ **It no longer regenerates from a clone.** Commit `038490d` (2026-09-09)
+added three reads from `/scratch/nendresz/`, a working directory only its author
+can read: per-cohort donor counts for the forest labels, the Xenium Sst_25 donor
+count, and the mean subclass proportions behind the panel-i inset. The script
+declares all three in an `EXTERNAL` block at the top and stops there with a
+message naming them, rather than failing part-way through the render. Committing
+those three under `data/figure_inputs/` with `MANIFEST.tsv` rows restores the
+clone-only property. See issue 15 in [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md).
+
 `00_refresh_figure_inputs.R` resyncs `data/figure_inputs/` from the canonical
 upstream sources and rewrites `MANIFEST.tsv`. `_figure_inputs.R` checks that
-manifest on every read and halts the render if a source has moved on, so the
-figure cannot quietly go stale.
+manifest on every read and halts the render if a source has moved on.
+
+The guard has one deliberate blind spot worth knowing: when a recorded source is
+**absent** on the current machine it is skipped and the snapshot is trusted, so
+that a clone with no upstream repos still renders. A snapshot whose source only
+ever existed on one laptop therefore never gets checked. That is how
+`crumblr_input_subclass_corr.csv` stayed three weeks older than the canonical
+Xenium object, and one donor short of it, without anything complaining — issue 18
+in [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md).
 
 ## Supplementary Fig. S8 — Sst depletion strata
 

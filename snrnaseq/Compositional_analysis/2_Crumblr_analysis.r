@@ -46,7 +46,11 @@ run_crumblr <- function(cohort_name, all_meta_counts) {
   
   rownames(counts) <- df$Donor
 
-  counts <- counts[, colSums(!is.na(counts)) > 0, drop = FALSE]
+  # Drop cell types absent from this cohort. The committed matrix marks them NA,
+  # but a matrix pivoted from the per-cell tables marks them 0; either way they are
+  # structurally empty and must not enter crumblr's CLR. Verified a no-op on
+  # 7_cohorts_metadata_names.csv (no all-zero column there) -- 2026-09-13.
+  counts <- counts[, colSums(!is.na(counts)) > 0 & colSums(counts, na.rm = TRUE) > 0, drop = FALSE]
 
 neuron_labels <- types_neurons$cluster_label
 

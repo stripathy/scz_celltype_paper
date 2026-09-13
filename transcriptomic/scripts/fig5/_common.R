@@ -37,7 +37,15 @@ P <- list(
   crumblr  = "shared/snrnaseq_de/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv",
   depth    = "spatial/output/depth_platform/supertype_depth_platform_summary.csv",
   layers   = "spatial/output/depth_proportions/proposed_layer_boundaries.csv",
-  subclass = "shared/snrnaseq_de/DE_genes_all_cells_scz.csv",
+  # The canonical copy lives in the git-ignored seam; the committed snapshot under
+  # transcriptomic/data/figure_inputs/ was captured from that exact path (see its
+  # MANIFEST.tsv, md5 719da3d7519cbc5a3aec1b8c42d438da), so falling back to it lets
+  # S8 render from a clean clone without changing which numbers are drawn.
+  subclass = local({
+    seam <- "shared/snrnaseq_de/DE_genes_all_cells_scz.csv"
+    snap <- "transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv"
+    if (file.exists(seam)) seam else snap
+  }),
   spatial_de = "spatial/output/de/de_results_supertype.csv")
 
 for (d in c(P$pb, P$donor, P$supp, P$cache, P$fig, P$suppfig)) dir.create(d, showWarnings = FALSE, recursive = TRUE)

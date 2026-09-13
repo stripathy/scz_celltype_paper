@@ -20,16 +20,29 @@ repo (stable) or too large to duplicate.
 |---|---|---|---|---|
 | `DE_genes_all_cells_scz.csv` | meta-analytic DE (23 subclasses × genes; estimate, se, padj), 35.6 MB | `snrnaseq/snRNAseq_DE/Subclass/3_meta_analysis.r` (last line) | **real file** (moved out of `~/Downloads` on 2026-07-31 — a Downloads cleanup would have broken every DE figure) | `transcriptomic/` (butterfly, volcano, scatter, forest stars) |
 | `meta_results_cohorts_subclass.csv` | per-dataset DE (7 datasets), 328 MB | `snrnaseq/snRNAseq_DE/Subclass/2_DE.r`, collated | symlink → `scz_pathway_enrichment/data/` (another git repo; too large to duplicate) | `transcriptomic/` (forest rows + meta diamond) |
-| `nicole_scz_snrnaseq_betas/` | cell-type COMPOSITION betas (crumblr, 7-dataset meta) | `snrnaseq/Compositional_analysis/3_meta_analysis.r` | symlink → `SCZ_Xenium/data/nicole_scz_snrnaseq_betas/` | `genetics/` (Fig 4a, 4i), `transcriptomic/` (the S8 strata definition), `snrnaseq/composition_sensitivity/` (S6) |
+| `nicole_scz_snrnaseq_betas/` | cell-type COMPOSITION betas (crumblr, 7-dataset meta) | `snrnaseq/Compositional_analysis/3_meta_analysis.r` | **regenerated 2026-09-13** (the original was never staged down); see `PROVENANCE.md` beside it | `genetics/` (Fig 4a, 4i), `transcriptomic/` (the S8 strata definition), `snrnaseq/composition_sensitivity/` (S6) |
 
 ⚠️ The script that writes the **subclass-level** per-gene meta-analysis feeding
-`DE_genes_all_cells_scz.csv` is not in the repo — `Subclass/3_meta_analysis.r`
-reads its inputs but nothing produces them. See issue 2 in
-[`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
+`DE_genes_all_cells_scz.csv` was never in the repo. A **reconstruction** is now
+committed as `snrnaseq/snRNAseq_DE/Subclass/3a_meta_per_gene.r`, so the chain
+executes end to end — but it is not the original, and it is not bit-exact
+against the published table. Nicole should still confirm the copy she ran, and
+supply her per-dataset gene universes, which is what exact recovery needs. See
+issues 2 and 19 in [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
-Downstream figure code does not read this directory directly. It reads committed
-snapshots taken from here, guarded by a checksum manifest — see
+Downstream figure code should not read this directory directly. It reads
+committed snapshots taken from here, guarded by a checksum manifest — see
 `../../transcriptomic/data/figure_inputs/README.md`.
+
+Supplementary S8 is the exception. `transcriptomic/scripts/fig5/_common.R` still
+points `P$crumblr` at `nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv`
+here, and that file has no committed snapshot anywhere in the repo, so S8 cannot
+fall back to one. `P$subclass` had the same problem and was fixed on 2026-09-13:
+it now prefers this directory and falls back to
+`transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv`, which the
+manifest records as a byte-identical capture of the seam file (md5
+`719da3d7519cbc5a3aec1b8c42d438da`). See issue 16 in
+[`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
 Two export specs also live here — `EXPORT_SPEC_stratum_pseudobulks.md` and
 `EXPORT_SPEC_sst_celllevel.md`. They are the instructions used to produce the

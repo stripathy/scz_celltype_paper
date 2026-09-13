@@ -70,7 +70,11 @@ Rscript  code/analysis/plot_xenium_merfish_composite.R
 
 Both write straight into `manuscript/figures/supplementary/`. Their small input
 CSVs are committed (force-added past the `output/` ignore rule), so the two
-renderers run from a clean clone with no external data.
+renderers run from a clean clone with no external data. **Run them from this
+directory** (`cd spatial && Rscript code/analysis/<script>.R`) — unlike the
+renderers in `genetics/`, they resolve `source()` and their inputs relative to
+the working directory, not to their own location. They also need the `ragg`
+package, without which `ggsave` fails after the figure is already built.
 
 `_xenium_exclusions.R` defines the types too rare to test, dropped from every
 Xenium figure.

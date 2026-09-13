@@ -54,8 +54,37 @@ So the step producing `DE_genes_all_cells_scz.csv` — the primary input to
 **Figure 2** — is not in the repo. Every other chain here can be traced end to
 end; this one cannot.
 
-Most likely an earlier revision of the supertype script, run before the
-subclass/supertype split. **Needs the actual script from Nicole.**
+**Identified on 2026-09-13 (second audit pass).** It is
+`Supertypes/3_meta_analysis.r` with the cell-type selection inverted: line 16
+keeps `setdiff(cell_types, subclasses)`, the subclass run kept the intersection.
+Everything else matches:
+
+- lines 43-44 emit exactly the committed file's columns — `cell_type, genes,
+  estimate, se, pval, ci.lb, ci.ub, k, tau2, I2` plus `padj`;
+- line 53 writes `Files/meta_results_<ct>.csv`, the very files
+  `Subclass/3_meta_analysis.r:20` globs;
+- `k` in the committed output takes values {5,6,7}, matching `cohorts` (7) and
+  the `nrow(df)>4` threshold; `tau2`/`I2` are non-zero, matching `method="REML"`.
+
+Note the bootstrapping order this implies: `Supertypes/3_meta_analysis.r:10`
+*derives* its cell-type list by globbing `meta_results_*.csv`, so the subclass
+run must have come first and written them. That is also why line 13-15 carries a
+hard-coded subclass exclusion list, `log2cells_Sst` included.
+
+An ancestor of the same code is readable at
+`/project/rrg-shreejoy/nendresz/Meta_DE/3_Meta_analysis_uns.r` — same 22
+subclasses and per-gene `rma()`, but 6 datasets, `method="FE"`, and `.rds`
+output with different column names, so it is not the run the paper reports.
+
+**A reconstruction was committed on 2026-09-13** at
+`snrnaseq/snRNAseq_DE/Subclass/3a_meta_per_gene.r`, at Shreejoy's direction, so
+the chain executes end to end. Its header states plainly that it is not the
+original and lists the evidence for the recipe. It reproduces the committed Sst
+DE in substance but not bit-for-bit (issue 19).
+
+**Still open:** Nicole should confirm the copy she ran, and — more to the point,
+since issue 19 shows the recipe is right — supply her **per-dataset gene
+universes**, which is what bit-exact recovery actually needs.
 
 ### 3. `Xenium_SCZ_R.rds` has no provenance, and no script creates it
 
@@ -86,6 +115,12 @@ complement for S5.
 It is a small CSV. Committing it under `snrnaseq/` would make the neuronal/
 non-neuronal split inspectable instead of implicit.
 
+**Done on 2026-09-13**: copied from `/project/rrg-shreejoy/nendresz/` to
+`snrnaseq/cluster_order_and_colors.csv` (139 supertypes, md5
+`43649970c522eb232eb2ba8e0a126551`, byte-identical to the source). The eight
+scripts still read the absolute path, which resolves on this cluster; repointing
+them is a cosmetic follow-up (see item 11).
+
 ### 5. A cell-count covariate is computed but never enters the DE design
 
 `snRNAseq_DE/Subclass/2_DE.r:85,202` and the supertype equivalent compute
@@ -112,6 +147,164 @@ restore the covariate.
 diagnosis and PMI for 469 donors. These are de-identified consortium IDs and the
 repo is currently **private**, so nothing is exposed today. Worth an explicit
 decision before the repo is made public for review.
+
+### 15. Figure 2 no longer renders from a clone, and lost its staleness guard
+
+Commit `038490d` ("Update composite figure script", 2026-09-09) changed
+`transcriptomic/scripts/09_composite_figure.R` in three ways that break the
+repo's central reproducibility claim:
+
+1. it added `setwd("scz_celltype_paper/transcriptomic")`, which only works if the
+   cwd happens to be the repo's *parent*;
+2. it replaced `source("scripts/_figure_inputs.R")` + `fig_input(...)` with raw
+   `data/figure_inputs/...` paths, **dropping the MANIFEST staleness guard** —
+   the guard whose own header records that its absence is "how Fig. 2 came to
+   show 76% concordant while the manuscript said 72%";
+3. it introduced three reads from `/scratch/nendresz/`, which no one else can
+   read.
+
+Items 1 and 2 are **fixed** (see below). Item 3 is not fixable here: the three
+files are not in the repo and `/scratch/nendresz` is mode `drwx--x--x`.
+
+Figure 2 therefore does **not** render from a clean clone, contrary to
+`README.md` and `## Reproducing`. The three files are small and belong under
+`transcriptomic/data/figure_inputs/` with MANIFEST entries:
+
+| purpose | path |
+|---|---|
+| per-cohort donor n (forest labels) | `/scratch/nendresz/P1_Compositional_analysis/plotdata.csv` |
+| Xenium Sst_25 donor n | `/scratch/nendresz/Xenium/xen_Sst_proportions.csv` |
+| mean subclass proportion (panel i inset) | `/scratch/nendresz/FINAL_FIGS/Paper/df_mean_subclass_prop.csv` |
+
+**Needs Nicole to commit those three.** Until then the script stops immediately
+with a message naming all three rather than failing part-way through the render.
+
+### 16. Supplementary S8 reads the git-ignored seam, not the committed snapshot
+
+`transcriptomic/scripts/fig5/_common.R:40` sets
+`subclass = "shared/snrnaseq_de/DE_genes_all_cells_scz.csv"`, and line 38 sets
+`crumblr` to another path under the same git-ignored directory. But
+`shared/snrnaseq_de/README.md` states that "downstream figure code does not read
+this directory directly — it reads committed snapshots". S8 does read it
+directly, so S8 does not render from a clone either.
+
+For `subclass` the committed snapshot exists and is provably the same file:
+`transcriptomic/data/figure_inputs/MANIFEST.tsv` records
+`DE_genes_all_cells_scz.csv` as captured *from* that exact seam path, md5
+`719da3d7519cbc5a3aec1b8c42d438da`. **Fixed** by falling back to the snapshot
+when the seam file is absent.
+
+`crumblr` (`nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv`) had
+no committed snapshot anywhere in the repo and no copy on this cluster.
+
+**Partly resolved on 2026-09-13.** The file was *regenerated* by re-running the
+repo's own `2_Crumblr_analysis.r` and `3_meta_analysis.r` (paths changed, model
+untouched) on a count matrix rebuilt from cleaned per-dataset h5ads, and placed
+at the seam path with a `PROVENANCE.md` beside it. It validates against three
+committed artefacts independently — per-dataset betas to 1.8e-15, the FE meta to
+8.1e-16, and it reproduces `gwas_vs_casecontrol_composition.csv` to 1.0e-15 when
+fed to `build_composition_table.py`. `genetics/`'s composition scripts and S6's
+published-FE comparison now run.
+
+It is a regeneration, not the original: **replace it if Nicole's file is ever
+recovered**, and describe anything built on it accordingly.
+
+### 17. Nicole's crumblr scripts assume an NA-marked count matrix
+
+`2_Crumblr_analysis.r:49` dropped structurally-empty cell types with
+`colSums(!is.na(counts)) > 0`. Her committed matrix marks a supertype that was
+never called in a cohort as `NA`, so this works. A matrix pivoted from per-cell
+tables — as Shreejoy's clean h5ad exports produce — marks the same cells `0`,
+where the test is a no-op and all-zero categories enter crumblr's CLR.
+
+**Fixed** in all three crumblr scripts by also dropping all-zero columns.
+Verified a no-op on her own matrix (it has no all-zero column in any dataset), so
+no published number moves.
+
+Still open, and **not** changed: `2_Crumblr_analysis.r:78` hard-codes
+`coef = "DiagnosisSchizophrenia"`. Any matrix using the repo's own `Control`/`SCZ`
+vocabulary (which `00_prepare_counts.R:37` and the clean h5ads both use) makes
+that coefficient name not exist, and the script fails. Worth deriving the
+coefficient name from the factor levels instead.
+
+### 18. Figure 2's Xenium composition snapshot predates the object the paper uses, and drops Br2039
+
+`transcriptomic/data/figure_inputs/crumblr_input_subclass_corr.csv` (panel i
+inset) holds **23 donors / 737,750 cells**. Every other Xenium-derived file in
+the repo holds **24**, Br2039 included:
+
+| file | donors | Br2039 |
+|---|---|---|
+| `spatial/output/crumblr/crumblr_input_{subclass,supertype}_{neuronal,nonneuronal}.csv` | 24 | yes |
+| `transcriptomic/data/figure_inputs/pseudobulk_subclass.csv` | 24 | yes |
+| `transcriptomic/results/tables/marker_norm_expr.csv` | 24 | yes |
+| `transcriptomic/data/figure_inputs/crumblr_input_subclass_corr.csv` | **23** | **no** |
+
+**No committed code drops Br2039.** `spatial/code/modules/constants.py:31` is
+explicit and has been since the monorepo was scaffolded (`3c7b45a`, 2026-06-02):
+
+```python
+EXCLUDE_SAMPLES = set()  # No samples excluded; Br2039 (WM-heavy) included — improves snRNAseq concordance
+```
+
+The snapshot is simply **older than that decision**. Its MANIFEST row names the
+source as `/Users/shreejoy/Github/SCZ_Xenium/output/crumblr/crumblr_input_subclass_corr.csv`
+with `source_mtime` **2026-03-12** — three weeks before the canonical 2026-04-01
+Xenium object, and from a laptop. Because that source is absent on any other
+machine, the staleness guard skips its check by design and trusts the snapshot,
+so nothing flags it.
+
+Verified against the canonical object (via the clean export
+`~/scratch/dataset_compliation/clean/Xenium.h5ad`), 2026-09-13:
+
+- The canonical recipe is `corr_qc_pass & spatial_domain == "Cortical"`, all 24
+  donors, split by class. It reproduces **exactly**: neuronal 356,313 and
+  non-neuronal 385,790 cells, 419/419 rows identical to
+  `crumblr_input_subclass_neuronal.csv`. Those are the numbers
+  `spatial/output/crumblr/README.md` and `DATA_FLOW.md` report.
+- Br2039 contributes **10,595** cells to that set (1,153 GABAergic /
+  2,531 Glutamatergic / 6,911 non-neuronal).
+- Canonical minus Br2039 is 731,508, still **6,242 short** of the snapshot's
+  737,750 — so the snapshot is not the current object with one donor removed. It
+  is a different, earlier annotation.
+
+**Consequence:** Figure 2 panel i's inset is drawn from a pre-canonical Xenium
+object with one donor missing, while every other Xenium number in the paper comes
+from the 24-donor April object. **Needs a refreshed snapshot** taken from
+`spatial/output/crumblr/` (which is committed, current, and reproduces exactly),
+plus a MANIFEST row pointing at a path that exists outside the laptop.
+
+Two committed docs also disagree and should be reconciled:
+`spatial/methods_writeup.md:52` says "Br2039 is retained in all analyses
+(65% white matter)", while `spatial/all_samples_annotated_guide.md:312-322` says
+"**Exclude Br2039 from cortical compositional analyses**" (41.8% WM) and gives a
+recipe that does so. The code follows `methods_writeup`. The WM fractions differ
+because they count different columns; by `spatial_domain` Br2039 is **70.1% WM**
+against a cohort median of 19.7%.
+
+### 19. The DE chain reproduces in substance but not bit-for-bit
+
+Related to issue 2. With the missing producer reconstructed from its recipe, the
+subclass DE + per-gene meta was re-run for **Sst** from independently rebuilt
+pseudobulks, following `1_Pseudobulk.r` and `2_DE.r` exactly (Age < 70,
+>= 500 cells per donor, >= 1 count in >= 80% of samples, TMM, voom,
+`~ scale(Age) + Sex + Diagnosis [+ scale(PMI)]`, then `rma(method = "REML")`).
+
+Result: 12,490 of the committed 12,492 Sst genes recovered, effect sizes
+**r = 0.9968** and 98.31% sign-concordant, 161 of 165 FDR < 0.05 genes shared,
+and *SST* itself at beta -0.459 / padj 0.048 against the committed
+-0.458 / 0.049. All 15 top committed hits reproduce.
+
+The residual is a systematic beta shift (median -0.0025, IQR entirely negative)
+that is **not** gene-symbol collapsing (3 of 12,490 genes). It is consistent with
+**TMM normalisation drift** from a different per-dataset gene universe — the
+rebuild maps to gene symbols and drops what will not map (Batiuk: 17,425 of
+60,617), which moves the >=80% gene filter and hence every library's norm factor.
+
+**Consequence for issue 2:** the recipe is confirmed correct, so recovering
+Nicole's script matters less than recovering her **per-dataset gene universes**.
+Exact reproduction of the published table needs the gene sets her objects
+carried, not just her code. Worth asking her for those alongside the script.
 
 ---
 

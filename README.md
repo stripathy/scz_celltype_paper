@@ -41,7 +41,9 @@ annotated Xenium objects that `spatial/` produces.
 **Two conventions, not one.** The renderers in `transcriptomic/`, `spatial/`,
 `genetics/` and `snrnaseq/composition_sensitivity/` write into
 `manuscript/figures/` in place and run from committed inputs, so those figures
-regenerate from a clean clone without the raw data. The renderers in
+regenerate from a clean clone without the raw data — with one exception, Figure
+2, which still reads three files from a working directory on the cluster
+(`KNOWN_ISSUES.md`, issue 15). The renderers in
 `snrnaseq/Final_figures/` ran on the Alliance cluster against the full
 per-dataset objects and wrote to a working directory there — their figures are
 **not** in this repo and their chains are archived for reading, not
@@ -81,8 +83,20 @@ See [`DATA_FLOW.md`](DATA_FLOW.md) for who produces what and who consumes it.
 summary statistics and reference atlases are git-ignored and wired in via
 symlinks or documented download URLs. What *is* committed is the small set of
 figure inputs each renderer needs, so no figure depends on data you have to
-fetch first. Each component's `data/README.md` lists what to obtain and from
-where.
+fetch first (Figure 2 excepted — see below). Each component's `data/README.md`
+lists what to obtain and from where.
+
+**Independently reproduced.** On 2026-09-13 the composition chain behind Figure
+3a and S6 was rebuilt from a separate set of cleaned per-dataset h5ads and
+compared against the committed artefacts. The Figure-3a input matrix
+(`snrnaseq/Compositional_analysis/7_cohorts_metadata_names.csv`) came back
+**identical in all 61,908 donor x supertype counts** (2,399,784 cells), with Age,
+Sex and PMI matching exactly; re-fitting the crumblr models reproduced the
+per-dataset, leave-one-dataset-out and subclass estimates to **1e-15**. The
+Xenium composition set reproduces exactly too (356,313 neuronal and 385,790
+non-neuronal cortical cells, all 24 donors). Two seams that the comparison
+exposed are recorded as issues 17 and 18 in
+[`KNOWN_ISSUES.md`](KNOWN_ISSUES.md).
 
 ## Reproducing
 
@@ -90,9 +104,25 @@ where.
 git clone <remote-url> && cd scz_celltype_paper
 ```
 
-Then follow the component README for the figure you want. Figures 2 and 4 and
-supplementary figures S2, S3, S6, S8, S9 and S10 all render from committed
-inputs. Re-running the *analyses* behind them needs the external data.
+Then follow the component README for the figure you want. Figure 4 and
+supplementary figures S2, S3, S6, S8, S9 and S10 render from committed inputs;
+verified by running all of them on 2026-09-13. Re-running the *analyses* behind
+them needs the external data.
+
+**Figure 2 does not currently render from a clone.** Three inputs it needs are
+not in the repo and live under `/scratch/nendresz/`, which no one else can read;
+the script now stops immediately and names all three. See issue 15 in
+[`KNOWN_ISSUES.md`](KNOWN_ISSUES.md).
+
+Two prerequisites, both learned the hard way:
+
+- **R packages.** Beyond the usual tidyverse/ggplot2 stack the renderers need
+  `ragg` and `ggsignif`, and Figure 4 needs `svglite`. Missing any of them fails
+  only at the final `ggsave`, after the whole figure has been computed.
+- **Working directory.** Most renderers locate their own root from `--file=` and
+  run from anywhere. The two in `spatial/` do not: run them **from `spatial/`**
+  (`cd spatial && Rscript code/analysis/<script>.R`), or their relative
+  `source()` and input paths miss.
 
 Figure 1a, Figure 3 and supplementary figures S1, S4, S5 and S7 are built by
 [`snrnaseq/Final_figures/`](snrnaseq/Final_figures/README.md) and do **not**

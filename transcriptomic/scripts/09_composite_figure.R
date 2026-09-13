@@ -26,7 +26,15 @@
 #
 # Output: results/09_composite.{png,pdf}
 # ============================================================================
-setwd("scz_celltype_paper/transcriptomic")
+# Run from anywhere: resolve the component root from this script's own location
+# (same convention as genetics/scripts/figures/*.R). Falls back to the cwd when
+# sourced interactively, where the user is expected to already be in transcriptomic/.
+.script_dir <- function() {
+  a <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+  if (length(a)) dirname(normalizePath(sub("^--file=", "", a[1]))) else NA_character_
+}
+.sd <- .script_dir()
+if (!is.na(.sd)) setwd(normalizePath(file.path(.sd, "..")))
 suppressPackageStartupMessages({
   library(readr); library(dplyr); library(tidyr); library(ggplot2)
   library(cowplot); library(ggrepel); library(metafor); library(ggsignif)
@@ -36,10 +44,29 @@ suppressPackageStartupMessages({
 # it escapes the single-level data/*.csv ignore — see REPRODUCE.md). The cohorts
 # table is the SST+PVALB-only subset the forests need (the full 313 MB per-cohort
 # table stays external); the meta table is the full per-(cell type × gene) table.
-INPUT_META    <- "data/figure_inputs/DE_genes_all_cells_scz.csv"            # meta-analytic snRNA-seq DE (full)
-INPUT_COH     <- "data/figure_inputs/meta_results_cohorts_subclass_forest.csv"  # per-cohort DE, SST+PVALB rows only
-INPUT_XENIUM  <- "data/figure_inputs/de_results_subclass.csv"              # Xenium spatial DE (snapshot of SCZ_Xenium output)
-INPUT_CRUMBLR <- "data/figure_inputs/crumblr_input_subclass_corr.csv"      # Xenium per-donor composition (panel i inset)
+source("scripts/_figure_inputs.R")     # committed snapshots + staleness guard
+INPUT_META    <- fig_input("DE_genes_all_cells_scz.csv")                   # meta-analytic snRNA-seq DE (full)
+INPUT_COH     <- fig_input("meta_results_cohorts_subclass_forest.csv")     # per-cohort DE, SST+PVALB rows only
+INPUT_XENIUM  <- fig_input("de_results_subclass.csv")                      # Xenium spatial DE
+INPUT_CRUMBLR <- fig_input("crumblr_input_subclass_corr.csv")              # Xenium per-donor composition (panel i inset)
+
+# Three inputs are NOT committed: they are still read from the analysis working
+# directory on the cluster, so Figure 2 does not render from a clean clone the
+# way the other figures do. Declared here so a missing one is reported before
+# anything is drawn, naming all of them at once.
+EXTERNAL <- c(
+  sample_n_cohorts = "/scratch/nendresz/P1_Compositional_analysis/plotdata.csv",   # per-cohort donor n (forest labels)
+  sample_n_xenium  = "/scratch/nendresz/Xenium/xen_Sst_proportions.csv",           # Xenium Sst_25 donor n
+  subclass_prop    = "/scratch/nendresz/FINAL_FIGS/Paper/df_mean_subclass_prop.csv" # mean subclass proportion (panel i inset)
+)
+.missing <- names(EXTERNAL)[!file.exists(EXTERNAL) | file.access(EXTERNAL, 4) != 0]
+if (length(.missing)) {
+  stop("Figure 2 needs ", length(.missing), " input(s) that are not in this repo ",
+       "and not readable here:\n",
+       paste0("  ", .missing, ": ", EXTERNAL[.missing], collapse = "\n"),
+       "\nCommit them under data/figure_inputs/ (and add them to MANIFEST.tsv) ",
+       "to make Figure 2 reproducible from a clone.", call. = FALSE)
+}
 
 FIG_W <- 7.1    # max total width (inches)
 
@@ -108,14 +135,14 @@ coh <- bind_rows(
   xen_forest
 )
 
-sample_n <- read.csv("/scratch/nendresz/P1_Compositional_analysis/plotdata.csv") |>
+sample_n <- read.csv(EXTERNAL[["sample_n_cohorts"]]) |>
   filter(CellType == "Sst_25", Cohort != "Meta-analysis") |>
   transmute(cohort = recode(Cohort, "MtSinai"="MSSM 1","MSSM"="MSSM 2",
                             "OFC"="Fröhlich","Bat"="Batiuk","Mclean"="McLean",
                             "Multi"="Multiome"), n) |>
   distinct(cohort, n)
 
-xen_n <- read.csv("/scratch/nendresz/Xenium/xen_Sst_proportions.csv") |>
+xen_n <- read.csv(EXTERNAL[["sample_n_xenium"]]) |>
   filter(subtype == "Sst_25") |> nrow()
 
 sample_n <- bind_rows(sample_n, tibble(cohort="Xenium", n=xen_n))
@@ -183,7 +210,7 @@ build_butterfly <- function() {
 
 build_de_prop_inset <- function() {
   nde <- meta_tbl |> group_by(cell_type) |> summarise(n_de = sum(padj < 0.10, na.rm = TRUE), .groups = "drop")
-  prop <- read_csv("/scratch/nendresz/FINAL_FIGS/Paper/df_mean_subclass_prop.csv", show_col_types = FALSE) |> transmute(cell_type = CellType, prop = mean_prop)
+  prop <- read_csv(EXTERNAL[["subclass_prop"]], show_col_types = FALSE) |> transmute(cell_type = CellType, prop = mean_prop)
   d <- inner_join(nde, prop, by = "cell_type") |> filter(n_de >= 1) |> mutate(class = class_of(cell_type))
   rs <- cor(d$prop, d$n_de, method = "spearman")
   lab <- d |> filter(cell_type %in% c("Astro", "L5 IT", "Vip", "L6b")) |> mutate(lbl = gsub("_", "/", cell_type))

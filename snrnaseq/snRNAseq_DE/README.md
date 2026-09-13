@@ -17,6 +17,10 @@ Both follow the same three steps and differ only in the grouping variable.
 3_meta_analysis.r -> meta_results_{celltype}.csv -> pooled tables
 ```
 
+In `Subclass/` the pooling half of step 3 is a separate file,
+`3a_meta_per_gene.r`, which runs before `3_meta_analysis.r`. It is a
+**reconstruction**, not the original — see step 3 below.
+
 ## 1 — Pseudobulk
 
 `Seurat::AggregateExpression(group.by = c(<celltype>, "Donor"))` on each dataset,
@@ -78,8 +82,13 @@ type.
 Its last line writes `DE_genes_all_cells_scz.csv` directly into
 `transcriptomic/data/figure_inputs/`, which is the live seam into **Figure 2**.
 
-> **The script that writes the subclass-level `meta_results_*.csv` is not in the
-> repo.** `Supertypes/3_meta_analysis.r` explicitly excludes subclasses, so
-> nothing here produces the files `Subclass/3_meta_analysis.r` reads. This is
-> the one chain that cannot be traced end to end — issue 2 in
-> [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
+`Subclass/3a_meta_per_gene.r` runs the same loop for the subclasses and writes
+their `meta_results_{celltype}.csv`. ⚠️ **It is a reconstruction committed on
+2026-09-13, not the script that produced the published numbers** — the original
+was never in the repo and has not been recovered. It is
+`Supertypes/3_meta_analysis.r` with the cell-type selection inverted; the file's
+own header lists the evidence. Re-running it from independently rebuilt
+pseudobulks recovers 12,490 of the 12,492 committed Sst genes (effect sizes
+r = 0.9968, 161 of 165 FDR < 0.05 genes) but is not bit-exact, because exact
+recovery also needs Nicole's per-dataset gene universes. Issues 2 and 19 in
+[`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
