@@ -6,8 +6,8 @@ compositional and differential-expression analyses built on them.
 
 This component is described in the paper as **Supplementary Methods SM1**, and
 it produces **Supplementary Figs. S2 and S3**. It also supplies the data behind
-the Xenium panels of Figures 1, 2 and 3 — but not those figures themselves,
-which are assembled outside this repo (see *What is not here*).
+the Xenium panels of Figures 1, 2 and 3 — but of those, only Figure 2 is
+rendered in this repo (see *What is not here*).
 
 ## What this component produces
 
@@ -117,11 +117,17 @@ depends on them.
 
 ## What is not here
 
-- **Figures 1 and 3 themselves.** Their panels are assembled by a collaborator
-  outside this repo. This component supplies the annotated h5ads and the
-  crumblr tables they draw on. The per-supertype **mean** depth table behind
-  Fig. 3f is likewise not produced here; the committed depth-platform summary
-  carries medians.
+- **Figures 1 and 3 themselves.** Figure 1a and Figure 3 are rendered by
+  [`snrnaseq/Final_figures/`](../snrnaseq/Final_figures/README.md), on the
+  cluster rather than into `manuscript/figures/`; Figure 1b–f is assembled by
+  hand. This component supplies the annotated h5ads and the crumblr tables they
+  draw on. Note that Fig. 3's Xenium panels read a cluster-side copy of those
+  results, not `output/crumblr/` directly — and panels d and e read a Seurat
+  conversion of the Xenium object, `Xenium_SCZ_R.rds`, whose provenance is not
+  recorded anywhere (issue 3 in [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md); it
+  matters because a superseded Xenium object has MGE and CGE transposed). The
+  per-supertype **mean** depth table behind Fig. 3f is likewise not produced
+  here; the committed depth-platform summary carries medians.
 - **The interactive cell browser.** The viewer front end, its Playwright suite
   and the three export steps that feed it (`03`, `06`, `07`) live in the
   upstream `SCZ_Xenium` repo and were removed here on 2026-09-04. They are not

@@ -1,9 +1,13 @@
 # Supplementary figures — submission set
 
-The single place the supplementary figures live. Each generator writes its figure
-**directly into this folder** under its **S-number**, so the whole supplement can
-be handed to a journal from one folder rather than assembled from six module
-directories at deadline.
+Where the supplementary figures land. Each generator **in this repo's
+figure-rendering components** writes its figure directly into this folder under
+its **S-number**, so the supplement can be handed to a journal from one folder
+rather than assembled from six module directories at deadline.
+
+The exception is S1, S4, S5 and S7, which are rendered on the cluster by
+`snrnaseq/Final_figures/` and have to be collected by hand — see **Not in this
+folder** at the foot of this file.
 
 ## Conventions
 
@@ -23,18 +27,20 @@ directories at deadline.
 ## Contents
 
 Numbering follows the manuscript Doc (`1cO5ZSt…`) as of 2026-09-01. **S1, S4, S5
-and S7 are Nicole's** (from her snRNA-seq DE and composition analyses); they are
-not in this repo and are not in this folder yet.
+and S7 are built by `snrnaseq/Final_figures/`** (from the snRNA-seq DE and
+composition analyses). Their code has been in the repo since 2026-09-09, but
+their rendered output is not in this folder — those scripts ran on the Alliance
+cluster and write there. See the note at the foot of this file.
 
 | S# | File | Shows | Built by | Run from |
 |----|------|-------|----------|----------|
-| S1 | — | Marker dot plots, integrated + SEA-AD reference | Nicole | — |
+| S1 | not in this folder | Marker dot plots across the seven cohorts and in the SEA-AD reference, at subclass and Sst-supertype level | `Supplemental/Markerplot.py` | `snrnaseq/Final_figures/` |
 | S2 | `S02_xenium_celltype_annotation` | Agreement with Kwon/Lieber annotations (a); subclass and Sst-supertype marker genes (b, d); panel-vs-transcriptome classification F1 (c, e) | `plot_markers_resolvability_combined.R` | `spatial/` |
 | S3 | `S03_xenium_merfish_concordance` | Xenium vs MERFISH proportions and depth (a–c); per-supertype depth distributions (d, e) | `plot_xenium_merfish_composite.R` | `spatial/` |
-| S4 | — | Supertype-level differential expression | Nicole | — |
-| S5 | — | Non-neuronal compositional changes | Nicole | — |
+| S4 | not in this folder | Supertype-level differential expression | `Supplemental/Supertype_DE.r` | `snrnaseq/Final_figures/` |
+| S5 | not in this folder | Non-neuronal compositional changes | `Supplemental/NonNeuron_supplement.r` | `snrnaseq/Final_figures/` |
 | S6 | `S06_composition_pooling` | Abundance results across pooling strategies and leave-one-dataset-out | `02_plot_pooling_heatmap.R` | repo root |
-| S7 | — | Composition robust to re-annotation excluding DE genes | Nicole | — |
+| S7 | not in this folder | Composition robust to re-annotation excluding Sst DE genes | `Supplemental/Sensitivity_analysis_Barchart.r` | `snrnaseq/Final_figures/` |
 | S8 | `S08_sst_strata` | Sst depletion groups: definition (a), gene-set burden (b), gene-level z (c), NES and exemplar-gene heatmaps (d, e). Built as a main figure (was Fig. 5 until 2026-09-01) so it can be promoted | `fig5/08_figure5.R` | repo root |
 | S9 | `S09_scz_enrichment_seaad125` | SCZ genetic-risk enrichment across the 125 supertypes of the SEA-AD DLPFC taxonomy (single panel; replaced the 501-type combined-taxonomy version 2026-09-02) | `plot_supp_enrichment_seaad125.R` | repo root |
 | S10 | `S10_genetics_ad_robustness` | Genetic-risk and AD comparisons across GWAS version and reference region | `plot_fig4_robustness.R` | repo root |
@@ -62,8 +68,8 @@ analysis moved to the supplement -- its renderer `reserve/sst_strata_supp/figS_s
 is kept and now writes `reserve_strata_controls.*` to `transcriptomic/results/`.
 
 The small figure-input CSVs are committed (force-added past the `spatial/output/`
-ignore rule), so every renderer here runs from a clean clone with no external
-data. The two ~20 MB per-cell tables behind the S3 violins and the retired
+ignore rule), so every renderer *listed in the code block above* runs from a
+clean clone with no external data. The two ~20 MB per-cell tables behind the S3 violins and the retired
 depth-by-diagnosis figure are **not** committed — regenerate them with the
 `build_*` steps below, which need the Xenium h5ads.
 
@@ -107,8 +113,13 @@ Rscript code/analysis/plot_supertype_depth_casecontrol.R
 
 ## Not in this folder
 
-S1, S4, S5 and S7 are Nicole's figures, built from her snRNA-seq DE and
-composition analyses, and live outside this repo.
+S1, S4, S5 and S7 are built by
+[`snrnaseq/Final_figures/`](../../../snrnaseq/Final_figures/README.md) from the
+snRNA-seq DE and composition analyses. Their code is in the repo; their rendered
+files are not, because those renderers ran on the Alliance cluster against the
+full per-cohort objects and wrote to a working directory there, under names that
+do not carry S-numbers. They will not run from a clone. Logged as issue 12 in
+[`../../../KNOWN_ISSUES.md`](../../../KNOWN_ISSUES.md).
 
 S8 is rendered by `transcriptomic/scripts/fig5/08_figure5.R` straight into this
 folder; see `transcriptomic/scripts/fig5/README.md` for the pipeline behind it. To

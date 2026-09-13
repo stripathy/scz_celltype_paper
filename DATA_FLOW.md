@@ -3,16 +3,18 @@
 How the analysis components depend on each other. **Every cross-component edge
 is realized as a git-ignored symlink** (so the wiring is executable, not just
 prose) and listed in the Seams table. The upstream root — the snRNA-seq
-pipeline — is not in the repo yet; its outputs are symlinked into
-`shared/snrnaseq_de/` from their current scattered locations.
+pipeline — was merged into `snrnaseq/` on 2026-09-09; its outputs are still
+symlinked into `shared/snrnaseq_de/` from the locations they were staged to,
+because the pipeline itself ran on the cluster and its outputs were never
+copied down.
 
 For the figure-to-script map, start from the root [`README.md`](README.md).
 
 ## Dependency graph (data flows downward)
 
 ```
-              snrnaseq/   <- upstream pipeline (Endresz et al.); NOT in repo yet
-            (upstream root)
+              snrnaseq/   <- upstream root (Endresz et al.); in repo since 2026-09-09
+            Label_transfer/ -> Compositional_analysis/ + snRNAseq_DE/
                  |  exports -> shared/snrnaseq_de/
                  |    DE_genes_all_cells_scz.csv         (meta DE)
                  |    meta_results_cohorts_subclass.csv  (per-cohort DE)
@@ -32,8 +34,12 @@ transcriptomic/  spatial/         genetics/            crossdisorder/
                               supplementary/ S2, S3 (spatial), S6 (snrnaseq),
                                              S8 (transcriptomic), S9, S10 (genetics)
 
-Figures 1 and 3 are assembled outside this repo; spatial/ supplies the annotated
-Xenium objects and crumblr tables they draw on.
+snrnaseq/Final_figures/ also renders Fig 1a, Fig 3 and S1, S4, S5, S7 -- but on
+the cluster, into its own output directory, NOT into manuscript/figures/. Those
+figures are not in this repo. Fig 3 panels c-f additionally read the Xenium
+results, but via a cluster-side copy rather than through spatial/output/crumblr/
+(see KNOWN_ISSUES.md, issue 3). Figures 1b-f are assembled by hand from the
+annotated Xenium objects spatial/ produces.
 
 reserve/ consumes genetics/ and transcriptomic/ outputs but feeds nothing.
 
@@ -45,7 +51,7 @@ External hub (~/Github/shared_data/, per ~/Github/DATA_LAYOUT.md):
 
 | component | key inputs (<- from) | produces -> (consumed by) |
 |---|---|---|
-| `snrnaseq/` *(TBD)* | raw 7-cohort snRNA-seq | DE betas, composition betas -> everyone downstream |
+| `snrnaseq/` | raw 7-cohort snRNA-seq, SEA-AD neurotypical reference | DE betas, composition betas -> everyone downstream; Fig 1a, Fig 3, S1, S4, S5, S7 (rendered on the cluster) |
 | `genetics/` | composition betas (<- snrnaseq), AD slopes (<- crossdisorder), GWAS set + patch-seq (owns), SEA-AD DLPFC ref (<- shared_data) | Fig 4, S9, S10, T6; the vulnerable-vs-not marker table -> reserve/ |
 | `spatial/` | Xenium raw, SEA-AD/MERFISH ref (<- shared_data) | Xenium DE + crumblr composition -> transcriptomic, Figs 1-3; S2, S3; SM1 |
 | `transcriptomic/` | DE betas (<- snrnaseq), Xenium DE + depth (<- spatial) | Fig 2, S8 |
@@ -115,10 +121,20 @@ Figures are written in place by the renderers at each step, into
 
 ## Current state
 
-Code-complete. **Data is symlinked to the original `~/Github/` repos** (and
-`~/Downloads/`) — the accepted setup: the monorepo holds the code, the source
-repos hold the data, exactly as data was always external + git-ignored. (Note:
-the symlinks resolve on this machine; sharing the repo elsewhere would need the
-data transferred separately, same as the source repos always did.) The **one
-seam to repoint when `snrnaseq/` is added** is `shared/snrnaseq_de/` → her
-pipeline's outputs.
+Code-complete, with the snRNA-seq pipeline merged in on 2026-09-09.
+
+**Data is symlinked to the original `~/Github/` repos** (and `~/Downloads/`) —
+the accepted setup: the monorepo holds the code, the source repos hold the data,
+exactly as data was always external + git-ignored. (Note: the symlinks resolve
+on this machine; sharing the repo elsewhere would need the data transferred
+separately, same as the source repos always did.)
+
+`shared/snrnaseq_de/` still points at the staged copies of the snRNA-seq
+outputs rather than at `snrnaseq/` itself, because that pipeline ran on the
+Alliance cluster and its outputs were never copied down — see
+[`shared/snrnaseq_de/README.md`](shared/snrnaseq_de/README.md). The code path
+is now traceable in-repo even where the data path is not: each export names the
+script that produced it.
+
+Open items from the 2026-09-13 audit — including the one chain that cannot be
+traced end to end — are in [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md).
