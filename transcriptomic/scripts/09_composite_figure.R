@@ -76,8 +76,8 @@ INH <- c("Lamp5","Lamp5_Lhx6","Pax6","Pvalb","Sncg","Sst","Sst Chodl","Vip","Cha
 GLI <- c("Astro","Oligo","OPC","Micro-PVM","Endo","VLMC")
 class_of <- function(ct) dplyr::case_when(
   ct %in% EXC ~ "Excitatory", ct %in% INH ~ "Inhibitory",
-  ct %in% GLI ~ "Glia",       TRUE        ~ NA_character_)
-CLASS_COL <- c(Excitatory = "#117733", Inhibitory = "#882255", Glia = "#DDCC77")
+  ct %in% GLI ~ "Non-neuronal",       TRUE        ~ NA_character_)
+CLASS_COL <- c(Excitatory = "#117733", Inhibitory = "#882255", `Non-neuronal` = "#DDCC77")  # Endo and VLMC are in this class, so not "Glia"
 
 BASE <- 7   # base font size (Nature/NN: all figure text 5–7 pt). Most text is
             # sized relative to this; geom_text multipliers tuned so nothing
