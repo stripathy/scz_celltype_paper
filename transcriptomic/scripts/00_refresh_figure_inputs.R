@@ -53,7 +53,7 @@ SPEC <- list(
   list(file = "crumblr_input_subclass_corr.csv",
        source = file.path(XEN, "crumblr/crumblr_input_subclass_corr.csv"),
        how = "copy",
-       what = "Xenium per-donor subclass composition (panel i inset)"),
+       what = "Xenium per-donor subclass composition (not read by Figure 2 since 2026-09-14; kept for the standalone scripts and KNOWN_ISSUES #18)"),
   list(file = "pseudobulk_subclass.csv",
        source = file.path(XEN, "de/pseudobulk_subclass.csv"),
        how = "copy",

@@ -48,7 +48,6 @@ source("scripts/_figure_inputs.R")     # committed snapshots + staleness guard
 INPUT_META    <- fig_input("DE_genes_all_cells_scz.csv")                   # meta-analytic snRNA-seq DE (full)
 INPUT_COH     <- fig_input("meta_results_cohorts_subclass_forest.csv")     # per-cohort DE, SST+PVALB rows only
 INPUT_XENIUM  <- fig_input("de_results_subclass.csv")                      # Xenium spatial DE
-INPUT_CRUMBLR <- fig_input("crumblr_input_subclass_corr.csv")              # Xenium per-donor composition (panel i inset)
 
 # These three used to be read from the analysis working directory on the cluster,
 # which was the one reason Figure 2 did not render from a clean clone. They are

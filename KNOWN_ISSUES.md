@@ -176,8 +176,17 @@ Figure 2 therefore does **not** render from a clean clone, contrary to
 | Xenium Sst_25 donor n | `/scratch/nendresz/Xenium/xen_Sst_proportions.csv` |
 | mean subclass proportion (panel i inset) | `/scratch/nendresz/FINAL_FIGS/Paper/df_mean_subclass_prop.csv` |
 
-**Needs Nicole to commit those three.** Until then the script stops immediately
-with a message naming all three rather than failing part-way through the render.
+**Resolved 2026-09-14** (commit `8364cc7`). All three are now snapshots under
+`transcriptomic/data/figure_inputs/` with MANIFEST entries: the first two are
+copied from the tables Nicole committed under `snrnaseq/Final_figures/Data/`;
+the third was **replaced, not copied** — the inset now uses the mean per-donor
+share of nuclei per subclass from the Fig. 3a counts (469 donors) rather than
+Xenium cell proportions, which disagreed with the nuclei by up to 25-fold for
+Lamp5_Lhx6 and L5 ET (see the inset comment in `09_composite_figure.R`). The
+two snapshots Nicole rewrote on 9 Sep are re-sourced from her in-repo files
+(`snrnaseq/snRNAseq_DE/Files/`, the per-dataset table via git-lfs), so the guard
+runs with nothing bypassed and a refresh can no longer revert her numbers.
+Figure 2 renders from a clean clone again, into `manuscript/figures/main/`.
 
 ### 16. Supplementary S8 reads the git-ignored seam, not the committed snapshot
 
@@ -227,6 +236,11 @@ that coefficient name not exist, and the script fails. Worth deriving the
 coefficient name from the factor levels instead.
 
 ### 18. Figure 2's Xenium composition snapshot predates the object the paper uses, and drops Br2039
+
+> **2026-09-14:** Figure 2 no longer reads this snapshot — the panel-i inset moved
+> to snRNA-seq nuclei proportions (see #15). The discrepancy below still stands
+> for the snapshot itself and for anything else that uses it, but it no longer
+> affects any number in Figure 2.
 
 `transcriptomic/data/figure_inputs/crumblr_input_subclass_corr.csv` (panel i
 inset) holds **23 donors / 737,750 cells**. Every other Xenium-derived file in
@@ -323,6 +337,18 @@ Batch these; nothing depends on them.
 | 14 | One tracked symlink dangles in any fresh clone: `reserve/histology/coordinates` → `/Users/shreejoy/Github/sgACC_cell_depth_analysis/coordinates`. | `reserve/histology/` |
 
 ---
+
+## Fixed on 2026-09-14
+
+- **Figure 2 renders from a clean clone again, with the staleness guard on**
+  (#15). The three cluster-only inputs are committed snapshots; the two
+  snapshots Nicole rewrote on 9 Sep are re-sourced from her in-repo pipeline
+  files; the panel-i inset abundance axis is snRNA-seq nuclei, not Xenium cells;
+  Lamp5_Lhx6 is classed Inhibitory. Canonical figure re-rendered; the duplicate
+  under `results/Figures/` removed. Numbers that moved with her rerun: 343 (Sst)
+  and 404 (Pvalb) DE genes at FDR < 0.10; panel j ρ = 0.74, 74% concordant.
+- **Figure 2 panels d, h** redrawn for G#123 (counts worded, outlines named, 5 µm
+  label legible and PDF-safe) — commits `da96f6d`, `479815a`.
 
 ## Fixed on 2026-09-13
 
