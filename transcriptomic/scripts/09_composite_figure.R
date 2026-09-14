@@ -14,17 +14,20 @@
 # Xenium. Boxplots: per-donor CP1K (counts/1,000 tx) + edgeR p. Exemplars: the
 # representative cell at the pooled group-median grain density (scripts/10).
 #
-# DATA PROVENANCE (see notes/figures_crossplatform_validation.md for detail):
-#   data/DE_genes_all_cells_scz.csv          meta-analytic snRNA-seq DE
-#   data/meta_results_cohorts_subclass.csv   per-cohort snRNA-seq DE (7 cohorts)
-#   ../spatial/output/de/de_results_subclass.csv   Xenium spatial DE (symlink to
-#      ~/Github/SCZ_Xenium/output/de/; set INPUT_XENIUM if it moves)
-#   results/tables/marker_norm_expr.csv      boxplot input (c,g) — scripts/12
-#   results/tables/exemplar_*.csv            exemplar inputs (d,h) — produced by
-#      scripts/10_xenium_exemplar_cells.py (run that FIRST; it reads the
-#      Xenium h5ad + boundary + transcript exports).
+# INPUTS — every one a committed snapshot under data/figure_inputs/ (MANIFEST.tsv
+# records the source and its checksum; scripts/00_refresh_figure_inputs.R rebuilds
+# the set, and fig_input() below refuses to draw from a snapshot whose source has
+# moved on). Sources are the snRNA-seq pipeline's own outputs in ../snrnaseq/ and
+# the Xenium repo's DE/pseudobulk tables:
+#   DE_genes_all_cells_scz.csv                meta-analytic snRNA-seq DE (a, e, i, j)
+#   meta_results_cohorts_subclass_forest.csv  per-dataset DE, SST+PVALB rows (b, f)
+#   de_results_subclass.csv                   Xenium DE (b, f, j)
+#   plotdata.csv, xen_Sst_proportions.csv     per-dataset / Xenium donor n (b, f labels)
+#   snrnaseq_subclass_mean_prop.csv           share of nuclei per subclass (i inset)
+#   results/tables/marker_norm_expr.csv       boxplot input (c, g) — scripts/12
+#   results/tables/exemplar_*.csv             exemplar cells (d, h) — scripts/10
 #
-# Output: results/09_composite.{png,pdf}
+# Output: ../manuscript/figures/main/Fig2_cross_platform_de.{png,pdf}, in place.
 # ============================================================================
 # Run from anywhere: resolve the component root from this script's own location
 # (same convention as genetics/scripts/figures/*.R). Falls back to the cwd when
