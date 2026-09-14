@@ -22,12 +22,28 @@ XEN <- path.expand("~/Github/SCZ_Xenium/output")
 
 # file in figure_inputs        canonical source                                        how
 SPEC <- list(
+  # The snRNA-seq pipeline has lived in ../snrnaseq/ since 2026-09-09, so its
+  # outputs are the sources now; the shared/snrnaseq_de/ copies predate the
+  # 9 Sep rerun and must not be used, or a refresh would silently revert the
+  # snapshots to the old numbers.
   list(file = "DE_genes_all_cells_scz.csv",
-       source = "../shared/snrnaseq_de/DE_genes_all_cells_scz.csv",
+       source = "../snrnaseq/snRNAseq_DE/Files/DE_genes_all_cells_scz.csv",
        how = "copy",
-       what = "meta-analytic snRNA-seq DE (7 cohorts), full gene x subclass table"),
+       what = "meta-analytic snRNA-seq DE (7 datasets), full gene x subclass table"),
+  list(file = "plotdata.csv",
+       source = "../snrnaseq/Final_figures/Data/plotdata.csv",
+       how = "copy",
+       what = "composition meta-analysis plot table; only the per-dataset donor n for Sst_25 is used (forest labels, panels b, f)"),
+  list(file = "xen_Sst_proportions.csv",
+       source = "../snrnaseq/Final_figures/Data/xen_Sst_proportions.csv",
+       how = "copy",
+       what = "Xenium per-donor Sst supertype proportions; only the Sst_25 donor count is used (forest labels)"),
+  list(file = "snrnaseq_subclass_mean_prop.csv",
+       source = "../snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv",
+       how = "subclass_prop",
+       what = "mean per-donor share of nuclei per SEA-AD subclass across the 7 datasets, 469 donors (panel i inset)"),
   list(file = "meta_results_cohorts_subclass_forest.csv",
-       source = "../shared/snrnaseq_de/meta_results_cohorts_subclass.csv",
+       source = "../snrnaseq/snRNAseq_DE/Files/DE_genes_all_cohorts_subclass.csv",   # git-lfs; 2.2M rows
        how = "subset_forest",
        what = "per-cohort snRNA-seq DE, SST + PVALB rows only (forest panels b, f)"),
   list(file = "de_results_subclass.csv",
@@ -64,6 +80,25 @@ for (s in SPEC) {
     d <- d[d[[gcol]] %in% FOREST_GENES, ]
     write_csv(d, dst)
     note <- sprintf("subset to %s (%d rows)", paste(FOREST_GENES, collapse = "+"), nrow(d))
+  } else if (s$how == "subclass_prop") {
+    # Per-donor supertype nucleus counts -> per-donor share of nuclei per subclass
+    # -> mean over donors. Supertype collapses to subclass by the pipeline's own
+    # rule (snrnaseq/snRNAseq_DE/*/1_Pseudobulk.r: gsub("_[0-9].*$", "", id)),
+    # which also folds the "-SEAAD" extended supertypes; then the DE table's
+    # spellings, so the inset joins on cell_type without a lookup.
+    d <- read_csv(src, show_col_types = FALSE)
+    cnt <- d[, !(names(d) %in% c("Cohort", "Donor", "Age", "Sex", "Diagnosis", "PMI")) &
+                !grepl("^\\.\\.\\.", names(d))]
+    sub <- gsub("_[0-9].*$", "", names(cnt))
+    sub <- dplyr::recode(sub, "L2/3 IT" = "L2_3 IT", "L5/6 NP" = "L5_6 NP", "Lamp5 Lhx6" = "Lamp5_Lhx6")
+    m <- as.matrix(cnt); m[is.na(m)] <- 0
+    by_sub <- sapply(split(seq_len(ncol(m)), sub), function(j) rowSums(m[, j, drop = FALSE]))
+    tot <- rowSums(by_sub); keep <- tot > 0
+    prop <- colMeans(by_sub[keep, , drop = FALSE] / tot[keep])
+    out <- tibble::tibble(CellType = names(prop), mean_prop = unname(prop), n_donors = sum(keep)) |>
+      arrange(desc(mean_prop))
+    write_csv(out, dst)
+    note <- sprintf("%d subclasses, mean over %d donors", nrow(out), sum(keep))
   } else {
     file.copy(src, dst, overwrite = TRUE)
     note <- sprintf("%.1f MB", file.size(dst) / 1e6)

@@ -50,23 +50,17 @@ INPUT_COH     <- fig_input("meta_results_cohorts_subclass_forest.csv")     # per
 INPUT_XENIUM  <- fig_input("de_results_subclass.csv")                      # Xenium spatial DE
 INPUT_CRUMBLR <- fig_input("crumblr_input_subclass_corr.csv")              # Xenium per-donor composition (panel i inset)
 
-# Three inputs are NOT committed: they are still read from the analysis working
-# directory on the cluster, so Figure 2 does not render from a clean clone the
-# way the other figures do. Declared here so a missing one is reported before
-# anything is drawn, naming all of them at once.
+# These three used to be read from the analysis working directory on the cluster,
+# which was the one reason Figure 2 did not render from a clean clone. They are
+# now snapshots under data/figure_inputs/ like everything else (sources: the two
+# tables Nicole committed under snrnaseq/Final_figures/Data/ on 9 Sep, and the
+# per-donor nucleus counts behind Fig. 3a). The names are kept so the read sites
+# below are unchanged; fig_input() stops with a clear message if one is missing.
 EXTERNAL <- c(
-  sample_n_cohorts = "/scratch/nendresz/P1_Compositional_analysis/plotdata.csv",   # per-cohort donor n (forest labels)
-  sample_n_xenium  = "/scratch/nendresz/Xenium/xen_Sst_proportions.csv",           # Xenium Sst_25 donor n
-  subclass_prop    = "/scratch/nendresz/FINAL_FIGS/Paper/df_mean_subclass_prop.csv" # mean subclass proportion (panel i inset)
+  sample_n_cohorts = fig_input("plotdata.csv"),                    # per-dataset donor n (forest labels)
+  sample_n_xenium  = fig_input("xen_Sst_proportions.csv"),         # Xenium Sst_25 donor n
+  subclass_prop    = fig_input("snrnaseq_subclass_mean_prop.csv")  # mean share of nuclei per subclass (panel i inset)
 )
-.missing <- names(EXTERNAL)[!file.exists(EXTERNAL) | file.access(EXTERNAL, 4) != 0]
-if (length(.missing)) {
-  stop("Figure 2 needs ", length(.missing), " input(s) that are not in this repo ",
-       "and not readable here:\n",
-       paste0("  ", .missing, ": ", EXTERNAL[.missing], collapse = "\n"),
-       "\nCommit them under data/figure_inputs/ (and add them to MANIFEST.tsv) ",
-       "to make Figure 2 reproducible from a clone.", call. = FALSE)
-}
 
 FIG_W <- 7.1    # max total width (inches)
 
@@ -76,7 +70,7 @@ DOWN_DARK <- "#0072B2"; DOWN_LIGHT <- "#9FCAE6"
 COL_NS    <- "grey75"
 COL_POOL  <- "black";   COL_XEN <- "#1b9e77"; COL_COHORT <- "grey35"
 EXC <- c("L2_3 IT","L4 IT","L5 IT","L5 ET","L5_6 NP","L6 CT","L6 IT","L6 IT Car3","L6b")
-INH <- c("Lamp5","Pax6","Pvalb","Sncg","Sst","Sst Chodl","Vip","Chandelier")
+INH <- c("Lamp5","Lamp5_Lhx6","Pax6","Pvalb","Sncg","Sst","Sst Chodl","Vip","Chandelier")
 GLI <- c("Astro","Oligo","OPC","Micro-PVM","Endo","VLMC")
 class_of <- function(ct) dplyr::case_when(
   ct %in% EXC ~ "Excitatory", ct %in% INH ~ "Inhibitory",
@@ -202,8 +196,14 @@ build_butterfly <- function() {
 
 # ----------------------------------------------------------------------------
 # Panel I inset — # meta DE genes (FDR<0.10) vs cell-type proportion (subclass).
-# Proportion = Xenium mean per-donor (proxy for the snRNA-seq proportion); the
-# DE-gene count scales with abundance (largely a power effect). Minimal styling:
+# Proportion = mean per-donor share of nuclei per subclass across the seven
+# snRNA-seq datasets (469 donors) -- the same nuclei the DE was run on, so the
+# panel reads as what it is: DE-gene count scaling with the number of nuclei
+# tested, largely a power effect. Until 2026-09-14 the axis used Xenium cell
+# proportions as a proxy; those disagree with the nuclei by up to 25-fold for
+# subclasses the 300-gene panel resolves poorly (Lamp5_Lhx6, L5 ET), which put
+# both far off the trend for reasons that had nothing to do with DE power.
+# Minimal styling:
 # no point labels, two log10 % stops, "DE genes (#)" / "Cell proportion (%)".
 # Standalone version with cell-type labels: scripts/16_de_vs_proportion.R.
 # ----------------------------------------------------------------------------
@@ -539,7 +539,9 @@ full <- plot_grid(row1, row2, row3, ncol = 1, rel_heights = c(2, 2, 2.625))
 
 FIG_H <- 6.625 # 7.1 x 6.625 in. Rows 1-2 (SST a-d, PVALB e-h) = 2.00 in each;
                # butterfly + scatter (i,j) = 2.625 in (rel_heights are inches).
-ggsave("results/Figures/09_composite.png", full, width = FIG_W, height = FIG_H,
-       dpi = 300, bg = "white")
-ggsave("results/Figures/09_composite.pdf", full, width = FIG_W, height = FIG_H, bg = "white")
-cat(sprintf("Saved results/09_composite.{png,pdf}  (%.1f x %.1f in)\n", FIG_W, FIG_H))
+# Written in place into the submission folder, like every other renderer in the
+# repo (manuscript/figures/main/README.md): one original, no copy step to drift.
+FIG_OUT <- "../manuscript/figures/main/Fig2_cross_platform_de"
+ggsave(paste0(FIG_OUT, ".png"), full, width = FIG_W, height = FIG_H, dpi = 400, bg = "white")
+ggsave(paste0(FIG_OUT, ".pdf"), full, width = FIG_W, height = FIG_H, bg = "white")
+cat(sprintf("Saved %s.{png,pdf}  (%.1f x %.1f in)\n", FIG_OUT, FIG_W, FIG_H))

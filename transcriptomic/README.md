@@ -20,7 +20,7 @@ Ten panels, all assembled by one script.
 | c, g | Per-donor CP1K expression, Control vs SCZ (12 vs 12) | `12_marker_norm_expr.R` |
 | d, h | Representative Xenium cells at the pooled group-median transcript density | `10_xenium_exemplar_cells.py` |
 | i | Up/down DE-gene counts per subclass, FDR < 0.10 with the FDR < 0.05 subset | meta DE |
-| i inset | DE-gene count vs mean per-donor Xenium proportion | Xenium crumblr input |
+| i inset | DE-gene count vs mean per-donor share of nuclei per subclass, seven snRNA-seq datasets | `snrnaseq_subclass_mean_prop.csv`, built from the Fig. 3a per-donor counts |
 | j | snRNA-seq meta vs Xenium log₂FC, the pairs at meta FDR < 0.10 | meta DE ∩ Xenium DE |
 
 ```bash
