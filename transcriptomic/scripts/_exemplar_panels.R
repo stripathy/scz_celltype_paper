@@ -83,9 +83,12 @@ build_exemplar <- function(gene, dx, lim, tab, base,
     theme_void(base_size = base) +
     theme(plot.margin = margin(1, 2, 1, 2))
 
+  # plotmath "mu" rather than a Unicode micro sign: the composite's .pdf is written
+  # by the base pdf() device, which cannot encode U+03BC/U+00B5 and drops the glyph;
+  # plotmath draws mu through the symbol font on every device.
   if (scalebar_lab)
     p <- p + annotate("text", x = lim * 0.96 - SB_UM / 2, y = -lim * 0.94 + 0.06 * lim,
-                      label = "5 \u03bcm", size = sz_bar, vjust = 0)
+                      label = "5~mu*m", parse = TRUE, size = sz_bar, vjust = 0)
 
   # Name the outlines on one cell. "cell" leads from the rightmost boundary
   # vertex out to the right margin at mid-height; "nucleus" leads from the lowest
