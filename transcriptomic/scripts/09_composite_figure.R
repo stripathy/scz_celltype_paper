@@ -390,15 +390,24 @@ p_lab <- if (pval < 0.001) "p<0.001" else sprintf("p==%.3f",pval)
 pc <- round(100*mean(pr$concordant))
   lab_pairs <- tibble::tribble(~genes,~cell_type,
     "SST","Sst","BDNF","L2_3 IT","FKBP5","OPC","CX3CR1","Micro-PVM",
-    "SMAD1","Pvalb","SERPING1","Astro","FGFR3","Astro",
+    # FGFR3 (Astro) dropped 2026-09-14: not one of the genes the Results text
+    # names, and its slot left of the cloud is where SST (Sst) belongs -- with
+    # four labels competing there, repel was giving SST a long leader.
+    "SMAD1","Pvalb","SERPING1","Astro",
     "VGF","Chandelier","CALB1","L6 IT","ATP2B4","Sst")
   lab_keys <- paste(lab_pairs$genes, lab_pairs$cell_type)
   lab <- pr |> inner_join(lab_pairs, by = c("genes","cell_type"))
+  STAT_BAND <- -0.62  # labels stay ABOVE this fraction of lim; the stats own the strip below
   lim <- max(as.numeric(quantile(abs(c(pr$meta_est, pr$xen_logFC)), 0.97)),
              max(abs(c(lab$meta_est, lab$xen_logFC)))) * 1.08
   # Labels via ggrepel auto-placement (robust to panel resizing); seed fixed for
-  # determinism. Constrained to the panel; r / % concordant sit in the sparse
-  # bottom-right corner.
+  # determinism. rho / % concordant sit in the bottom-right corner: the points run
+  # up the diagonal, so that corner is free of DATA. It is not free of LABELS --
+  # repel cannot see annotate() text, and once FGFR3 was dropped it ran BDNF
+  # straight through "74% concordant"; nudging BDNF only handed the collision to
+  # VGF. STAT_BAND fixes it for every label rather than for whichever one collided
+  # last: repel is given a ylim that keeps labels out of the bottom strip.
+
   pr <- pr |> mutate(
     tag = sprintf("%s (%s)", genes, gsub("_", "/", cell_type)),
     rep_label = ifelse(paste(genes, cell_type) %in% lab_keys, tag, ""),
@@ -420,7 +429,7 @@ pc <- round(100*mean(pr$concordant))
                     segment.colour = "grey55", box.padding = 0.5,
                     point.padding = 0.3, force = 5, force_pull = 0.12,
                     nudge_x = pr$nudge_x, nudge_y = pr$nudge_y,
-                    xlim = c(-lim, lim), ylim = c(-lim, lim),
+                    xlim = c(-lim, lim), ylim = c(lim * STAT_BAND, lim),
                     max.overlaps = Inf, seed = 7, colour = "grey10") +
 annotate("text", x = lim*0.97, y = -lim*0.76,
          label = paste0("rho=='", sprintf("%.2f", rho), "'*','~~", p_lab),
@@ -442,9 +451,16 @@ annotate("text", x = lim*0.97, y = -lim*0.93,
     ) +
 
     theme(
-      legend.position = c(0.98,0.25),
-      legend.justification = c(1,0),
-      legend.background = element_rect(fill="white",colour=NA),
+      # Top-left: the points run up the diagonal, so the two off-diagonal corners
+      # are the free ones -- legend top-left, rho / concordance bottom-right.
+      # Keeping the legend on the right left repel only the far right for BDNF,
+      # and it ran the label into the legend text.
+      legend.position = c(0.02, 0.98),
+      legend.justification = c(0, 1),
+      # Transparent: in the top-left corner there are no points to mask, and the
+      # white rectangle is wider than the keys -- it was painting over the "S"
+      # of the SERPING1 label sitting beside it.
+      legend.background = element_blank(),
       axis.text = element_text(size=AXIS_TEXT),
       axis.title = element_text(size=AXIS_TITLE),
       aspect.ratio = 1,
