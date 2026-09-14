@@ -326,7 +326,8 @@ build_forest <- function(gene_sym,cell,ttl,show_xlab=FALSE){
                                                   y=1,role="xenium",colour=COL_XEN)} else NULL
 
   pd <- bind_rows(cohort_df,pool,xen_row)
-  data_lo <- min(pd$lo,na.rm=TRUE); data_hi <- max(pd$hi,na.rm=TRUE); rng <- data_hi-data_lo; off <- rng*.03
+  data_lo <- min(pd$lo,na.rm=TRUE); data_hi <- max(pd$hi,na.rm=TRUE); rng <- data_hi-data_lo
+  off <- rng*.06   # gap between a CI end and its asterisk/dot; 3% let them touch the whisker
   pd <- pd |> mutate(ast_x=ifelse(est>=0,hi+off,lo-off),ast_h=ifelse(est>=0,0,1),
                      has_m=sig!=""|dot|(role=="pool"&sig==""))
   rt <- any(pd$has_m&pd$ast_h==0); lf <- any(pd$has_m&pd$ast_h==1)
