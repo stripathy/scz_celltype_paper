@@ -64,7 +64,16 @@ EXTERNAL <- c(
   subclass_prop    = fig_input("snrnaseq_subclass_mean_prop.csv")  # mean share of nuclei per subclass (panel i inset)
 )
 
-FIG_W <- 7.1    # max total width (inches)
+# Drawn on an 8.0 in canvas rather than the 7.1 in column, with every absolute
+# size multiplied by FIG_SCALE -- the convention Figure 4 uses (see
+# genetics/scripts/figures/fig4_style.R). Scaling the output back to a 7.1 in
+# column reproduces this layout exactly, so the wider canvas costs nothing and
+# buys ~13% more pixels in the PNG and more room for labels during layout.
+# S() marks a quantity in absolute units (pt, mm) that must scale with it; data
+# and npc units (bar widths, ggrepel "lines" padding, draw_plot insets) must not.
+FIG_SCALE <- 8.0 / 7.1
+S <- function(x) x * FIG_SCALE
+FIG_W <- 8.0    # canvas width (inches); 7.1 in column x FIG_SCALE
 
 # ---- palette / groupings ---------------------------------------------------
 UP_DARK   <- "#D55E00"; UP_LIGHT   <- "#F2B58C"
@@ -79,14 +88,15 @@ class_of <- function(ct) dplyr::case_when(
   ct %in% GLI ~ "Non-neuronal",       TRUE        ~ NA_character_)
 CLASS_COL <- c(Excitatory = "#117733", Inhibitory = "#882255", `Non-neuronal` = "#DDCC77")  # Endo and VLMC are in this class, so not "Glia"
 
-BASE <- 7   # base font size (Nature/NN: all figure text 5–7 pt). Most text is
-            # sized relative to this; geom_text multipliers tuned so nothing
-            # exceeds 7 pt or drops below 5 pt at the 7.1 × 6.625 in print size.
+# Was 7 pt. Raised to 8 pt at print scale for legibility, following Figure 4
+# (fig4_style.R), whose base is also 8. Text sized relative to this; the
+# geom_text multipliers are unchanged, so every label moves up proportionally.
+BASE <- S(8)
 # Shared axis-text sizes — applied uniformly across panels for consistency
 # (hierarchy: subtitle BASE=7 > axis title 6.5 > tick labels 6). The inset keeps
 # its own smaller sizes by design.
-AXIS_TITLE <- BASE - 0.5   # 6.5 pt — axis titles (the size used in the forest, reads well)
-AXIS_TEXT  <- BASE - 1     # 6.0 pt — axis tick labels
+AXIS_TITLE <- BASE - S(0.5)   # 7.5 pt at print scale — axis titles
+AXIS_TEXT  <- BASE - S(1.0)   # 7.0 pt at print scale — axis tick labels
 
 # significance helpers (shared)
 ast    <- function(fdr) dplyr::case_when(
@@ -169,7 +179,7 @@ build_butterfly <- function() {
     geom_col(aes(y = cell_type, x = -down10, fill = "Down, FDR < 0.10"), width = 0.78) +
     geom_col(aes(y = cell_type, x =  up05,   fill = "Up, FDR < 0.05"),   width = 0.78) +
     geom_col(aes(y = cell_type, x = -down05, fill = "Down, FDR < 0.05"), width = 0.78) +
-    geom_vline(xintercept = 0, linewidth = 0.3, colour = "black") +
+    geom_vline(xintercept = 0, linewidth = S(0.3), colour = "black") +
     geom_text(aes(y = cell_type, x =  up10,   label = up10),
               hjust = -0.15, size = BASE*0.26) +
     geom_text(aes(y = cell_type, x = -down10, label = down10),
@@ -190,10 +200,10 @@ build_butterfly <- function() {
           axis.line.y  = element_blank(),
           legend.position = c(0.23, 0.16),
           legend.justification = c(0.5, 0.5),
-          legend.text  = element_text(size = BASE - 1.5),
-          legend.key.size = unit(9, "pt"),
+          legend.text  = element_text(size = BASE - S(1.5)),
+          legend.key.size = unit(S(9), "pt"),
           legend.spacing.y = unit(0, "pt"),
-          plot.margin = margin(2, 4, 2, 6))
+          plot.margin = margin(S(2), S(4), S(2), S(6)))
 }
 
 # ----------------------------------------------------------------------------
@@ -218,10 +228,10 @@ build_de_prop_inset <- function() {
   lab <- d |> filter(cell_type %in% c("Astro", "L5 IT", "Vip", "L6b")) |> mutate(lbl = gsub("_", "/", cell_type))
 
   ggplot(d, aes(prop, n_de)) +
-    geom_smooth(method = "lm", se = FALSE, colour = scales::alpha("grey25", 0.3), linewidth = 0.5, formula = y ~ x) +
-    geom_point(aes(colour = class), size = 0.7, alpha = 0.9) +
+    geom_smooth(method = "lm", se = FALSE, colour = scales::alpha("grey25", 0.3), linewidth = S(0.5), formula = y ~ x) +
+    geom_point(aes(colour = class), size = S(0.7), alpha = 0.9) +
     geom_text_repel(data = lab, aes(label = lbl), size = BASE * 0.28,
-                    min.segment.length = 0, segment.size = 0.2, segment.colour = "grey55",
+                    min.segment.length = 0, segment.size = S(0.2), segment.colour = "grey55",
                     box.padding = 0.28, point.padding = 0.2, force = 2,
                     max.overlaps = Inf, seed = 3, colour = "grey15") +
     annotate("text", x = max(d$prop), y = 0, label = sprintf("rho == %.2f", rs),
@@ -230,14 +240,14 @@ build_de_prop_inset <- function() {
     scale_x_log10(breaks = c(0.01, 0.1), labels = c("1%", "10%")) +
     scale_y_continuous(breaks = c(0, 400, 800), expand = expansion(mult = c(0.05, 0.16))) +
     labs(x = "Cell proportion (%)", y = "DE genes (#)") +
-    theme_cowplot(font_size = BASE - 1) +
+    theme_cowplot(font_size = BASE - S(1)) +
     theme(legend.position = "none",
-          axis.title.x = element_text(size = BASE - 1.5, margin = margin(t = 1)),
-          axis.title.y = element_text(size = BASE - 1.5, margin = margin(r = 1)),
-          axis.text = element_text(size = BASE - 2.5),
-          axis.line = element_line(linewidth = 0.25), axis.ticks = element_line(linewidth = 0.25),
-          plot.background = element_rect(fill = "white", colour = "grey70", linewidth = 0.3),
-          plot.margin = margin(2, 3, 1, 1))
+          axis.title.x = element_text(size = BASE - S(1.5), margin = margin(t = 1)),
+          axis.title.y = element_text(size = BASE - S(1.5), margin = margin(r = 1)),
+          axis.text = element_text(size = BASE - S(2.5)),
+          axis.line = element_line(linewidth = S(0.25)), axis.ticks = element_line(linewidth = S(0.25)),
+          plot.background = element_rect(fill = "white", colour = "grey70", linewidth = S(0.3)),
+          plot.margin = margin(S(2), S(3), S(1), S(1)))
 }
 
 # ============================================================================
@@ -271,18 +281,18 @@ build_volcano <- function(cell, highlight) {
                  "Down, FDR < 0.05" = DOWN_DARK, "Down, FDR < 0.10" = DOWN_LIGHT,
                  "NS" = COL_NS)
   ggplot(d, aes(estimate, nlp)) +
-    geom_vline(xintercept = 0, colour = "grey70", linewidth = 0.25) +
+    geom_vline(xintercept = 0, colour = "grey70", linewidth = S(0.25)) +
     {if (!is.na(p_thr)) geom_hline(yintercept = -log10(p_thr), colour = "grey70",
-               linetype = "dashed", linewidth = 0.25)} +
+               linetype = "dashed", linewidth = S(0.25))} +
     geom_point(aes(colour = tier), data = ~filter(.x, tier == "NS"),
-               size = 0.35, alpha = 0.3) +
+               size = S(0.35), alpha = 0.3) +
     geom_point(aes(colour = tier), data = ~filter(.x, tier != "NS"),
-               size = 0.5, alpha = 0.85) +
+               size = S(0.5), alpha = 0.85) +
     geom_point(data = lab, shape = 21, fill = NA, colour = "black",
-               size = 1.4, stroke = 0.4) +
+               size = S(1.4), stroke = S(0.4)) +
     geom_text_repel(data = lab, aes(label = genes), size = BASE*0.32,
                     fontface = lab$face, min.segment.length = 0,
-                    segment.size = 0.25, segment.colour = "grey55",
+                    segment.size = S(0.25), segment.colour = "grey55",
                     box.padding = 0.4, point.padding = 0.3, force = 4,
                     max.overlaps = Inf, seed = 2, colour = "grey10",
                     xlim = c(xlo, xhi), ylim = c(0, yhi)) +
@@ -297,7 +307,7 @@ build_volcano <- function(cell, highlight) {
                                        margin = margin(b = 1)),
           axis.text  = element_text(size = AXIS_TEXT),
           axis.title = element_text(size = AXIS_TITLE),
-          plot.margin = margin(2, 3, 2, 2))
+          plot.margin = margin(S(2), S(3), S(2), S(2)))
 }
 
 # ============================================================================
@@ -337,18 +347,18 @@ build_forest <- function(gene_sym,cell,ttl,show_xlab=FALSE){
   if(has_xen) ylab <- bind_rows(ylab,tibble(y=2,cohort=""))
 
   ggplot(pd,aes(est,y,colour=I(colour))) +
-    geom_vline(xintercept=0,linetype="dashed",colour="grey65",linewidth=.25) +
-    {if(has_xen) geom_hline(yintercept=2,colour="grey85",linetype="dotted",linewidth=.3)} +
-    geom_segment(aes(x=lo,xend=hi,yend=y),linewidth=.45) +
-    geom_point(data=cohort_df,aes(est,y,size=n),shape=21,fill=COL_COHORT,colour=COL_COHORT,stroke=.3) +
+    geom_vline(xintercept=0,linetype="dashed",colour="grey65",linewidth=S(.25)) +
+    {if(has_xen) geom_hline(yintercept=2,colour="grey85",linetype="dotted",linewidth=S(.3))} +
+    geom_segment(aes(x=lo,xend=hi,yend=y),linewidth=S(.45)) +
+    geom_point(data=cohort_df,aes(est,y,size=n),shape=21,fill=COL_COHORT,colour=COL_COHORT,stroke=S(.3)) +
     {if(!is.null(pool)) geom_point(data=pool,aes(est,y,size=n),shape=23,fill=COL_POOL,colour=COL_POOL)} +
     {if(has_xen) geom_point(data=xen_row,aes(est,y,size=n),shape=17,colour=COL_XEN)} +
     geom_text(data=pd,aes(label=sig,x=ast_x,hjust=ast_h),size=BASE*.34,vjust=.75,
               colour="grey15",fontface="bold") +
-    geom_point(data=filter(pd,dot),aes(ast_x,y),shape=16,size=.8,colour="grey15",inherit.aes=FALSE) +
+    geom_point(data=filter(pd,dot),aes(ast_x,y),shape=16,size=S(.8),colour="grey15",inherit.aes=FALSE) +
     geom_text(data=filter(pd,role=="pool"&sig==""),aes(ast_x,y,hjust=ast_h),label="n.s.",
               size=BASE*.28,vjust=.5,colour="grey45",fontface="italic",inherit.aes=FALSE) +
-    scale_size_continuous(range=c(1,3.3),breaks=c(50,200,400),name="n") +
+    scale_size_continuous(range=S(c(1,3.3)),breaks=c(50,200,400),name="n") +
     scale_y_continuous(breaks=ylab$y,labels=ylab$cohort,expand=expansion(add=.6)) +
     scale_x_continuous(limits=c(xlo,xhi),breaks=scales::pretty_breaks(3),expand=expansion(mult=.01)) +
     labs(x=if(show_xlab) expression("SCZ log"[2]~"FC (95% CI)") else NULL,y=NULL,subtitle=ttl) +
@@ -356,8 +366,8 @@ build_forest <- function(gene_sym,cell,ttl,show_xlab=FALSE){
     theme(plot.subtitle=element_text(size=BASE,face="plain",margin=margin(b=1)),
           axis.text.y=element_text(size=AXIS_TEXT),axis.text.x=element_text(size=AXIS_TEXT),
           axis.title.x=element_text(size=AXIS_TITLE,margin=margin(t=1.5)),
-          axis.line=element_line(linewidth=.3),axis.ticks=element_line(linewidth=.3),
-          legend.position="none",plot.margin=margin(2,4,2,2))
+          axis.line=element_line(linewidth=S(.3)),axis.ticks=element_line(linewidth=S(.3)),
+          legend.position="none",plot.margin=margin(S(2),S(4),S(2),S(2)))
 }
 
 # ============================================================================
@@ -398,15 +408,15 @@ pc <- round(100*mean(pr$concordant))
     nudge_y = ifelse(genes == "ATP2B4" & cell_type == "Sst",  0.18, 0))
 
   ggplot(pr, aes(meta_est, xen_logFC)) +
-    geom_vline(xintercept = 0, colour = "grey75", linewidth = 0.25) +
-    geom_hline(yintercept = 0, colour = "grey75", linewidth = 0.25) +
+    geom_vline(xintercept = 0, colour = "grey75", linewidth = S(0.25)) +
+    geom_hline(yintercept = 0, colour = "grey75", linewidth = S(0.25)) +
     geom_abline(slope = 1, intercept = 0, linetype = "dashed",
-                colour = "grey80", linewidth = 0.3) +
+                colour = "grey80", linewidth = S(0.3)) +
     geom_point(aes(colour = class, size = fdr_bin), shape = 16, alpha = 0.8) +
     geom_point(data = lab, shape = 21, fill = NA, colour = "black",
-               size = 1.8, stroke = 0.5) +
+               size = S(1.8), stroke = S(0.5)) +
     geom_text_repel(data = pr, aes(label = rep_label), size = BASE*0.28,
-                    min.segment.length = 0, segment.size = 0.25,
+                    min.segment.length = 0, segment.size = S(0.25),
                     segment.colour = "grey55", box.padding = 0.5,
                     point.padding = 0.3, force = 5, force_pull = 0.12,
                     nudge_x = pr$nudge_x, nudge_y = pr$nudge_y,
@@ -419,7 +429,7 @@ annotate("text", x = lim*0.97, y = -lim*0.93,
          label = sprintf("'%d%% concordant'", pc), parse = TRUE,
          hjust = 1, size = BASE*0.30) +
     scale_colour_manual(values = CLASS_COL, name = NULL) +
-    scale_size_manual(values = c("< 0.05" = 1.8, "0.05-0.10" = 0.7),
+    scale_size_manual(values = c("< 0.05" = S(1.8), "0.05-0.10" = S(0.7)),
                       name = "meta FDR") +
     coord_cartesian(xlim = c(-lim, lim), ylim = c(-lim, lim)) +
     labs(x = expression("snRNA-seq meta-analysis  log"[2]~"FC"),
@@ -438,7 +448,7 @@ annotate("text", x = lim*0.97, y = -lim*0.93,
       axis.text = element_text(size=AXIS_TEXT),
       axis.title = element_text(size=AXIS_TITLE),
       aspect.ratio = 1,
-      plot.margin = margin(2,3,2,2)
+      plot.margin = margin(S(2),S(3),S(2),S(2))
     )
 }
 # ============================================================================
@@ -470,8 +480,8 @@ build_normexpr <- function(gene, title = NULL, show_x = FALSE) {
   p  <- NSTAT$p[NSTAT$gene == gene]
   yr <- range(df$cp1k)
   ggplot(df, aes(dx, cp1k)) +
-    geom_boxplot(aes(fill = dx), width = 0.62, outlier.shape = NA, alpha = 0.55, linewidth = 0.4) +
-    geom_jitter(aes(fill = dx), shape = 21, colour = "grey25", size = 1.4, stroke = 0.3,
+    geom_boxplot(aes(fill = dx), width = 0.62, outlier.shape = NA, alpha = 0.55, linewidth = S(0.4)) +
+    geom_jitter(aes(fill = dx), shape = 21, colour = "grey25", size = S(1.4), stroke = S(0.3),
                 width = 0.13, height = 0, alpha = 0.9) +
     geom_signif(comparisons = list(c("Control", "SCZ")),
                 annotations = sprintf("p=='%.3f'", p), parse = TRUE,
@@ -482,14 +492,14 @@ build_normexpr <- function(gene, title = NULL, show_x = FALSE) {
     labs(x = NULL, y = sprintf("%s expr (CP1K)", gene), subtitle = title) +
     theme_cowplot(font_size = BASE) +
     theme(legend.position = "none",
-          plot.subtitle = element_text(size = BASE - 1, face = "plain", hjust = 0.5,
+          plot.subtitle = element_text(size = BASE - S(1), face = "plain", hjust = 0.5,
                                        margin = margin(b = 1)),
           axis.text.x  = if (show_x) element_text(size = AXIS_TEXT) else element_blank(),
           axis.ticks.x = if (show_x) element_line() else element_blank(),
           axis.line.x  = if (show_x) element_line() else element_blank(),
           axis.title.y = element_text(size = AXIS_TITLE),
           axis.text.y  = element_text(size = AXIS_TEXT),
-          plot.margin = margin(2, 3, 2, 3))
+          plot.margin = margin(S(2), S(3), S(2), S(3)))
 }
 
 # ============================================================================
@@ -514,10 +524,10 @@ pJ     <- build_scatter()
 # largest cell; the key does not.
 EX_PAIRS <- list(c("SST","Control"), c("SST","SCZ"), c("PVALB","Control"), c("PVALB","SCZ"))
 ex_lim   <- exemplar_lim(EX_PAIRS, TAB, expand = if (EX_STYLE == "oncell") 1.22 else 1.08)
-eSst   <- ex_pair("SST",   ex_lim, TAB, BASE, show_hdr = TRUE,  scalebar_lab_on = "Control",
+eSst   <- ex_pair("SST",   ex_lim, TAB, BASE, show_hdr = TRUE,  scalebar_lab_on = "Control", scale = FIG_SCALE,
                   label_outlines_on = if (EX_STYLE == "oncell") "Control" else "none",
                   key = if (EX_STYLE == "key") "draw" else "none")
-ePvalb <- ex_pair("PVALB", ex_lim, TAB, BASE, show_hdr = FALSE, scalebar_lab_on = "none",
+ePvalb <- ex_pair("PVALB", ex_lim, TAB, BASE, show_hdr = FALSE, scalebar_lab_on = "none", scale = FIG_SCALE,
                   key = if (EX_STYLE == "key") "spacer" else "none")
 
 # Row 1 (SST) / Row 2 (PVALB): [volcano | forest | CP1K boxplot] are aligned with
@@ -527,20 +537,21 @@ RW3 <- c(1.05, 0.95, 0.70)
 mkrow <- function(volc, forest, box, expair, labs)
   plot_grid(
     plot_grid(volc, forest, box, ncol = 3, rel_widths = RW3, align = "h", axis = "tb",
-              labels = labs[1:3], label_size = 8, label_fontface = "bold"),
+              labels = labs[1:3], label_size = S(8), label_fontface = "bold"),
     expair, ncol = 2, rel_widths = c(sum(RW3), 1.25),
-    labels = c("", labs[4]), label_size = 8, label_fontface = "bold")
+    labels = c("", labs[4]), label_size = S(8), label_fontface = "bold")
 row1 <- mkrow(vSst,   fSst,   bSst,   eSst,   c("a","b","c","d"))
 row2 <- mkrow(vPvalb, fPvalb, bPvalb, ePvalb, c("e","f","g","h"))
 # Row 3: butterfly (i) | concordance scatter (j) — equal (50/50) width
 row3 <- plot_grid(pA, pJ, ncol = 2, rel_widths = c(1, 1),
-                  labels = c("i","j"), label_size = 8, label_fontface = "bold")
+                  labels = c("i","j"), label_size = S(8), label_fontface = "bold")
 
 # rel_heights given in INCHES (they sum to FIG_H): rows 1-2 (SST, PVALB) = 2.00 in
 # each; row 3 (butterfly + scatter) = 2.625 in.
 full <- plot_grid(row1, row2, row3, ncol = 1, rel_heights = c(2, 2, 2.625))
 
-FIG_H <- 6.625 # 7.1 x 6.625 in. Rows 1-2 (SST a-d, PVALB e-h) = 2.00 in each;
+FIG_H <- S(6.625) # 8.0 x 7.465 in = the 7.1 x 6.625 column figure x FIG_SCALE.
+               # Rows 1-2 (SST a-d, PVALB e-h) = 2.00 in each at column scale;
                # butterfly + scatter (i,j) = 2.625 in (rel_heights are inches).
 # Written in place into the submission folder, like every other renderer in the
 # repo (manuscript/figures/main/README.md): one original, no copy step to drift.
