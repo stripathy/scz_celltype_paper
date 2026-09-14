@@ -439,43 +439,17 @@ annotate("text", x = lim*0.97, y = -lim*0.93,
     )
 }
 # ============================================================================
-# Panel K — Xenium exemplar cells (boundary + marker molecules)
-# Requires scripts/10_xenium_exemplar_cells.py to have been run.
+# Panels d, h — Xenium exemplar cells (boundary, nucleus, marker transcripts).
+# Requires scripts/10_xenium_exemplar_cells.py to have been run. The builder
+# lives in scripts/_exemplar_panels.R so a preview draws exactly what the figure
+# draws; see that file for what each label is for and why.
 # ============================================================================
 TAB <- "results/tables"
-DOT_COL <- "#B2182B"   # marker-molecule dots
-# `lim` is SHARED across all four cells so the zoom is identical and the 5 um
-# scale bar renders at the same physical length in every panel (consistent
-# scale bar). Gene / condition / cell type are carried by the matrix labels in
-# the assembly below, so no per-panel title here.
-build_exemplar <- function(gene, dx, lim, scalebar_lab = FALSE) {
-  bd <- read_csv(sprintf("%s/exemplar_%s_%s_boundary.csv", TAB, gene, dx),
-                 show_col_types = FALSE)
-  nu <- read_csv(sprintf("%s/exemplar_%s_%s_nucleus.csv", TAB, gene, dx),
-                 show_col_types = FALSE)
-  dt <- read_csv(sprintf("%s/exemplar_%s_%s_dots.csv", TAB, gene, dx),
-                 show_col_types = FALSE)
-  nd  <- nrow(dt)
-  sb  <- 5  # scale-bar length, microns
-  ggplot() +
-    geom_polygon(data = bd, aes(x, y), fill = "grey93", colour = "grey45",
-                 linewidth = 0.3) +
-    geom_polygon(data = nu, aes(x, y), fill = NA, colour = "grey30",
-                 linewidth = 0.25, linetype = "22") +     # nucleus = dashed
-    {if (nd > 0) geom_point(data = dt, aes(x, y), colour = DOT_COL,
-                            size = 0.5, alpha = 0.85)} +
-    annotate("text", x = -lim*0.98, y = lim*0.98, label = nd,
-             hjust = 0, vjust = 1, size = BASE*0.32, colour = DOT_COL,
-             fontface = "bold") +
-    annotate("segment", x = lim*0.96 - sb, xend = lim*0.96,
-             y = -lim*0.94, yend = -lim*0.94, linewidth = 0.7) +
-    {if (scalebar_lab) annotate("text", x = lim*0.96 - sb/2, y = -lim*0.80,
-                                label = "5~mu*m", parse = TRUE,
-                                size = BASE*0.26, vjust = 1)} +
-    coord_fixed(xlim = c(-lim, lim), ylim = c(-lim, lim)) +
-    theme_void(base_size = BASE) +
-    theme(plot.margin = margin(1, 2, 1, 2))
-}
+source("scripts/_exemplar_panels.R")
+# How the two outlines are named for the reader (G#123 review item):
+#   "oncell"  "cell" / "nucleus" with short leaders on the first cell (d, Control)
+#   "key"     cells left clean; a one-line key drawn under panel d instead
+EX_STYLE <- "oncell"
 
 # ============================================================================
 # Panel J — library-normalised expression (CP1K = counts per 1,000 transcripts)
@@ -531,24 +505,17 @@ pA <- ggdraw(build_butterfly()) +
   draw_plot(build_de_prop_inset(), x=0.75, y=0.1, width=0.36, height=0.378)
 pJ     <- build_scatter()
 
-# Exemplar cells: shared coordinate limit -> identical zoom + identical 5 um scale
-# bar across all four cells; drawn as a Control|SCZ pair per marker.
-ex_lim <- 1.05 * max(vapply(
-  list(c("SST","Control"), c("SST","SCZ"), c("PVALB","Control"), c("PVALB","SCZ")),
-  function(p) { bd <- read_csv(sprintf("%s/exemplar_%s_%s_boundary.csv", TAB, p[1], p[2]),
-                               show_col_types = FALSE); max(abs(c(bd$x, bd$y))) },
-  numeric(1)))
-ex_hdr <- function(t) ggdraw() + draw_label(t, size = BASE - 0.5)
-# Control|SCZ cell pair for one marker; show_hdr draws the Control/SCZ strip (row 1
-# only). A blank spacer of the same height keeps row-2 cells the same size, so the
-# 5 um scale bar is identical across rows.
-ex_pair <- function(gene, scalebar, show_hdr) plot_grid(
-  if (show_hdr) plot_grid(ex_hdr("Control"), ex_hdr("SCZ"), ncol = 2) else NULL,
-  plot_grid(build_exemplar(gene, "Control", ex_lim),
-            build_exemplar(gene, "SCZ", ex_lim, scalebar_lab = scalebar), ncol = 2),
-  ncol = 1, rel_heights = c(0.16, 1))
-eSst   <- ex_pair("SST",   FALSE, TRUE)
-ePvalb <- ex_pair("PVALB", TRUE,  FALSE)
+# Exemplar cells: one shared coordinate limit -> identical zoom and an identical
+# 5 um bar in all four cells. The bar is labelled once, on d/Control, where a
+# reader meets the panel first. The outline labels need extra room around the
+# largest cell; the key does not.
+EX_PAIRS <- list(c("SST","Control"), c("SST","SCZ"), c("PVALB","Control"), c("PVALB","SCZ"))
+ex_lim   <- exemplar_lim(EX_PAIRS, TAB, expand = if (EX_STYLE == "oncell") 1.22 else 1.08)
+eSst   <- ex_pair("SST",   ex_lim, TAB, BASE, show_hdr = TRUE,  scalebar_lab_on = "Control",
+                  label_outlines_on = if (EX_STYLE == "oncell") "Control" else "none",
+                  key = if (EX_STYLE == "key") "draw" else "none")
+ePvalb <- ex_pair("PVALB", ex_lim, TAB, BASE, show_hdr = FALSE, scalebar_lab_on = "none",
+                  key = if (EX_STYLE == "key") "spacer" else "none")
 
 # Row 1 (SST) / Row 2 (PVALB): [volcano | forest | CP1K boxplot] are aligned with
 # cowplot align="h"/axis="tb" so the boxplot (c,g) x-axis lines up with the volcano
