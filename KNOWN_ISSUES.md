@@ -25,7 +25,7 @@ One line each; these keep their numbers because component READMEs cite them.
 | 13b | Figure 3 panel variables are not named after their panel letters (`p3b` → panel c, etc.). Mapped in `Final_figures/README.md`. | `Final_figures/Figure_3.r` |
 | 14 | A tracked symlink dangles in any fresh clone: `reserve/histology/coordinates`. | `reserve/histology/` |
 | 17b | `2_Crumblr_analysis.r:78` hard-codes `coef = "DiagnosisSchizophrenia"`; fails on any matrix using the repo's `Control`/`SCZ` vocabulary. Derive it from the factor levels. | `Compositional_analysis/` |
-| 22 | The Xenium **sensitivity** crumblr variants (`_corr`, `_hybrid`, `_margin_*`, `_pctl*`, `_no_high_umi`) are built without Br2039, 23 donors, while the four the paper uses (`_neuronal`, `_nonneuronal`, and the two pooled) have all 24. No paper figure reads a sensitivity variant, so nothing is wrong today; regenerate them before anyone does. | `spatial/output/crumblr/` |
+| 22 | `spatial/output/crumblr/README.md` **is** tracked and documents variant files (`_corr`, `_hybrid`, `_margin_*`, `_pctl*`, `_no_high_umi`, `_all*`) that are **not** in the repo — only the four canonical inputs and their results are committed. A reviewer reading that table will look for files that are not there. Separately, on the authors' machines those variants are built without Br2039 (23 donors) while the committed four have all 24; regenerate them before anyone uses one. | `spatial/output/crumblr/README.md` |
 
 ---
 
