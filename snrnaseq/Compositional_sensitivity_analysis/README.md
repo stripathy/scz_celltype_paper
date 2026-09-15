@@ -40,12 +40,10 @@ they are recombined into their seven dataset labels in step 2.
 Same neuronal restriction (via `cluster_order_and_colors.csv`) and the same
 per-dataset `dream` fit, including the same fixed-effect `Sex` term.
 
-> Until 2026-09-15 `Sex` entered here as `(1|Sex)` while the primary analysis
-> used `(Sex)`, so S7 differed from Fig. 3a in a second respect beyond the one
-> it is meant to test. Commit `5133be3` aligned them and re-ran. The results
-> moved slightly and two supertypes crossed FDR 0.10, Sst_25 among them, which
-> contradicts a sentence in the Results — issue 20 in
-> [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
+> `Sex` is modelled exactly as in the primary analysis, so S7 differs from
+> Fig. 3a only in the thing it is meant to test. In the current fit Sst_25 sits
+> at FDR 0.1122, above 0.10; four of the five depleted Sst supertypes clear
+> FDR < 0.10 here. The Results text reflects this.
 
 ### 4 — Meta-analysis
 

@@ -6,10 +6,10 @@
 #     (detected in >=10% of nuclei in either group), gene sets restricted to the
 #     background, 10-500 genes, BH within direction.
 # (2) Preranked fgsea on baseline log2FC over the background (identity contrast).
-# (3) Cross-check: baseline log2FC of the Fig. 5 disease-state modules
+# (3) Cross-check: baseline log2FC of the Fig. S8 disease-state modules
 #     (leading-edge unions) - do depleted types express these programs more at
 #     baseline?
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({ library(msigdbr); library(fgsea) })
 OUT <- file.path(P$supp, "baseline_marker_enrichment")
 dir.create(OUT, showWarnings = FALSE, recursive = TRUE)

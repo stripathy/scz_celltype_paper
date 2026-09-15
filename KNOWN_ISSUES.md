@@ -4,9 +4,67 @@
 resolved is listed at the foot, one line each, so the ~20 component READMEs that
 cite issue numbers still resolve. Numbers are stable and never reused.
 
-Last worked: **2026-09-15**. **No blocking items remain.** The two that needed a
-person were settled that day: the Results text was updated and verified against
-the data, and the PI authorised releasing the donor metadata sheet.
+**No blocking items remain.** What is left below is real but does not stop
+submission.
+
+---
+
+## Must fix before the repo is shared
+
+### 24. Donor clinical records are committed in a per-cell metadata dump
+
+**Found 2026-09-15. Blocking: this is third-party special-category health data,
+and it is already in git history.**
+
+`snrnaseq/Compositional_sensitivity_analysis/Files/Batiuk_NoSST_DEgenes.csv`
+(tracked via git-lfs, 288 MB, 140,089 rows) carries **299 columns**, of which
+roughly 290 are the donating brain banks' full clinical record for 15 donors,
+repeated verbatim on every cell row:
+
+- `Cause_of_death`, `Exact_cause_of_death`, `CNS_Diseases`, `Neuropathology`
+- `Psychiatric_diagnosis`, `Psychiatric_signs`, `First_schizophrenia_symptoms_age`
+- `Compound_abuse`, `Treatments`, `Neuroleptic_treatment_duration_years`,
+  `Electro.convulsive_therapy`
+- **`Euthanasia`** (values Y and N)
+- `Depression`, `Bipolar_disorder`, `Cancer`, `Diabetes`, `Hepatitis` and ~140
+  further comorbidity and medication flags
+- four **exact dates**: `FACS_10x_1st_day_date`, `cDNA_cleanup_preAmp_date`,
+  `library_prep_date`, `Sequencing_date`
+
+Three of those fields are free-text clinical narrative, not codes — measured by
+length rather than read: `Psychiatric_signs` up to 479 characters,
+`Neuropathology` up to 728, `Compound_abuse` up to 1,085.
+
+`Source` is `NBB` (Netherlands Brain Bank), `HBTB`, `OBB` and `Newcastle`, so
+this is EU/UK data and the special-category provisions apply. Exact dates are
+direct identifiers rather than quasi-identifiers.
+
+**This was a bug, not a release decision.** `Code/1_Label_transfer_noSSTDE.r`
+wrote `Seu_sn@meta.data` whole, with no column selection. Six cohorts' objects
+carried only study variables, so their files are clean (157-182 columns, checked);
+the Batiuk object happened to arrive with the brain banks' record attached, so all
+299 columns went out. **Scope is exactly one file** — no other tracked CSV in the
+repo contains these columns.
+
+**Fixed forward on 2026-09-15**: the writer now selects the six columns
+`2_Compile_metadata.r` actually consumes (`Donor, Age, Sex, Diagnosis, PMI,
+predicted.id`, plus Multiome's three spellings) instead of dumping the slot. That
+stops recurrence; it does **not** remove what is already committed.
+
+**Still to decide, and only the PI and the Batiuk data custodians can:** whether
+the file is removed and history rewritten. It cannot be undone by `git rm` alone,
+and rewriting is cheaper before more commits land on it. Note this is **not**
+covered by the authorisation recorded in issue 6, which concerned the 469-donor
+demographic sheet of consortium IDs, ages, sex, diagnosis and PMI. That
+assessment does not describe this file.
+
+Related but separate, and also awaiting the same kind of decision:
+`reserve/histology/data/pTable with correct med info.csv` (tracked, 380 rows, 76
+donors) holds brain-bank donor number, DSM-IV diagnoses as free text, cause and
+manner of death including suicide, medications at time of death and ten
+alcohol/substance dependence flags, for an analysis that is **not in the paper**.
+`reserve/histology/data/full cell counts(Excel).xlsx` adds subject-level
+diagnosis across SCZ, MDD, Bipolar and Control groups.
 
 ---
 
@@ -16,11 +74,10 @@ One line each; these keep their numbers because component READMEs cite them.
 
 | # | Issue | Where |
 |---|---|---|
-| 8 | ~~`Figure_1a_UMAP.r` is Python, not R.~~ **Done** — it is now `Final_figures/Code/Figure_1.py`. `manuscript/figures/main/README.md` still names the old file. | `Final_figures/` |
-| 9 | ~~`1_crumblr_meta_nonNeurons` has no file extension.~~ **Done** — the directory is now `Compositional_analysis/Code/Non_neurons/` and holds `1_Crumblr_analysis.r` and `2_meta_analysis.r`, both extensioned. | `Compositional_analysis/Code/Non_neurons/` |
+| 8 | `manuscript/figures/main/README.md` names `Figure_1a_UMAP.r`; the file is `Final_figures/Code/Figure_1.py`. | `Final_figures/` |
 | 10 | Label-transfer reference is named `counts_hodge`/`meta_hodge` but is the **SEA-AD** taxonomy (Gabitto 2024), not Hodge 2019. Misleads anyone checking methods against code. | 6 files under `Label_transfer/` |
 | 11 | Of 41 scripts under `snrnaseq/`, 19 hard-code a `/scratch/` or `/project/` path and 31 open with `setwd()` on a directory that does not exist here — and they name **five different** project roots (`P1_SCZ_paper`, `scz_celltype_paper`, `P1_SCZ_DE_fresh`, `OFC_cohort`, `PsychAD`), so a reader cannot tell which tree a result came from. Rendering S7 needs the `setwd()` neutralised. | throughout `snrnaseq/` |
-| 12 | Nicole's figure scripts write to cluster paths, not `manuscript/figures/` under an S-number. **S7 was fixed on 2026-09-15**; S1, S4 and S5 still have no rendered output here. | `Final_figures/` |
+| 12 | Nicole's figure scripts write to cluster paths, not `manuscript/figures/` under an S-number. S7 is fixed; S1, S4 and S5 still have no rendered output here. | `Final_figures/` |
 | 13 | Cell-type columns selected by hard-coded position (`colnames(meta)[1:24]`). Correct as written, silently wrong if a subclass set changes. | `snRNAseq_DE/*/2_DE.r` |
 | 13b | Figure 3 panel variables are not named after their panel letters (`p3b` → panel c, etc.). Mapped in `Final_figures/README.md`. | `Final_figures/Figure_3.r` |
 | 14 | A tracked symlink dangles in any fresh clone: `reserve/histology/coordinates`. | `reserve/histology/` |
@@ -47,6 +104,6 @@ One line each; these keep their numbers because component READMEs cite them.
 | — | `Supertypes/3_meta_analysis.r` did not parse (stray `-`, missing paren), so the committed copy was not the copy that ran. | 2026-09-13 |
 | — | *HCN1* credible-set variants were labelled on the wrong strand; `export_panels_abc.py` now strand-aware with a `dist_to_hcn1_kb` column. | 2026-09-13 |
 | — | Figure 2 panels d, h redrawn for review comment G#123; panel j label collisions resolved. | 2026-09-14, `2623216` |
-| 23 | S8 drew different numbers here than on a clone. `fig5/_common.R` preferred the git-ignored seam `shared/snrnaseq_de/DE_genes_all_cells_scz.csv` and fell back to the committed snapshot, on a comment's claim that the two were byte-identical. They were not: the seam left on this machine predates Nicole's 2026-09-13 rerun (222,028 rows, 345 Sst genes at FDR < 0.10) while the snapshot matches her current output (231,135 rows, 343 genes). Fixed by always reading the snapshot; S8 re-rendered (the change is confined to the `Sst_subclass` column of panel e) and `09_verify.R` passes. | 2026-09-15 |
+| 23 | S8 drew different numbers here than on a clone. `sst_strata/_common.R` preferred the git-ignored seam `shared/snrnaseq_de/DE_genes_all_cells_scz.csv` and fell back to the committed snapshot, on a comment's claim that the two were byte-identical. They were not: the seam left on this machine predates Nicole's 2026-09-13 rerun (222,028 rows, 345 Sst genes at FDR < 0.10) while the snapshot matches her current output (231,135 rows, 343 genes). Fixed by always reading the snapshot; S8 re-rendered (the change is confined to the `Sst_subclass` column of panel e) and `09_verify.R` passes. | 2026-09-15 |
 | 6 | The committed donor metadata is person-level (469 donors: consortium ID, age, sex, diagnosis, PMI). Assessed as low re-identification risk — IDs are the source consortia's own, ages run 18–69 with none near the safe-harbour threshold, columns are the standard demographic table — leaving only whether the data-use agreements permit redistribution. **PI authorised release of a donor-level metadata sheet with this demographic content.** | 2026-09-15 |
 | 20 | Nicole's `Sex`-alignment rerun moved Sst_25 to FDR 0.1122 in S7, contradicting a Results sentence that claimed all five depleted Sst supertypes at FDR < 0.10. Text updated to "all five Sst supertypes depleted at FDR < 0.20", verified true (max is Sst_25 at 0.1122), and the gene count corrected 345 → 343, also verified: the committed meta table gives exactly 343 unique Sst genes at padj < 0.10 (196 down, 147 up, *SST* included), and `1_Label_transfer_noSSTDE.r:8` derives the exclusion list from that same table, which was re-run in the same commit. S7 re-rendered from the current results to `manuscript/figures/supplementary/S07_composition_no_sst_de_genes.{png,pdf}`. | 2026-09-15 |

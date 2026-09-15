@@ -29,7 +29,7 @@ committed figure inputs, and the rendered figures.
 | **S5** | [`Supplemental/Code/NonNeuron_supplement.r`](snrnaseq/Final_figures/Supplemental/Code/NonNeuron_supplement.r) | [`snrnaseq/`](snrnaseq/README.md) |
 | **S6** | [`code/02_plot_pooling_heatmap.R`](snrnaseq/composition_sensitivity/code/02_plot_pooling_heatmap.R) | [`snrnaseq/composition_sensitivity/`](snrnaseq/composition_sensitivity/README.md) |
 | **S7** | [`Supplemental/Code/Sensitivity_analysis_Barchart.r`](snrnaseq/Final_figures/Supplemental/Code/Sensitivity_analysis_Barchart.r) | [`snrnaseq/`](snrnaseq/README.md) |
-| **S8** | [`scripts/fig5/08_figure5.R`](transcriptomic/scripts/fig5/08_figure5.R) | [`transcriptomic/`](transcriptomic/scripts/fig5/README.md) |
+| **S8** | [`scripts/sst_strata/08_figure.R`](transcriptomic/scripts/sst_strata/08_figure.R) | [`transcriptomic/`](transcriptomic/scripts/sst_strata/README.md) |
 | **S9** | [`scripts/figures/plot_supp_enrichment_seaad125.R`](genetics/scripts/figures/plot_supp_enrichment_seaad125.R) | [`genetics/`](genetics/README.md) |
 | **S10** | [`scripts/figures/plot_fig4_robustness.R`](genetics/scripts/figures/plot_fig4_robustness.R) | [`genetics/`](genetics/README.md) |
 | **T6** | [`scripts/figures/build_supp_table_patchseq_labels.py`](genetics/scripts/figures/build_supp_table_patchseq_labels.py) | [`genetics/`](genetics/README.md) |
@@ -69,9 +69,8 @@ Items that must be settled before submission are collected in
 | [`reserve/`](reserve/README.md) | Analyses built and deliberately left out of the paper |
 
 The snRNA-seq DE and composition meta-analysis (Endresz et al., in prep) is the
-root of the dependency graph — everything else is downstream of it. It was
-merged into [`snrnaseq/`](snrnaseq/README.md) on 2026-09-09; the interface
-through which the other components consume it is documented in
+root of the dependency graph — everything else is downstream of it. The
+interface through which the other components consume it is documented in
 [`shared/snrnaseq_de/`](shared/snrnaseq_de/README.md).
 
 See [`DATA_FLOW.md`](DATA_FLOW.md) for who produces what and who consumes it.
@@ -84,20 +83,8 @@ See [`DATA_FLOW.md`](DATA_FLOW.md) for who produces what and who consumes it.
 summary statistics and reference atlases are git-ignored and wired in via
 symlinks or documented download URLs. What *is* committed is the small set of
 figure inputs each renderer needs, so no figure depends on data you have to
-fetch first (Figure 2 excepted — see below). Each component's `data/README.md`
-lists what to obtain and from where.
-
-**Independently reproduced.** On 2026-09-13 the composition chain behind Figure
-3a and S6 was rebuilt from a separate set of cleaned per-dataset h5ads and
-compared against the committed artefacts. The Figure-3a input matrix
-(`snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv`) came back
-**identical in all 61,908 donor x supertype counts** (2,399,784 cells), with Age,
-Sex and PMI matching exactly; re-fitting the crumblr models reproduced the
-per-dataset, leave-one-dataset-out and subclass estimates to **1e-15**. The
-Xenium composition set reproduces exactly too (356,313 neuronal and 385,790
-non-neuronal cortical cells, all 24 donors). Two seams that the comparison
-exposed are recorded as issues 17 and 18 in
-[`KNOWN_ISSUES.md`](KNOWN_ISSUES.md).
+fetch first. Each component's `data/README.md` lists what to obtain and from
+where.
 
 ## Reproducing
 
@@ -105,16 +92,11 @@ exposed are recorded as issues 17 and 18 in
 git clone <remote-url> && cd scz_celltype_paper
 ```
 
-Then follow the component README for the figure you want. Figure 4 and
-supplementary figures S2, S3, S6, S8, S9 and S10 render from committed inputs;
-verified by running all of them on 2026-09-13. Re-running the *analyses* behind
-them needs the external data.
+Then follow the component README for the figure you want. Figure 2, Figure 4
+and supplementary figures S2, S3, S6, S8, S9 and S10 render from committed
+inputs. Re-running the *analyses* behind them needs the external data.
 
-Figure 2 renders from a clone as well, since 2026-09-14: the three inputs that
-had lived under `/scratch/nendresz/` are committed snapshots with `MANIFEST.tsv`
-rows (issue 15, closed).
-
-Two prerequisites, both learned the hard way:
+Two prerequisites:
 
 - **R packages.** Beyond the usual tidyverse/ggplot2 stack the renderers need
   `ragg` and `ggsignif`, and Figure 4 needs `svglite`. Missing any of them fails
@@ -128,17 +110,9 @@ Figures 1 and 3 and supplementary figures S1, S4 and S5 are built by
 [`snrnaseq/Final_figures/`](snrnaseq/Final_figures/README.md). Most do **not**
 render from a clone — those scripts ran on the Alliance cluster against the full
 per-dataset objects, with cluster-absolute paths, and are here to be read. Two
-exceptions: **S7** renders anywhere (both its inputs are committed), and
-**Figure 3 panels d and e** do since 2026-09-15, because they need only the
-committed Xenium metadata rather than the Seurat object.
+exceptions: **S7** renders anywhere (both its inputs are committed), and so do
+**Figure 3 panels d and e**, which need only the committed Xenium metadata
+rather than the Seurat object.
 The one committed input from that pipeline is the per-donor cell-count matrix
 behind the composition analysis,
 [`snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv`](snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv).
-
-## Repository history
-
-The tree was pruned on 2026-09-04 down to the code behind the paper, so that
-finding a figure's source does not mean walking past a much larger body of work
-that did not make it in. The state before that pass is the git tag
-**`pre-prune-2026-09-04`**; nothing was lost, and each pruning commit says what
-it removed and why.

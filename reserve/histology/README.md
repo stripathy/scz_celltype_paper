@@ -1,10 +1,10 @@
 # sgACC SST interneuron density (RNAscope re-analysis)
 
-> **Not in the paper.** Cut on Etienne's advice 2026-09-01: the effect is in the
-> predicted direction but does not reach significance, and it conflates cell
-> number with per-cell SST mRNA. Kept as reviewer-response material — see
-> [`../README.md`](../README.md). The text below describes the analysis as it
-> stood when it was still slated for the supplement.
+> **Not in the paper.** The effect is in the predicted direction but does not
+> reach significance, and it conflates cell number with per-cell SST mRNA. Kept
+> as reviewer-response material — see [`../README.md`](../README.md). The text
+> below describes the analysis as it stood when it was slated for the
+> supplement.
 
 Re-analysis of RNAscope cell-count data from human subgenual anterior cingulate cortex (sgACC; Arbabi, Newton et al., *Molecular Psychiatry* 2025) asking whether the density of SST-positive interneurons is lower in schizophrenia, and whether any reduction is larger in upper (L2/3) than deep (L5/6) layers. It was drafted as a supplementary figure and table.
 

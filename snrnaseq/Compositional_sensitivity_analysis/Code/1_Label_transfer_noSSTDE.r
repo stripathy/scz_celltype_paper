@@ -123,9 +123,24 @@ for(nm in names(cohorts)){
   Seu_sn <- AddMetaData(Seu_sn,predictions)
   Seu_sn$old_predictions <- old_predictions
 
-  # Save
+  # Save.
+  #
+  # Write ONLY the columns step 2 consumes. This used to be
+  # `write.csv(Seu_sn@meta.data, ...)`, the whole metadata slot, which is fine
+  # for cohorts whose objects carry nothing but study variables and very much
+  # not fine for Batiuk: that object came with the donating brain banks' full
+  # clinical record, so the dump emitted 299 columns including cause of death,
+  # free-text psychiatric and neuropathology narrative, euthanasia status and
+  # dated lab records, repeated on every cell row. See issue 24 in
+  # ../../KNOWN_ISSUES.md. 2_Compile_metadata.r needs only the six below
+  # (Multiome spells three of them differently), so select and never dump.
+  keep <- intersect(
+    c("Donor", "Age", "Sex", "Diagnosis", "PMI", "predicted.id",
+      "Age_death", "Biological_Sex", "Disorder"),
+    colnames(Seu_sn@meta.data))
   saveRDS(Seu_sn,paste0("P1_Controls/Files/",nm,"_NoSST_DEgenes.rds"))
-  write.csv(Seu_sn@meta.data,paste0("Compositional_sensitivity_analysis/Files",nm,"_NoSST_DEgenes.csv"))
+  write.csv(Seu_sn@meta.data[, keep, drop = FALSE],
+            paste0("Compositional_sensitivity_analysis/Files",nm,"_NoSST_DEgenes.csv"))
 
   cat("SAVED:",nm,"\n")
 

@@ -16,7 +16,7 @@
 # Xenium is a whole-cell platform on an independent cohort (LIBD, 24 DLPFC
 # sections), so agreement here is genuine cross-platform replication -- but only
 # for the ~144 panel genes, which is why the graded modules cannot be tested.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 
 st_of <- stratum_of()
 sig <- read_csv(file.path(P$pb, "stratum_gene_signatures.csv"), show_col_types = FALSE)

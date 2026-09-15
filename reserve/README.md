@@ -23,8 +23,7 @@ so the supplementary folder stays exactly the submission set.
 
 ## The data is not on this machine
 
-The large inputs behind three of these were deleted locally on 2026-09-04 to
-reclaim disk: the GSE158516 count matrices, the Jens cohort object, and the
+The large inputs behind three of these are not held locally, to save disk: the GSE158516 count matrices, the Jens cohort object, and the
 SEA-AD 2026-06-22 DFC nuclei file that the AD contrast reads. All three are
 public downloads — see the READMEs below and `crossdisorder/data/SEAAD_INPUTS.md`
 for the URLs. The committed results, manifests and figures are unaffected; only
@@ -40,7 +39,7 @@ and stratum membership as Supplementary Fig. S8:
 Rscript reserve/sst_strata_supp/volcanoes.R
 ```
 
-They require the core S8 pipeline (`transcriptomic/scripts/fig5/01`–`07`) to
+They require the core S8 pipeline (`transcriptomic/scripts/sst_strata/01`–`07`) to
 have run first. The scripts numbered `19`–`23` predate the pipeline
 consolidation, still use the old paths, and need updating before reuse; the
 rest were rewired. `sst_strata_supp/README.md` records what each one showed and
@@ -49,9 +48,8 @@ why it was held back.
 `histology/` and `gse158516/` are self-contained and run from their own
 directories, per their own READMEs.
 
-## Provenance
+## Why these are here and not in the main tree
 
-Everything here was tracked in the main tree until 2026-09-04, when the
-codebase was pruned so a reader can find the code behind a paper figure without
-walking past a much larger body of work that did not make it. The state before
-that pass is the git tag `pre-prune-2026-09-04`.
+Keeping them under `reserve/` means a reader looking for the code behind a paper
+figure does not have to walk past analyses that did not make it in. Nothing
+downstream of the paper reads this directory.

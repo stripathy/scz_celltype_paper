@@ -4,11 +4,9 @@
 SEA-AD neurotypical DLPFC (A9) snRNA-seq reference** -- 3 neurotypical donors
 (H18.30.002, H19.30.001, H19.30.002; `*_SEAAD_A9_RNAseq_final-nuclei.2024-02-13.h5ad`),
 90,579 nuclei, 125 supertypes (Gabitto et al. 2024). This is region-matched to
-the frontal-cortex SCZ cohorts. It replaced the SEA-AD MTG reference on
-2026-08-12 (panels d/e/h/i) and, for the enrichment panels, on 2026-08-31 when
-the combined SEA-AD + Siletti taxonomy was retired on L. Duncan's advice. The
-MTG reference (5 donors, 137 supertypes) now appears only as the
-reference-region robustness facet of Supplementary Fig. S10.
+the frontal-cortex SCZ cohorts. The MTG reference (5 donors, 137 supertypes)
+appears only as the reference-region robustness facet of Supplementary
+Fig. S10.
 
 Canonical files (too large to track; kept outside the repo):
 
@@ -61,11 +59,13 @@ Tracked (whitelisted in `genetics/.gitignore`):
 - `seaad_sst_supertype_mean_expression.csv` -- the MTG predecessor of the above
   (5 neurotypical donors). No longer read by Figure 4, but still the input to
   the reserve MTG-vs-DLPFC baseline check in `reserve/sst_strata_supp/`.
-The retired combined SEA-AD + Siletti (501-type) runs -- `T_a9rbh_bigdeli.gsa.out`,
-`namemap_a9rbh.csv`, `T_a9_pgc3.gsa.out`, `T_mtg_bigdeli.gsa.out`,
-`namemap_mtg_sametax.csv`, `franken_rbh_A9.csv` -- were untracked on 2026-09-04
-along with their build scripts. They are recoverable from the git tag
-`pre-prune-2026-09-04`.
+Some files here belong to a **retired** combined SEA-AD + Siletti taxonomy of
+501 types -- `T_a9rbh_bigdeli.gsa.out`, `namemap_a9rbh.csv`, `T_a9_pgc3.gsa.out`,
+`T_mtg_bigdeli.gsa.out`, `namemap_mtg_sametax.csv`, `franken_rbh_A9.csv`, and the
+matching `spec_dlpfc_a9rbh.txt` / `spec_mtg_sametax.txt` specificity matrices.
+Nothing in the paper reads them and their build scripts are not in the tree. Do
+not take numbers from them: the 501-type run reports 15,981 genes over 501 types
+against the current run's 15,855 over 125.
 
 Not tracked (regenerable with `build_dlpfc_specificity.py`, `seaad_supertype_log1p.py`
 and `build_spec_seaad_only.py`): the per-supertype mean matrices
@@ -75,8 +75,7 @@ retired `spec_dlpfc_a9rbh.txt` / `spec_mtg_sametax.txt`).
 
 ## Reference universes
 
-Since 2026-08-31 every expression-derived panel of Figure 4 is on the same
-reference: the 125-supertype SEA-AD DLPFC taxonomy. Panel a's specificity is
-normalised across those 125 types, and S9 shows all 125, so the figure and the
-multiple-testing universe coincide. The earlier note that panel a alone sat on a
-501-type universe including subcortical types no longer applies.
+Every expression-derived panel of Figure 4 is on one reference: the
+125-supertype SEA-AD DLPFC taxonomy. Panel a's specificity is normalised across
+those 125 types and S9 shows all 125, so the figure and the multiple-testing
+universe coincide.

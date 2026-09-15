@@ -17,12 +17,24 @@ inputs below are in place.
 
 | Path | Size | Where it comes from |
 |---|---|---|
-| `gwas/bigdeli_eur_scz_sum_stats.gz` | 329 MB | Bigdeli et al. 2026, European-ancestry SCZ GWAS. **The paper's primary GWAS.** |
-| `gwas/magma_bigdeli/bigdeli.step2.genes.{raw,out}` | 1.5 MB | MAGMA gene analysis of the above (step 2). |
+| `gwas/SCZ_EUR_autosomes.bcf` | 533 MB | Bigdeli et al. 2026, European-ancestry SCZ GWAS, GWAS-VCF format. Synapse <https://www.synapse.org/Synapse:syn60527562>. **The source for everything gene-level.** |
+| `gwas/SCZ_AFR_EU_EAS_autosome.bcf` | 1.2 GB | The cross-ancestry meta-analysis from the same release. Not used by any figure in the paper. |
+| `gwas/bigdeli_eur_scz_sum_stats.gz` | 329 MB | The same EUR GWAS as a flat per-variant table, from the LocusZoom browser <https://my.locuszoom.org/gwas/282753>. Used **only** for the *HCN1* locus zoom (Fig. 4c), which needs per-variant beta/SE. It carries no sample-size column, so it cannot drive MAGMA. |
+| `gwas/magma_bigdeli/bigdeli.dedup.pval` | 316 MB | MAGMA input, built from the EUR BCF by `gwas/make_magma_input.sh`. |
+| `gwas/magma_bigdeli/bigdeli.step2.genes.{raw,out}` | 1.5 MB | MAGMA gene analysis of the above (step 2), by `gwas/magma_bigdeli/run_magma_bigdeli.sh`. |
 | `gwas/magma_pgc3/pgc3.step2.genes.raw` | | Same for PGC3 (Trubetskoy et al. 2022); robustness only, S10. |
 | `gwas/ncbiRefSeq_hg38.txt.gz` | 7.0 MB | UCSC RefSeq track, hg38. Gene track under the HCN1 locus zoom (Fig. 4c). `wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/ncbiRefSeq.txt.gz` |
 | `magma/magma_mac/magma` | | MAGMA v1.10 binary, <https://cncr.nl/research/magma/> |
 | `patchseq/nwb/*.nwb` (5 files) | 148 MB | Intracellular recordings for Figure 4f. DANDI dandiset 000636, or the `human_int_patch_seq` cache. See `patchseq/README.md`. |
+
+**Two files, two jobs.** The `.bcf` and the `.gz` are the same European-ancestry
+GWAS in two formats, and both are needed. The gene-level enrichment behind
+Figure 4a/b, S9 and S10 runs on the BCF, because MAGMA is passed a per-variant
+effective sample size (`FORMAT/NE`) that only the BCF carries. The locus zoom in
+Figure 4c runs on the LocusZoom export, which carries the per-variant effect
+sizes the plot draws. `make_magma_input.sh` turns the first into the MAGMA
+`.pval`; it keeps rs-numbered records only, converts `FORMAT/LP` to a p-value,
+and where an rsID appears more than once keeps the smallest p-value.
 
 The gene-location file with the extended MHC excluded
 (`NCBI37.3.gene.loc.extendedMHCexcluded`) is read from a sibling checkout of

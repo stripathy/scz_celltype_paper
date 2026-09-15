@@ -7,8 +7,7 @@ rather than assembled from six module directories at deadline.
 
 The exception is S1, S4 and S5, which are rendered on the cluster by
 `snrnaseq/Final_figures/` and have to be collected by hand — see **Not in this
-folder** at the foot of this file. S7 was in that group until 2026-09-15 and now
-renders from a clone.
+folder** at the foot of this file.
 
 ## Conventions
 
@@ -18,8 +17,8 @@ renders from a clone.
   `.pdf` (vector, editable text, for submission).
 - **These are originals, not copies.** Each renderer's output path points here, so
   re-running a script updates the submission figure in place. There is no copy
-  step and no second copy to drift. (Until 2026-08-06 these were copies of files
-  in `spatial/supplemental_figures/`; that directory is retired and gitignored.)
+  step and no second copy to drift. (`spatial/supplemental_figures/` is retired
+  and gitignored; nothing reads it.)
 - **Tracked in git**, unlike the module output directories, so the submission set
   has version history and is available to collaborators on clone.
 - **The S-number lives in the renderer**, as a `FIGSTEM` constant next to the
@@ -27,11 +26,11 @@ renders from a clone.
 
 ## Contents
 
-Numbering follows the manuscript Doc (`1cO5ZSt…`) as of 2026-09-01. **S1, S4 and
-S5 are built by `snrnaseq/Final_figures/`** (from the snRNA-seq DE and composition
-analyses). Their code has been in the repo since 2026-09-09, but their rendered
-output is not in this folder — those scripts ran on the Alliance cluster and write
-there. See the note at the foot of this file.
+Numbering follows the manuscript Doc (`1cO5ZSt…`). **S1, S4 and S5 are built by
+`snrnaseq/Final_figures/`** (from the snRNA-seq DE and composition analyses).
+Their code is in the repo but their rendered output is not in this folder —
+those scripts run on the Alliance cluster and write there. See the note at the
+foot of this file.
 
 | S# | File | Shows | Built by | Run from |
 |----|------|-------|----------|----------|
@@ -42,8 +41,8 @@ there. See the note at the foot of this file.
 | S5 | not in this folder | Non-neuronal compositional changes | `Supplemental/NonNeuron_supplement.r` | `snrnaseq/Final_figures/` |
 | S6 | `S06_composition_pooling` | Abundance results across pooling strategies and leave-one-dataset-out | `02_plot_pooling_heatmap.R` | repo root |
 | S7 | `S07_composition_no_sst_de_genes` | Composition robust to re-annotation excluding Sst DE genes | `Supplemental/Code/Sensitivity_analysis_Barchart.r` | `snrnaseq/` |
-| S8 | `S08_sst_strata` | Sst depletion groups: definition (a), gene-set burden (b), gene-level z (c), NES and exemplar-gene heatmaps (d, e). Built as a main figure (was Fig. 5 until 2026-09-01) so it can be promoted | `fig5/08_figure5.R` | repo root |
-| S9 | `S09_scz_enrichment_seaad125` | SCZ genetic-risk enrichment across the 125 supertypes of the SEA-AD DLPFC taxonomy (single panel; replaced the 501-type combined-taxonomy version 2026-09-02) | `plot_supp_enrichment_seaad125.R` | repo root |
+| S8 | `S08_sst_strata` | Sst depletion groups: definition (a), gene-set burden (b), gene-level z (c), NES and exemplar-gene heatmaps (d, e). Laid out at main-figure size so it can be promoted | `fig5/08_figure.R` | repo root |
+| S9 | `S09_scz_enrichment_seaad125` | SCZ genetic-risk enrichment across the 125 supertypes of the SEA-AD DLPFC taxonomy (single panel) | `plot_supp_enrichment_seaad125.R` | repo root |
 | S10 | `S10_genetics_ad_robustness` | Genetic-risk and AD comparisons across GWAS version and reference region | `plot_fig4_robustness.R` | repo root |
 
 Regenerate (each writes into this folder in place):
@@ -54,19 +53,19 @@ Rscript code/analysis/plot_markers_resolvability_combined.R      # S2
 Rscript code/analysis/plot_xenium_merfish_composite.R            # S3
 # from the repo root
 Rscript snrnaseq/composition_sensitivity/code/02_plot_pooling_heatmap.R   # S6
-Rscript transcriptomic/scripts/fig5/08_figure5.R                         # S8
+Rscript transcriptomic/scripts/sst_strata/08_figure.R                         # S8
 Rscript genetics/scripts/figures/plot_supp_enrichment_seaad125.R         # S9
 Rscript genetics/scripts/figures/plot_fig4_robustness.R                  # S10
 ```
 
-Not in this version: the RNAscope figure (cut on Etienne's advice 2026-09-01);
-the 501-type enrichment landscape and `S10_supertype_depth_by_diagnosis`, both
-cited nowhere in the Doc and moved to `../not_in_current_version/` (their renderers
-now write there, so re-running them cannot drop a stray file into this folder);
-and the Sst depletion-group controls figure
-(nuclei imbalance, cell-matched draws, interaction NES), dropped 2026-09-01 when the
-analysis moved to the supplement -- its renderer `reserve/sst_strata_supp/figS_strata_controls.R`
-is kept and now writes `reserve_strata_controls.*` to `transcriptomic/results/`.
+Three figures are built but not in this version, and are cited nowhere in the
+Doc: the RNAscope figure, the 501-type enrichment landscape, and
+`S10_supertype_depth_by_diagnosis`. The latter two live in
+`../not_in_current_version/`, and their renderers write there, so re-running one
+cannot drop a stray file into this folder. A fourth, the Sst depletion-group
+controls figure (nuclei imbalance, cell-matched draws, interaction NES), is
+rendered by `reserve/sst_strata_supp/figS_strata_controls.R` into
+`transcriptomic/results/reserve_strata_controls.*`.
 
 The small figure-input CSVs are committed (force-added past the `spatial/output/`
 ignore rule), so every renderer *listed in the code block above* runs from a
@@ -74,8 +73,8 @@ clean clone with no external data. The two ~20 MB per-cell tables behind the S3 
 depth-by-diagnosis figure are **not** committed — regenerate them with the
 `build_*` steps below, which need the Xenium h5ads.
 
-**S2 and S3 were regenerated from the reinstated 2026-04-01 Xenium dataset** (see
-`SCZ_Xenium/archive/README.md`). S2's resolvability panels (c, e) are
+**S2 and S3 are rendered from the April Xenium object** — the canonical one,
+pinned in [`../../../DATA_FLOW.md`](../../../DATA_FLOW.md). S2's resolvability panels (c, e) are
 dataset-independent in practice — they read only the 300-gene panel list from the
 Xenium object and are otherwise leave-one-donor-out CV on the snRNAseq reference.
 
@@ -83,13 +82,10 @@ Xenium object and are otherwise leave-one-donor-out CV on the snRNAseq reference
 cell-type classification and resolvability sections, S3 in the validation
 section.
 
-Each of S2 and S3 merges figures that were once separate. S2 absorbed three —
-panel marker genes, panel resolvability, and Lieber/Kwon agreement — and S3
-merged the Xenium-vs-MERFISH scatter with the standalone per-supertype depth
-figure, dropping its median-depth scatter since panels d and e make the same
-comparison with the full distribution. The five standalone generators were
-removed on 2026-09-04 and are recoverable from the git tag
-`pre-prune-2026-09-04`.
+S2 and S3 are each composites. S2 carries panel marker genes, panel
+resolvability, and Lieber/Kwon agreement; S3 carries the Xenium-vs-MERFISH
+scatter together with the per-supertype depth distributions, which replace a
+median-depth scatter that made the same comparison with less detail.
 
 S2 and S3 are both rendered on a 7.1 in canvas.
 
@@ -122,7 +118,7 @@ full per-cohort objects and wrote to a working directory there, under names that
 do not carry S-numbers. They will not run from a clone. Logged as issue 12 in
 [`../../../KNOWN_ISSUES.md`](../../../KNOWN_ISSUES.md).
 
-**S7 is the exception, since 2026-09-15.** Both its inputs
+**S7 is the exception.** Both its inputs
 (`Compositional_sensitivity_analysis/Files/meta_noSST_genes.csv` and
 `Compositional_analysis/Files/cluster_order_and_colors.csv`) are committed, so it
 renders anywhere. Its `setwd()` still has to be neutralised — issue 11:
@@ -144,10 +140,9 @@ quartz(type = "pdf", file = "../manuscript/figures/supplementary/S07_composition
        width = 21, height = 8); print(p3a); dev.off()
 ```
 
-Both formats are committed as of 2026-09-15; the PDF carries live text, verified
-with `pdftotext`.
+Both formats are committed, and the PDF carries live (selectable) text.
 
-S8 is rendered by `transcriptomic/scripts/fig5/08_figure5.R` straight into this
-folder; see `transcriptomic/scripts/fig5/README.md` for the pipeline behind it. To
+S8 is rendered by `transcriptomic/scripts/sst_strata/08_figure.R` straight into this
+folder; see `transcriptomic/scripts/sst_strata/README.md` for the pipeline behind it. To
 promote it back to a main figure, change `FIGSTEM` and the output directory at the
 bottom of that script.

@@ -9,9 +9,9 @@ It builds **Figure 1a**, **Figure 3**, and Supplementary Figs. **S1, S4, S5 and
 S7**; it supplies the inputs behind **Figure 2**, **Figure 4** and
 Supplementary Figs. **S6 and S8** in the other components.
 
-> The subdirectory READMEs were reconstructed from the code on 2026-09-13, not
-> written by their author — they describe what the scripts do, and Nicole should
-> correct anything that misreads intent. Open items are collected in
+> The subdirectory READMEs were reconstructed from the code rather than written
+> by its author — they describe what the scripts do, and Nicole should correct
+> anything that misreads intent. Open items are collected in
 > [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md).
 
 ## The datasets

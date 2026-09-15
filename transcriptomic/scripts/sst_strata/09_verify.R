@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# Step 9 | Assert every number quoted in the Figure 5 text against its source.
+# Step 9 | Assert every number quoted in the Figure S8 text against its source.
 #
 # House rule: no statistic reaches a manuscript from memory or from reading a
 # plot. This script re-derives each cited value and fails loudly on any mismatch,
@@ -7,7 +7,7 @@
 # change and before pasting text into the Doc.
 #
 # Reference: the Fig-5 results draft (removed 2026-09-04; tag pre-prune-2026-09-04) (VERSION 0 is the working base).
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 
 fails <- 0L
 chk <- function(label, cond, got = NULL) {

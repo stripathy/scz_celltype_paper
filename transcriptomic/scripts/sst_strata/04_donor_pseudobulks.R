@@ -9,7 +9,7 @@
 # once here and reused.
 #
 # Runtime ~3 min. Writes <cohort>_donor_stratum_{counts.parquet,meta.csv}.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages(library(arrow))
 
 st_of <- stratum_of()

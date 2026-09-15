@@ -4,8 +4,8 @@ The two main figures **rendered into this folder**. Each renderer writes
 directly here, so re-running a script updates the submission figure in place;
 there is no copy step and no second copy to drift.
 
-Figures 1 and 3 have renderers in the repo as of 2026-09-09, but they write
-elsewhere — see the note below the table.
+Figures 1 and 3 have renderers in the repo, but they write elsewhere — see the
+note below the table.
 
 | Fig | File | Shows | Built by | Run from |
 |----|------|-------|----------|----------|

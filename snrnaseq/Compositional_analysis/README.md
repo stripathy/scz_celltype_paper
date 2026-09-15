@@ -45,15 +45,12 @@ drops that term.
 
 "Neuronal" is defined by an **external** file,
 `cluster_order_and_colors.csv`, via `class_label ∈ {Neuronal: GABAergic,
-Neuronal: Glutamatergic}`. That file is committed in this directory's `Files/` since 2026-09-13 — see issue 4 (closed) in
-[`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
+Neuronal: Glutamatergic}`. That file is committed in this directory's `Files/`.
 
 > The `(Sex)` term is a plain fixed effect — bare parentheses in an R formula
 > do nothing. The two supporting analyses (`Non_neurons/`,
-> `../Compositional_sensitivity_analysis/`) used `(1|Sex)` until 2026-09-15 and
-> now match this one. Issue 1 in
-> [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md), closed; the re-run it forced
-> is issue 20.
+> `../Compositional_sensitivity_analysis/`) use the same fixed-effect term, so
+> all three crumblr analyses model `Sex` identically.
 
 ### 3 — `3_meta_analysis.r`
 

@@ -15,7 +15,7 @@
 #
 # Runtime ~35 min (voom is fit twice per model for duplicateCorrelation).
 # Enrichment on these ranks is a separate step (05b) so it can be re-run cheaply.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({
   library(edgeR); library(limma); library(parallel)
 })

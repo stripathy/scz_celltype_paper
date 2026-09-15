@@ -2,7 +2,7 @@
 
 Generated **2026-08-31 13:45:04** on `tri-login02`.
 Destination: `scz_celltype_paper/shared/snrnaseq_de/stratum_pseudobulks/`
-Purpose: stratified DE/GSEA of Sst interneuron supertypes (Figure 5).
+Purpose: stratified DE/GSEA of Sst interneuron supertypes (Figure S8).
 
 Per cohort: `<cohort>_pseudobulk_counts.parquet` (genes x donor-supertype groups)
 and `<cohort>_groups.csv` (one row per group column).

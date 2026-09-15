@@ -13,7 +13,7 @@
 # which is the honest answer to "is this driven by one dataset?".
 #
 # Runtime ~4 min.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 
 gsea <- read_csv(file.path(P$pb, "gsea_all_signatures.csv"), show_col_types = FALSE)
 MODS <- modules(gsea)[c("translation", "oxphos", "synaptic")]

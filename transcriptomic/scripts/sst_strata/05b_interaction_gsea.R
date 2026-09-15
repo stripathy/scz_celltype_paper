@@ -10,7 +10,7 @@
 # non-depleted one. Only the depleted-vs-non-depleted and linear-trend
 # coefficients are ranked: the intermediate-vs-non-depleted coefficient has no
 # gene at FDR < 0.10, so its ranking carries no signal worth enriching.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 set.seed(42)
 
 meta <- read_csv(file.path(P$pb, "interaction_meta.csv"), show_col_types = FALSE)

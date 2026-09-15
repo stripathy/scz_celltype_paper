@@ -15,7 +15,7 @@
 #
 # Deliberately a forest, not a violin: the quantity being tested is the
 # meta-analytic effect, and per-cohort consistency is the point.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({ library(ggplot2); library(cowplot) })
 
 tests  <- read_csv(file.path(P$pb, "module_score_tests.csv"), show_col_types = FALSE)

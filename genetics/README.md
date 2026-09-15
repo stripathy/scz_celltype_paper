@@ -1,11 +1,7 @@
 # genetics/ — SCZ common-variant risk across cell types
 
 Produces **Figure 4**, **Supplementary Figs. S9 and S10**, and **Supplementary
-Table T6**. Everything else that once lived here (the combined SEA-AD + Siletti
-"Franken" taxonomy, the Siletti whole-brain enrichment, conditional/forward
-selection, gene-driver scatters, the interactive web app) was retired and
-removed on 2026-09-04; it is recoverable from the git tag
-`pre-prune-2026-09-04`.
+Table T6**.
 
 ## The analysis in one paragraph
 
@@ -19,15 +15,21 @@ down to one gene (*HCN1*), one locus, and the intrinsic physiology of the
 patch-seq cells that express it.
 
 PGC3 (Trubetskoy et al. 2022) and the SEA-AD **MTG** taxonomy (137 supertypes)
-appear only as robustness checks in S10. The combined SEA-AD + Siletti taxonomy
-was dropped on L. Duncan's advice (2026-08-29).
+appear only as robustness checks in S10. Every expression-derived panel of
+Figure 4 sits on the same 125-supertype DLPFC reference.
 
 ## What builds what
 
-Run from the repo root. Steps 1–2 need the large inputs in `data/`
+Run from the repo root. Steps 0–2 need the large inputs in `data/`
 (see `data/README.md`); step 3 onward runs from committed files.
 
 ```bash
+# 0. GWAS-VCF -> MAGMA gene-analysis input            (needs the Bigdeli BCF)
+bash genetics/data/gwas/make_magma_input.sh
+#    -> data/gwas/magma_bigdeli/bigdeli.dedup.pval
+bash genetics/data/gwas/magma_bigdeli/run_magma_bigdeli.sh
+#    -> data/gwas/magma_bigdeli/bigdeli.step2.genes.raw
+
 # 1. Expression reference -> per-supertype means      (needs the 3 A9 h5ads)
 python3 genetics/scripts/figures/build_dlpfc_specificity.py    # DLPFC 125
 python3 genetics/scripts/figures/seaad_supertype_log1p.py      # MTG 137, S10 only
@@ -62,9 +64,10 @@ writes the plot window it reads. Everything else in step 3 is independent.
 
 ## Figure 4, panel by panel
 
-The renderer builds panels under their historical letters and
-`fig4_assemble_nod.R` relabels them a–i (an earlier HCN1-expression-vs-depletion
-panel was dropped, so the old e–j became d–i).
+The panel CSVs are named for a different lettering than the published figure —
+`panel_B_*` is panel **a**, `panel_E_*` is panel **d**, and so on.
+`fig4_assemble_nod.R` does the relabelling. Read the table left to right to go
+from a published panel to the file behind it.
 
 | Panel | Shows | Data | Built by |
 |---|---|---|---|

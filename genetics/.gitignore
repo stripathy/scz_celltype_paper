@@ -18,6 +18,16 @@ data/patchseq/swc/*
 !data/patchseq/swc/758996755_upright.swc
 !data/patchseq/swc/797048104_upright.swc
 
+# The MAGMA chain is code, not data: these two build the gene-level analysis
+# behind Fig. 4a/b, S9 and S10 from the Bigdeli GWAS-VCF. The sumstats they read
+# (BCF 533 MB, .pval 316 MB) stay untracked.
+!data/gwas/
+data/gwas/*
+!data/gwas/make_magma_input.sh
+!data/gwas/magma_bigdeli/
+data/gwas/magma_bigdeli/*
+!data/gwas/magma_bigdeli/run_magma_bigdeli.sh
+
 # ============================================================================
 # Intermediate results — large matrices, npz files (1.3GB)
 # Exception: the small Sst mean-expression slice + its provenance note are

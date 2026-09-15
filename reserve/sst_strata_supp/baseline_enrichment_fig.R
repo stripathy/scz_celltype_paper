@@ -1,12 +1,12 @@
 #!/usr/bin/env Rscript
 # Two-panel mockup for the baseline-signature enrichment (Fig. 4g companion):
-# a) top ORA terms per direction; b) baseline log2FC of the Fig. 5 disease-state
-# modules. Direction colors reuse the Fig. 5a stratum semantics (purple =
-# depleted side, green = spared side); module colors reuse Fig. 5 FAM_COLS.
-source("transcriptomic/scripts/fig5/_common.R")
+# a) top ORA terms per direction; b) baseline log2FC of the Fig. S8 disease-state
+# modules. Direction colors reuse the Fig. S8a stratum semantics (purple =
+# depleted side, green = spared side); module colors reuse Fig. S8 FAM_COLS.
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({ library(forcats); library(ggplot2); library(cowplot) })
 OUT <- file.path(P$supp, "baseline_marker_enrichment")
-# depleted/spared reuse the Figure 5a stratum colours; modules reuse FAM_COLS
+# depleted/spared reuse the Figure S8a stratum colours; modules reuse FAM_COLS
 DIR_COLS <- c(`Higher in depleted` = unname(STRAT_COLS[["depleted"]]),
               `Higher in spared`   = unname(STRAT_COLS[["non_depleted"]]))
 MOD_COLS <- c(Synaptic = unname(FAM_COLS[["synaptic"]]),

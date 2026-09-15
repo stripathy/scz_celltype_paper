@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
-# Step 8 | Supplementary figure S8 (built and laid out as a main figure -- it was
-# Figure 5 until 2026-09-01 -- so it can be promoted again by changing FIGSTEM and
-# the output directory at the bottom).
+# Step 8 | Supplementary figure S8. Laid out at main-figure size, so it can be
+# promoted to a main figure by changing FIGSTEM and the output directory at the
+# bottom.
 #
 #   a  stratum definition: crumblr abundance change vs median cortical depth for
 #      the 16 Sst supertypes, with the layer gutter and the FDR < 0.20 boundary
@@ -14,7 +14,7 @@
 # Purely a rendering step -- no statistics are computed here. Panels a and b use
 # the strata palette and the Figure 2 direction palette respectively; c-e use the
 # module palette. All three come from _common.R so the supplements match.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({
   library(ggplot2); library(cowplot); library(ggrepel)
 })
@@ -69,7 +69,7 @@ p_def <- local({
     scale_colour_manual(values = STRAT_BY_LABEL, name = NULL) +
     labs(x = "Abundance change in SCZ (crumblr estimate ± SE)",
          y = "Median cortical depth (0 = pia)") +
-    theme_fig5() +
+    theme_strata() +
     theme(legend.position = "none")
 })
 
@@ -100,7 +100,7 @@ p_burden <- local({
     scale_y_continuous(expand = expansion(mult = c(0, 0.24))) +
     labs(x = NULL, y = "Significant gene sets (count)") +
     guides(fill = guide_legend(ncol = 1)) +
-    theme_fig5() +
+    theme_strata() +
     # inset top-right: the Non-depleted column is empty and Intermediate reaches
     # only 59, so this corner is free once the y axis has headroom
     theme(legend.position = c(0.99, 0.99), legend.justification = c(1, 1),
@@ -194,7 +194,7 @@ p_gsc <- local({
              label = sprintf("rho == %.2f", rho), parse = TRUE) +
     coord_cartesian(xlim = c(-5.4, 5.4), ylim = c(-5.4, 4.9)) +
     labs(x = "Gene z, depleted stratum", y = "Gene z, non-depleted stratum") +
-    theme_fig5() +
+    theme_strata() +
     # inset bottom-right: verified empty, 0 of 9,631 genes fall in x > 2.2, y < -2.2
     theme(legend.position = c(1.0, 0.0), legend.justification = c(1, 0),
           legend.text = element_text(size = LEGEND_TEXT),
@@ -229,7 +229,7 @@ p_path <- local({
                labeller = labeller(block = label_wrap_gen(12))) +
     scale_x_discrete(position = "top") +
     labs(x = NULL, y = NULL) +
-    theme_fig5() +
+    theme_strata() +
     theme(axis.text.x.top = element_text(size = AXIS_TEXT, angle = 45, hjust = 0),
           strip.background = element_rect(fill = "grey92"),
           strip.text.y = element_text(angle = 270, size = LEGEND_TEXT, face = "bold"),
@@ -267,7 +267,7 @@ p_gene <- local({
                labeller = labeller(block = label_wrap_gen(12))) +
     scale_x_discrete(position = "top", expand = expansion(add = c(1.75, 0.55))) +
     labs(x = NULL, y = NULL) +
-    theme_fig5() +
+    theme_strata() +
     theme(axis.text.x.top = element_text(size = AXIS_TEXT, angle = 45, hjust = 0),
           axis.text.y = element_blank(), axis.ticks = element_blank(),
           strip.background = element_rect(fill = "grey92"),

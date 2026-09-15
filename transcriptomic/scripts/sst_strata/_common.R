@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# Shared constants and helpers for the Figure 5 pipeline (Sst depletion strata).
+# Shared constants and helpers for the Figure S8 pipeline (Sst depletion strata).
 #
 # WHY this file exists. Before consolidation, the module definitions (the
 # leading-edge unions behind "translation", "OxPhos/mito", "synaptic",
@@ -231,7 +231,7 @@ prep_model_frame <- function(m) {
 # built at 8.0 in wide and placed in a 7.1 in column, so every text size is its
 # nominal value x 7.1/8.0 in print: base 8.0 pt, axis titles 7.5, tick labels 7.0.
 # That is deliberately ~1 pt larger than Figure 2, which builds at 7.1 in with a
-# 7 pt base. Figure 5 follows Figure 4 rather than Figure 2 so the two figures the
+# 7 pt base. Figure S8 follows Figure 4 rather than Figure 2 so the two figures the
 # reader meets last look the same.
 FIG_SCALE <- 8.0 / 7.1
 FIG_W     <- 8.0     # built here, printed at 7.1 in
@@ -269,7 +269,7 @@ nes_fill <- function(lims = c(-3, 3), name = "NES (SCZ vs control)") {
                        limits = lims, oob = scales::squish, name = name)
 }
 
-theme_fig5 <- function(base_size = FS) {
+theme_strata <- function(base_size = FS) {
   suppressPackageStartupMessages(library(cowplot))
   theme_cowplot(font_size = base_size) +
     theme(axis.title = element_text(size = AXIS_TITLE),
@@ -283,7 +283,7 @@ theme_fig5 <- function(base_size = FS) {
 }
 
 # House significance coding, identical to Figures 2 and 3 (see their legends in
-# the manuscript). Figure 5 previously used a shifted scale in which ** meant
+# the manuscript). Figure S8 previously used a shifted scale in which ** meant
 # FDR < 0.01, so the same glyph carried different meanings in different figures.
 stars_of <- function(padj) ifelse(padj < 0.01, "***", ifelse(padj < 0.05, "**",
                           ifelse(padj < 0.10, "*", "")))

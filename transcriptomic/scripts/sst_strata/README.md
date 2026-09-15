@@ -1,4 +1,4 @@
-# Figure 5 pipeline — Sst depletion strata
+# Sst depletion strata — the Supplementary Fig. S8 pipeline
 
 Self-contained pipeline for the paper's final main figure: how the SCZ
 transcriptional state of Sst interneurons differs between the supertypes that are
@@ -7,15 +7,15 @@ depleted (Fig. 3) and those that persist.
 Run every script from the **repo root**. Each sources `_common.R`.
 
 ```bash
-Rscript transcriptomic/scripts/fig5/01_strata.R            #  <1 min
-Rscript transcriptomic/scripts/fig5/02_stratum_de.R        # ~10 min  (8 cores)
-Rscript transcriptomic/scripts/fig5/03_stratum_gsea.R      #  ~8 min
-Rscript transcriptomic/scripts/fig5/04_donor_pseudobulks.R #  ~3 min
-Rscript transcriptomic/scripts/fig5/05_interaction.R       # ~25 min
-Rscript transcriptomic/scripts/fig5/06_module_scores.R     #  ~4 min
-Rscript transcriptomic/scripts/fig5/07_xenium_stratum.R    #  <1 min
-Rscript transcriptomic/scripts/fig5/08_figure5.R           #  <1 min
-Rscript transcriptomic/scripts/fig5/09_verify.R            #  <1 min  ← must PASS
+Rscript transcriptomic/scripts/sst_strata/01_strata.R            #  <1 min
+Rscript transcriptomic/scripts/sst_strata/02_stratum_de.R        # ~10 min  (8 cores)
+Rscript transcriptomic/scripts/sst_strata/03_stratum_gsea.R      #  ~8 min
+Rscript transcriptomic/scripts/sst_strata/04_donor_pseudobulks.R #  ~3 min
+Rscript transcriptomic/scripts/sst_strata/05_interaction.R       # ~25 min
+Rscript transcriptomic/scripts/sst_strata/06_module_scores.R     #  ~4 min
+Rscript transcriptomic/scripts/sst_strata/07_xenium_stratum.R    #  <1 min
+Rscript transcriptomic/scripts/sst_strata/08_figure.R           #  <1 min
+Rscript transcriptomic/scripts/sst_strata/09_verify.R            #  <1 min  ← must PASS
 ```
 
 ## Dependency graph
@@ -42,7 +42,7 @@ Rscript transcriptomic/scripts/fig5/09_verify.R            #  <1 min  ← must P
                                                                   module_score_tests.csv
    spatial supertype DE ──────────────────► 07_xenium_stratum ──► xenium_stratum_concordance.csv
 
-   08_figure5  ◄── strata_definition + gsea_all_signatures + stratum_gene_signatures + subclass DE
+   08_figure  ◄── strata_definition + gsea_all_signatures + stratum_gene_signatures + subclass DE
        └─► manuscript/figures/supplementary/S08_sst_strata.(png|pdf)
 
    09_verify   ◄── everything above; asserts every number quoted in the draft
@@ -57,15 +57,15 @@ interaction test in `05` possible. Both aggregations come from the same export.
 All under `transcriptomic/results/sst_strata_gsea/`, **except the figure**, which
 is written directly into its submission location so there is no copy to drift:
 
-- `manuscript/figures/supplementary/S08_sst_strata.{png,pdf}` -- the analysis was
-  Figure 5 until 2026-09-01 and is still laid out as a main figure; the S-number
-  is the `FIGSTEM` constant at the bottom of `08_figure5.R`
+- `manuscript/figures/supplementary/S08_sst_strata.{png,pdf}` -- laid out at
+  main-figure size, so it can be promoted; the S-number is the `FIGSTEM`
+  constant at the bottom of `08_figure.R`
 - the controls figure (nuclei imbalance, cell-matched draws, interaction NES) is
   **not in the current manuscript**; `reserve/sst_strata_supp/figS_strata_controls.R`
   still renders it as `reserve_strata_controls.{png,pdf}` under results/ if a
-  reviewer asks. The supplements and sensitivity analyses that used to live in
-  `supp/` moved to `reserve/sst_strata_supp/` on 2026-09-04; they still source
-  this directory's `_common.R` and still run from the repo root.
+  reviewer asks. The supplements and sensitivity analyses built on this pipeline
+  live in `reserve/sst_strata_supp/`; they source this directory's `_common.R`
+  and run from the repo root.
 
 | File | Written by | Used for |
 |---|---|---|
@@ -83,12 +83,12 @@ is written directly into its submission location so there is no copy to drift:
 ## Figure sizing (matches Figure 4)
 
 Figure 4 is built at **8.0 in wide and placed in a 7.1 in column**, so its text
-prints at its nominal size x 7.1/8.0. Figure 5 uses Figure 4's constants exactly,
+prints at its nominal size x 7.1/8.0. S8 uses Figure 4's constants exactly,
 via `FIG_SCALE <- 8.0/7.1` in `_common.R`. Note Figure 4's own `FIG_WIDTH_IN`
 variable says 6.5, but its exported PNG is 8.00 x 7.46 in -- the 8.0 is what
 matters and what `FIG_SCALE` encodes.
 
-| | Figure 2 | Figure 4 | Figure 5 |
+| | Figure 2 | Figure 4 | S8 |
 |---|---|---|---|
 | built at | 7.1 in | 8.0 in | 8.0 in |
 | printed at | 7.1 in | 7.1 in | 7.1 in |
@@ -99,7 +99,7 @@ matters and what `FIG_SCALE` encodes.
 | panel letters | 8 | 10.14 -> 9.0 | 10.14 -> 9.0 |
 | smallest text | — | 7.18 -> 6.4 | 7.18 -> 6.4 |
 
-Figure 4 (and now Figure 5) therefore run about 1 pt larger in print than
+Figure 4 and S8 therefore run about 1 pt larger in print than
 Figure 2, which is a deliberate choice recorded in `fig4_style.R`. Nature
 guidance is 5-7 pt for final text; tick labels land exactly at 7.0.
 

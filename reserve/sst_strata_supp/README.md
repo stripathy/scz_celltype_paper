@@ -2,13 +2,12 @@
 
 Supplements and sensitivity analyses for **Supplementary Fig. S8**, none of
 which are in the paper. Run from the repo root; each sources
-`transcriptomic/scripts/fig5/_common.R`, so palettes, module definitions and
+`transcriptomic/scripts/sst_strata/_common.R`, so palettes, module definitions and
 stratum membership match S8 automatically.
 
-Moved here from `transcriptomic/scripts/fig5/supp/` on 2026-09-04. The headings
-below are the state as of 2026-09-01, when the S8 section was shortened: the
-"proposed" set was built for a version of the section that is no longer in the
-paper, so in current terms every script on this page is reserve.
+Nothing on this page is in the paper. The headings below still distinguish a
+"proposed" set, which was built for a longer version of the S8 section; in
+current terms every script here is reserve.
 
 ## Was proposed for the paper
 
@@ -19,7 +18,7 @@ paper, so in current terms every script on this page is reserve.
 | `xenium_crossplatform.R` | `figS_xenium_crossplatform.png` | Shared component replicates on an independent platform/cohort; graded modules are absent from the 300-gene panel |
 | `baseline_enrichment.R` → `baseline_enrichment_fig.R` | `baseline_marker_enrichment/` | What distinguishes the depleted supertypes in NEUROTYPICAL tissue. Arguably a Figure 4 supplement |
 
-Requires the core S8 pipeline (`transcriptomic/scripts/fig5/01`–`07`) to have run first.
+Requires the core S8 pipeline (`transcriptomic/scripts/sst_strata/01`–`07`) to have run first.
 
 ## Reserve — built, not proposed for the initial submission
 

@@ -17,10 +17,11 @@ export step.
 SWCs copied byte-identical from `~/Github/human_int_patch_seq/data/morphology/swc/`;
 NWBs from `~/Github/human_int_patch_seq/data/nwb_cache/` where cached, otherwise
 from DANDI dandiset 000636 (1037461069 = `sub-1036289507_ses-1037460966_icephys.nwb`;
-1079568285 = `sub-1078812471_ses-1079568103_icephys.nwb`, fetched 2026-08-31).
-The Sst_22 cell 907585117 was the exemplar until 2026-08-31, when Sst_20 -- the
-only reconstructed Sst_20 cell -- replaced it. Its files may still be on disk but
-are not tracked and are not read by anything.
+1079568285 = `sub-1078812471_ses-1079568103_icephys.nwb`).
+
+Note 1079568285 is the **only** reconstructed Sst_20 cell in the dataset, which
+is why Sst_20 rather than Sst_22 is the upper-layer depleted exemplar in panel
+e. The published legend names Sst_20, Sst_25 and Sst_3.
 
 ## What each is for
 

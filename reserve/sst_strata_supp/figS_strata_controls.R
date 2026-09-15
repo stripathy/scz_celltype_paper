@@ -8,14 +8,14 @@
 # stretch of the results and neither fills a page alone:
 #   a  the cell-count confound and its removal by matching
 #   b  gene-set burden per group, unmatched versus five cell-matched draws
-#   c  diagnosis x depletion-group interaction for the Fig. 5d gene sets, plus
+#   c  diagnosis x depletion-group interaction for the Fig. S8d gene sets, plus
 #      the two sets named in the text
 #
 # a and b support the sentence on downsampling control nuclei; c supports the
 # sentence on formal interaction models, which otherwise cites no figure.
 #
 # Inputs: subsample_cells.py, sensitivity_cellsubsample.R, 05b_interaction_gsea.R.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({ library(ggplot2); library(cowplot) })
 
 FIGSTEM <- "reserve_strata_controls"
@@ -52,7 +52,7 @@ p_a <- ggplot(d_imb, aes(pct, group, colour = state)) +
   geom_point(size = 2.4 * GEO, position = position_dodge(width = 0.55)) +
   scale_colour_manual(values = c(Observed = "grey35", `Cell-matched` = "#B2182B"), name = NULL) +
   labs(x = "Nuclei per donor, SCZ vs control (%)", y = NULL) +
-  theme_fig5() +
+  theme_strata() +
   theme(legend.position = c(0.02, 0.14), legend.justification = c(0, 0),
         legend.background = element_blank())
 
@@ -69,7 +69,7 @@ p_b <- ggplot(b_un, aes(group, n)) +
   geom_point(data = b_mt, colour = "#B2182B", size = 1.9 * GEO, alpha = 0.85,
              position = position_jitter(width = 0.10, height = 0, seed = 1)) +
   labs(x = NULL, y = "Gene sets at FDR < 0.10") +
-  theme_fig5() +
+  theme_strata() +
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
 
 # ---- c | the interaction -----------------------------------------------------
@@ -105,7 +105,7 @@ p_c <- ggplot(d_c, aes(NES, reorder(lab, NES), colour = block)) +
   scale_colour_manual(values = setNames(unname(FAM_COLS[names(BL)]), unname(BL)), name = NULL) +
   scale_x_continuous(expand = expansion(mult = c(0.14, 0.14))) +
   labs(x = "Interaction NES (depleted vs non-depleted)", y = NULL) +
-  theme_fig5() +
+  theme_strata() +
   theme(legend.position = c(0.01, 0.97), legend.justification = c(0, 1),
         legend.background = element_blank(), legend.key.size = unit(7, "pt"),
         axis.text.y = element_text(size = LBL_SMALL * 2.845))

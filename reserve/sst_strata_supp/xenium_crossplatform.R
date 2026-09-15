@@ -11,7 +11,7 @@
 #      panel carries 1 of 130 translation and 2 of 114 OxPhos leading-edge genes.
 #
 # Inputs come from 07_xenium_stratum.R, which documents the stratum aggregation.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({ library(ggplot2); library(cowplot); library(ggrepel) })
 
 conc <- read_csv(file.path(P$out, "xenium_stratum_concordance.csv"), show_col_types = FALSE)

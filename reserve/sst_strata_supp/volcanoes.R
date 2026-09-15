@@ -11,8 +11,8 @@
 # a  SCZ vs control within each stratum
 # b  the interaction contrasts (depleted vs non-depleted, intermediate vs
 #    non-depleted, linear trend across strata)
-# Points coloured by module membership, using the same palette as Figure 5.
-source("transcriptomic/scripts/fig5/_common.R")
+# Points coloured by module membership, using the same palette as Figure S8.
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({ library(ggplot2); library(cowplot); library(ggrepel) })
 
 g  <- read_csv(file.path(P$pb, "gsea_all_signatures.csv"), show_col_types = FALSE)

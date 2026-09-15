@@ -116,8 +116,6 @@ Subject metadata loading (handles non-standard Excel XML format).
 | `plot_merfish_xenium_benchmark.py` | correlation classifier r = 0.80 vs Harmony r = 0.73 on MERFISH proportions |
 | `02c_run_harmony_transfer.py`, `compare_harmony_vs_corr.py` | why the centroid classifier replaced Harmony+kNN: Sst inflated to 12.1% vs ~2.5% expected, VLMC called Sst 56% of the time, 69% agreement |
 
-The last two were in an archive directory until 2026-09-04, even though SM1
-depends on them.
 
 ## What is not here
 
@@ -134,13 +132,10 @@ depends on them.
   here; the committed depth-platform summary carries medians.
 - **The interactive cell browser.** The viewer front end, its Playwright suite
   and the three export steps that feed it (`03`, `06`, `07`) live in the
-  upstream `SCZ_Xenium` repo and were removed here on 2026-09-04. They are not
-  part of the paper.
+  upstream `SCZ_Xenium` repo. They are not part of the paper.
 - **Exploratory work**: density and depth-stratified composition, presentation
-  figures, MERSCOPE, probe-panel design, nuclear-doublet resolution, and the
-  `K = 100` low-CPS depth-model variants that were never wired into the
-  pipeline. Removed at the same time; recoverable from the git tag
-  `pre-prune-2026-09-04`.
+  figures, MERSCOPE, probe-panel design, nuclear-doublet resolution, and
+  `K = 100` low-CPS depth-model variants. None was wired into the pipeline.
 
 `plot_supertype_depth_casecontrol.R` and its data builder are kept even though
 the figure is not in the paper: it is the null control showing that the

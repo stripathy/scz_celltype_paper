@@ -11,7 +11,7 @@
 #
 # Writes the single source of truth for stratum membership; every downstream step
 # reads it rather than re-listing supertypes.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 
 crum <- read_csv(P$crumblr, show_col_types = FALSE) |>
   filter(str_starts(CellType, "Sst"), !str_detect(CellType, "Chodl")) |>

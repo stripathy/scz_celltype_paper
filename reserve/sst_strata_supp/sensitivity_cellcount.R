@@ -23,7 +23,7 @@
 #         relationship between a gene's expression level and its diagnosis
 #         effect, and the modules should be unremarkable once that is accounted
 #         for.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({ library(edgeR); library(limma); library(parallel) })
 set.seed(42)
 N_CORES <- max(1, detectCores() - 2)

@@ -9,7 +9,7 @@
 # discarded. Everything downstream is the main pipeline, unchanged.
 #
 # Reported across independent random draws, since each draw is one realisation.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({ library(arrow); library(edgeR); library(limma); library(parallel) })
 N_CORES <- max(1, detectCores() - 2)
 SUB  <- file.path(P$supp, "cellsub")

@@ -5,10 +5,6 @@ seven-dataset snRNA-seq meta-analysis and the Xenium spatial dataset. This
 component builds **Figure 2** (cross-platform DE) and **Supplementary Fig. S8**
 (the Sst depletion-strata analysis), and nothing else.
 
-The exploratory GSEA / gene-ontology / pathway work that once lived here was
-removed on 2026-09-04; none of it entered the manuscript. It is recoverable
-from the git tag `pre-prune-2026-09-04`.
-
 ## Figure 2
 
 Ten panels, all assembled by one script.
@@ -35,12 +31,8 @@ Rscript scripts/09_composite_figure.R         # the figure
 [`REPRODUCE.md`](REPRODUCE.md). Steps 10 and 12 are only needed when their
 inputs change; their outputs are committed under `results/tables/`.
 
-It regenerates from a clean clone. Commit `038490d` (2026-09-09) had briefly
-broken that by reading three files from `/scratch/nendresz/`; all three are now
-committed snapshots under `data/figure_inputs/` with `MANIFEST.tsv` rows, and
-the panel-i inset was rebuilt on snRNA-seq nuclei proportions rather than Xenium
-cell proportions. Closed as issue 15 in
-[`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md).
+It regenerates from a clean clone: every input it reads is a committed snapshot
+under `data/figure_inputs/`, each with a `MANIFEST.tsv` row.
 
 `00_refresh_figure_inputs.R` resyncs `data/figure_inputs/` from the canonical
 upstream sources and rewrites `MANIFEST.tsv`. `_figure_inputs.R` checks that
@@ -49,27 +41,23 @@ manifest on every read and halts the render if a source has moved on.
 The guard has one deliberate blind spot worth knowing: when a recorded source is
 **absent** on the current machine it is skipped and the snapshot is trusted, so
 that a clone with no upstream repos still renders. A snapshot whose source only
-ever existed on one laptop therefore never gets checked. `crumblr_input_subclass_
-corr.csv` sat here unchecked for that reason until 2026-09-15, when it was dropped:
-nothing had read it since the panel-i inset moved to snRNA-seq proportions, and it
-is one of the Xenium sensitivity variants, which are built without Br2039 while the
-four files the paper actually uses (`_neuronal`, `_nonneuronal`, and the two pooled)
-include all 24 donors. The lesson stands for any future snapshot — prefer a source
-path inside the repo, which the guard can always check.
+ever existed on one laptop is therefore never checked. When adding one, prefer a
+source path inside the repo, which the guard can always reach.
 
 ## Supplementary Fig. S8 — Sst depletion strata
 
-A nine-step pipeline in [`scripts/fig5/`](scripts/fig5/README.md) asking how the
+A nine-step pipeline in [`scripts/sst_strata/`](scripts/sst_strata/README.md) asking how the
 SCZ transcriptional state of Sst interneurons differs between the supertypes
-depleted in Figure 3 and those that persist. It was built as Figure 5 and moved
-to the supplement on 2026-09-01, so it is still laid out as a main figure.
+depleted in Figure 3 and those that persist. The figure is laid out at
+main-figure size so it can be promoted; in the manuscript it is Supplementary
+Fig. S8.
 
 ```bash
 # from the repo root, in order; ~50 min total
-Rscript transcriptomic/scripts/fig5/01_strata.R
+Rscript transcriptomic/scripts/sst_strata/01_strata.R
 # ... through ...
-Rscript transcriptomic/scripts/fig5/08_figure5.R    # -> manuscript/figures/supplementary/S08_sst_strata
-Rscript transcriptomic/scripts/fig5/09_verify.R     # must PASS
+Rscript transcriptomic/scripts/sst_strata/08_figure.R    # -> manuscript/figures/supplementary/S08_sst_strata
+Rscript transcriptomic/scripts/sst_strata/09_verify.R     # must PASS
 ```
 
 `09_verify.R` asserts every number quoted in the draft against its source table.
@@ -85,7 +73,7 @@ data/figure_inputs/   committed Fig 2 inputs + MANIFEST.tsv (staleness guard)
 data/stratum_*_export/  manifests for the cluster exports behind S8 (the
                         parquet/h5ad payloads are gitignored)
 scripts/              Fig 2 chain (00, 09, 10, 12, _figure_inputs)
-scripts/fig5/         the S8 pipeline (01-09 + _common.R)
+scripts/sst_strata/         the S8 pipeline (01-09 + _common.R)
 results/tables/       committed Fig 2 panel inputs (exemplars, CP1K)
 results/sst_strata_gsea/  committed S8 statistics
 notes/                figure legend + cross-platform validation write-ups

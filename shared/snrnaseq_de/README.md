@@ -7,11 +7,11 @@ exception is `nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv`,
 which is small, load-bearing for three components, and had no copy on any machine
 but the cluster; it is tracked so a clone resolves the seam.
 
-The pipeline's **code** lives in [`../../snrnaseq/`](../../snrnaseq/README.md)
-as of 2026-09-09. Its **outputs** still arrive here as staged copies and
-symlinks rather than from `snrnaseq/` directly, because those analyses ran on
-the Alliance cluster and the results were staged down by hand. So this directory
-remains the seam; what changed is that each export can now be traced to the
+The pipeline's **code** lives in [`../../snrnaseq/`](../../snrnaseq/README.md).
+Its **outputs** arrive here as staged copies and symlinks rather than from
+`snrnaseq/` directly, because those analyses run on the Alliance cluster and the
+results are staged down by hand. This directory is the seam, and each export
+here can be traced to the
 script that wrote it.
 
 Entries are either **real files held here** or **symlinks** to a canonical
@@ -38,17 +38,16 @@ committed snapshots taken from here, guarded by a checksum manifest — see
 `../../transcriptomic/data/figure_inputs/README.md`.
 
 Supplementary S8 reads two entries here directly. `P$crumblr` points at
-`nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv`, which is now
-tracked, so it resolves from a clone. `P$subclass` had no such copy. A 2026-09-13 fix made it prefer this directory
-and fall back to `transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv`,
-on the belief that the two were byte-identical. **They are not**, and on
-2026-09-15 the preference was reversed: S8 now always reads the committed
-snapshot. A seam copy left on an author's machine from before Nicole's
-2026-09-13 rerun has 222,028 rows and 345 Sst genes at FDR < 0.10; the snapshot
-(md5 `f7ff12756d1ffcc143e2f723ea4fd249`, matching her current
-`snRNAseq_DE/Files/` output) has 231,135 and 343. Preferring the seam drew one
-set of numbers on this machine and another on any clone. See issues 16 and 23 in
-[`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
+`nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv`, which is
+tracked, so it resolves from a clone. For subclass DE, S8 always reads the
+committed snapshot `transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv`
+(md5 `f7ff12756d1ffcc143e2f723ea4fd249`), **not** this directory.
+
+That distinction is load-bearing, because a superseded subclass DE table is
+still in circulation on some machines. It has 222,028 rows and yields **345**
+Sst genes at FDR < 0.10; the canonical table has 231,135 rows and yields
+**343**. Reading the seam in preference to the snapshot draws one set of numbers
+locally and another on a clone. **343 is the current number.**
 
 Two export specs also live here — `EXPORT_SPEC_stratum_pseudobulks.md` and
 `EXPORT_SPEC_sst_celllevel.md`. They are the instructions used to produce the

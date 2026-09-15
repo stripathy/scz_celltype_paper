@@ -69,12 +69,9 @@ That join is recorded in `genetics/results/figures/r_panels/MANIFEST.tsv`, so
 `shared/verify_provenance.py` will flag it if this component's output changes
 without the panel being refreshed.
 
-## History
+## Why this is its own component
 
-This analysis previously lived in `genetics/` as `scripts/14_seaad_dlpfc_crumblr*`
-with its data under `genetics/data/seaad_dlpfc/`. It was moved out on 2026-08-06:
-it is a compositional analysis on snRNAseq data, with no genetics content — it
-consumes no GWAS, MAGMA, or fine-mapping input — and it owns its own external
-dataset, which is what makes it a component rather than a script in someone
-else's. The move preserved the numbers exactly (re-running from the new location
-reproduces the committed panel with max |Δ slope| = 0 across all 16 supertypes).
+It is a compositional analysis on snRNA-seq data with no genetics content — it
+consumes no GWAS, MAGMA or fine-mapping input — and it owns its own external
+dataset. That is what makes it a component rather than a script inside
+`genetics/`, which is the only other place it could sit.

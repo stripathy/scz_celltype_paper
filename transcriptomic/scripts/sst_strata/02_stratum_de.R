@@ -3,7 +3,7 @@
 #
 # Replicates the paper's snRNA-seq DE framework (Methods, "Cell type-specific
 # differential gene expression") one aggregation level up -- strata instead of
-# supertypes -- so Figure 5 is directly comparable with Figure 2:
+# supertypes -- so Figure S8 is directly comparable with Figure 2:
 #   per cohort: donors with >= MIN_CELLS nuclei of the group; genes with >= 1
 #   count in >= 80% of retained donors; TMM -> voom -> limma moderated t;
 #   ~ dx + scale(age) + sex + scale(PMI)   (PMI omitted where >50% missing)
@@ -15,7 +15,7 @@
 #
 # Runtime ~10 min on 8 cores. Outputs stratum_percohort_de.csv (large, kept for
 # leave-one-cohort-out) and stratum_meta_de.csv (the canonical gene-level table).
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 suppressPackageStartupMessages({
   library(arrow); library(edgeR); library(limma); library(parallel)
 })

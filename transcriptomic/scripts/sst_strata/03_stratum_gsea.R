@@ -7,7 +7,7 @@
 # "Sst_subclass" and serves as the reference column in panels b, d and e.
 #
 # Runtime ~8 min. Writes the two canonical tables the figure reads.
-source("transcriptomic/scripts/fig5/_common.R")
+source("transcriptomic/scripts/sst_strata/_common.R")
 set.seed(42)
 
 meta <- read_csv(file.path(P$pb, "stratum_meta_de.csv"), show_col_types = FALSE)
