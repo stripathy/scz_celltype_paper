@@ -39,6 +39,15 @@ checks. They are **not** the paper's numbers and are not committed.
 | `_all*` | subclass and supertype concatenated — redundant with the four above |
 | `crumblr_depth_*` | depth-stratified model, a separate question |
 
+> **Only the four canonical files are in this repository** — `crumblr_input_{subclass,supertype}_{neuronal,nonneuronal}.csv`
+> and their `crumblr_results_*` counterparts. Every variant suffix in the table
+> above (`_corr`, `_hybrid`, `_margin_*`, `_pctl*`, `_no_high_umi`, `_all*`) and
+> the `crumblr_depth_*` set exist only on the machines that ran the pipeline;
+> they are git-ignored. Rebuild them with `build_crumblr_input.py` and
+> `run_crumblr.R` if you need one. Note also that as built on those machines the
+> variants exclude Br2039 (23 donors) while the four committed files include all
+> 24 — see issue 22 in [`../../../KNOWN_ISSUES.md`](../../../KNOWN_ISSUES.md).
+
 ⚠️ **The variants do not all agree, and the disagreement is not obvious from the
 filenames.** L6b at subclass level is the clearest trap:
 

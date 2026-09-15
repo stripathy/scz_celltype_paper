@@ -129,7 +129,7 @@ Figures 1 and 3 and supplementary figures S1, S4 and S5 are built by
 render from a clone — those scripts ran on the Alliance cluster against the full
 per-dataset objects, with cluster-absolute paths, and are here to be read. Two
 exceptions: **S7** renders anywhere (both its inputs are committed), and
-**Figure 3 panels d, e and h** do since 2026-09-15, because they need only the
+**Figure 3 panels d and e** do since 2026-09-15, because they need only the
 committed Xenium metadata rather than the Seurat object.
 The one committed input from that pipeline is the per-donor cell-count matrix
 behind the composition analysis,

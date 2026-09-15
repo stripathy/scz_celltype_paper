@@ -45,7 +45,7 @@ Panels c–f read the Xenium results directly from
 `spatial/output/crumblr/`. They are meant to be the same results, but the wiring
 is a copy on the cluster, not the seam.
 
-Panels d, e and h read Xenium cell metadata through `load_xenium_meta()`. They
+Panels d and e read Xenium cell metadata through `load_xenium_meta()`. They
 use only metadata and the x/y centroids — no expression matrix — so since
 2026-09-15 the function prefers **`Xenium_SCZ_R.rds`** when it is present (so
 cluster runs are unchanged) and otherwise falls back to the committed
@@ -81,4 +81,4 @@ writes the underlying dot-plot tables as CSVs beside the figure.
 ## Shared assets
 
 Every R script here reads `cluster_order_and_colors.csv` for cell-type ordering
-and the palette — not committed, and load-bearing beyond colour (issue 4).
+and the palette — load-bearing beyond colour; committed since 2026-09-13 at `snrnaseq/cluster_order_and_colors.csv` and `Compositional_analysis/Files/` (issue 4, closed).

@@ -2,7 +2,7 @@
 #
 # crumblr compositional analysis of the SEA-AD DLPFC (A9) cohort along the
 # Alzheimer's continuous pseudo-progression score (CPS). Produces the AD axis
-# of Figure 4j.
+# of Figure 4i.
 #
 # Run build_seaad_cps_input.py first.
 #
@@ -25,7 +25,7 @@
 #
 # Output
 # ------
-#   results/intermediates/seaad_dlpfc/crumblr_results_supertype_neurons.csv
+#   crossdisorder/results/crumblr_results_supertype_neurons.csv
 
 suppressPackageStartupMessages({
   library(crumblr); library(dreamlet); library(variancePartition); library(limma)

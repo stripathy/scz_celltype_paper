@@ -2,7 +2,7 @@
 SEA-AD-only specificity matrices and their MAGMA gene-property runs.
 
 Replaces the combined SEA-AD + Siletti (RBH) taxonomy of build_spec_a9rbh.py:
-following reviewer feedback from L. Duncan, enrichment is presented on the
+following advisory feedback, enrichment is presented on the
 SEA-AD taxonomy itself, so specificity is computed across each region's own
 supertypes with no whole-brain merge. The recipe is otherwise identical to
 build_spec_a9rbh.py -- same log1p supertype means, same symbol -> ENSEMBL ->

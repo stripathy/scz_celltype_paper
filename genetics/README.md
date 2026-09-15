@@ -87,7 +87,7 @@ the 329 MB of summary statistics. That also means it can go quietly stale, so
 `r_panels/MANIFEST.tsv` records the upstream file behind every panel and
 `shared/figure_inputs.R` halts the render when one has moved on.
 
-Output: `results/figures/scz_sst_hcn1_figure4.{png,pdf}`. The renderer also
+Output: `manuscript/figures/main/Fig4_scz_genetics_hcn1_sst.{png,pdf,svg}`. The renderer also
 writes an SVG for hand-editing; it is git-ignored because the patch-seq traces
 make it ~25 MB.
 

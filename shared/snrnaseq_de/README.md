@@ -39,12 +39,15 @@ committed snapshots taken from here, guarded by a checksum manifest — see
 
 Supplementary S8 reads two entries here directly. `P$crumblr` points at
 `nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv`, which is now
-tracked, so it resolves from a clone. `P$subclass` had no such copy and was fixed
-on 2026-09-13:
-it now prefers this directory and falls back to
-`transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv`, which the
-manifest records as a byte-identical capture of the seam file (md5
-`719da3d7519cbc5a3aec1b8c42d438da`). See issue 16 in
+tracked, so it resolves from a clone. `P$subclass` had no such copy. A 2026-09-13 fix made it prefer this directory
+and fall back to `transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv`,
+on the belief that the two were byte-identical. **They are not**, and on
+2026-09-15 the preference was reversed: S8 now always reads the committed
+snapshot. A seam copy left on an author's machine from before Nicole's
+2026-09-13 rerun has 222,028 rows and 345 Sst genes at FDR < 0.10; the snapshot
+(md5 `f7ff12756d1ffcc143e2f723ea4fd249`, matching her current
+`snRNAseq_DE/Files/` output) has 231,135 and 343. Preferring the seam drew one
+set of numbers on this machine and another on any clone. See issues 16 and 23 in
 [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
 Two export specs also live here — `EXPORT_SPEC_stratum_pseudobulks.md` and

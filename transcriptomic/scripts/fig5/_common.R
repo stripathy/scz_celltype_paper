@@ -37,15 +37,14 @@ P <- list(
   crumblr  = "shared/snrnaseq_de/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv",
   depth    = "spatial/output/depth_platform/supertype_depth_platform_summary.csv",
   layers   = "spatial/output/depth_proportions/proposed_layer_boundaries.csv",
-  # The canonical copy lives in the git-ignored seam; the committed snapshot under
-  # transcriptomic/data/figure_inputs/ was captured from that exact path (see its
-  # MANIFEST.tsv, md5 719da3d7519cbc5a3aec1b8c42d438da), so falling back to it lets
-  # S8 render from a clean clone without changing which numbers are drawn.
-  subclass = local({
-    seam <- "shared/snrnaseq_de/DE_genes_all_cells_scz.csv"
-    snap <- "transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv"
-    if (file.exists(seam)) seam else snap
-  }),
+  # Read the committed snapshot, not the git-ignored seam. They are NOT the same
+  # table: the seam left on the authors' machines predates Nicole's 2026-09-13
+  # rerun (222,028 rows, 345 Sst genes at FDR < 0.10) while the snapshot matches
+  # her current output byte for byte (231,135 rows, 343 genes, md5 f7ff1275...).
+  # Preferring the seam therefore drew one set of numbers here and another on any
+  # clone -- the opposite of what an earlier comment here claimed. Fixed
+  # 2026-09-15: one path, the committed and manifest-checked one, everywhere.
+  subclass = "transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv",
   spatial_de = "spatial/output/de/de_results_supertype.csv")
 
 for (d in c(P$pb, P$donor, P$supp, P$cache, P$fig, P$suppfig)) dir.create(d, showWarnings = FALSE, recursive = TRUE)

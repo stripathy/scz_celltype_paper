@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Build the crumblr input for the SEA-AD DLPFC (A9) pseudo-progression analysis
-behind Figure 4j.
+behind Figure 4i.
 
 Companion to 14_seaad_dlpfc_crumblr.R, which fits the model.
 
@@ -51,7 +51,7 @@ Usage
 
 Output
 ------
-    results/intermediates/seaad_dlpfc/crumblr_input_supertype_neurons.csv
+    crossdisorder/results/crumblr_input_supertype_neurons.csv
         donor, celltype, count, total, CPS, sex, age, pmi, severely_affected
 """
 

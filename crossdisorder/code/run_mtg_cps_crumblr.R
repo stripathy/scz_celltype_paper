@@ -1,10 +1,12 @@
 #!/usr/bin/env Rscript
 #
-# crumblr compositional analysis of the SEA-AD DLPFC (A9) cohort along the
-# Alzheimer's continuous pseudo-progression score (CPS). Produces the AD axis
-# of Figure 4j.
+# crumblr compositional analysis of the SEA-AD **MTG** cohort along the
+# Alzheimer's continuous pseudo-progression score (CPS). This is the regional
+# robustness check on the AD axis of Figure 4i; the primary DLPFC (A9) run is
+# run_seaad_cps_crumblr.R, from which this file differs only in its input and
+# output paths.
 #
-# Run build_seaad_cps_input.py first.
+# Run build_mtg_cps_input.py first.
 #
 # Model
 # -----
@@ -25,7 +27,7 @@
 #
 # Output
 # ------
-#   results/intermediates/seaad_dlpfc/crumblr_results_supertype_neurons.csv
+#   crossdisorder/results/crumblr_results_mtg_supertype_neurons.csv
 
 suppressPackageStartupMessages({
   library(crumblr); library(dreamlet); library(variancePartition); library(limma)

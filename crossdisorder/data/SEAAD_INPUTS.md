@@ -1,6 +1,6 @@
-# SEA-AD DLPFC (A9) — input data for Figure 4j
+# SEA-AD DLPFC (A9) — input data for Figure 4i
 
-The AD axis of Figure 4j is the compositional slope of each supertype along the
+The AD axis of Figure 4i is the compositional slope of each supertype along the
 SEA-AD **continuous pseudo-progression score (CPS)** in dorsolateral prefrontal
 cortex. Two inputs are needed; only the small one is committed.
 

@@ -103,12 +103,14 @@ Consumed through [`../shared/snrnaseq_de/`](../shared/snrnaseq_de/README.md):
 
 | Export | Produced by | Consumed by |
 |---|---|---|
-| `DE_genes_all_cells_scz.csv` — subclass-level meta DE | `snRNAseq_DE/Subclass/3_meta_analysis.r` | `transcriptomic/` (Fig. 2, S8) |
+| `DE_genes_all_cells_scz.csv` — subclass-level meta DE | `snRNAseq_DE/Subclass/4_Compile_results.r` | `transcriptomic/` (Fig. 2, S8) |
 | `meta_results_cohorts_subclass.csv` — per-dataset DE | `snRNAseq_DE/Subclass/` | `transcriptomic/` (Fig. 2 forests) |
-| composition betas (crumblr, 7-dataset meta) | `Compositional_analysis/3_meta_analysis.r` | `genetics/` (Fig. 4a, 4i), `transcriptomic/` (S8 strata), `composition_sensitivity/` (S6) |
+| composition betas (crumblr, 7-dataset meta) | `Compositional_analysis/Code/Neurons/2_meta_analysis.r` | `genetics/` (Fig. 4a, 4i), `transcriptomic/` (S8 strata), `composition_sensitivity/` (S6) |
 
-`snRNAseq_DE/Subclass/3_meta_analysis.r` writes `DE_genes_all_cells_scz.csv`
-straight into `transcriptomic/data/figure_inputs/` at its last line, so that
-seam is live in the code rather than only in prose.
+`snRNAseq_DE/Subclass/4_Compile_results.r` writes `DE_genes_all_cells_scz.csv`.
+Its last line targets `/scratch/nendresz/scz_celltype_paper/transcriptomic/data/
+figure_inputs/`, a cluster-absolute path, so the seam is live only on the machine
+that ran it; elsewhere the committed snapshot is refreshed by
+`transcriptomic/scripts/00_refresh_figure_inputs.R`.
 
 See [`../DATA_FLOW.md`](../DATA_FLOW.md) for the whole graph.

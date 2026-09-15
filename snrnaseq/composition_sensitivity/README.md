@@ -41,7 +41,7 @@ Xenium row of panel a. Step 0 needs Nicole's raw export, which is **not** tracke
 | `data/neuronal_supertypes_109.csv` | yes | The 109 neuronal supertypes, in Fig. 3a order. Defines what `00` selects and what `02` plots. |
 | `data/seaad_supertype_colors.json` | yes | Supertype palette of Figs 1b/3a/4. Same file as `genetics/data/seaad_supertype_colors.json`. |
 | `7_cohorts_metadata_names.csv` | no | Nicole's raw per-donor counts + metadata (donor rows, cell-type columns, both neuronal and non-neuronal). Pass its path to `00`; the default is `~/Downloads/`. |
-| `shared/snrnaseq_de/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv` | no | The published FE meta-analysis. Optional: when present, `01` cross-checks the rebuilt FE estimates against it and uses it for the "FE meta-analysis (paper)" row; when absent, `01` uses its own FE meta-analysis for that row and says so. |
+| `shared/snrnaseq_de/nicole_scz_snrnaseq_betas/final_results_crumblr_7_cohorts.csv` | yes | The published FE meta-analysis. Optional: when present, `01` cross-checks the rebuilt FE estimates against it and uses it for the "FE meta-analysis (paper)" row; when absent, `01` uses its own FE meta-analysis for that row and says so. |
 
 **Running it on your own copy of the data.** Point `00` at your export and add `--write`, then
 re-run `01`, `01b` and `02`. Without `--write`, `00` only reports whether it reproduces the

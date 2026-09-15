@@ -45,7 +45,7 @@ drops that term.
 
 "Neuronal" is defined by an **external** file,
 `cluster_order_and_colors.csv`, via `class_label ∈ {Neuronal: GABAergic,
-Neuronal: Glutamatergic}`. That file is not committed — see issue 4 in
+Neuronal: Glutamatergic}`. That file is committed in this directory's `Files/` since 2026-09-13 — see issue 4 (closed) in
 [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
 > The `(Sex)` term is a plain fixed effect — bare parentheses in an R formula

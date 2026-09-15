@@ -5,8 +5,9 @@ Checklist to regenerate `manuscript/figures/main/Fig2_cross_platform_de.{png,pdf
 
 ## TL;DR
 
-`scripts/09_composite_figure.R` is **fully self-contained**: it does not
-`source()` anything, and every CSV it reads is committed to the repo (the DE
+`scripts/09_composite_figure.R` runs from a clean clone: it `source()`s only two
+tracked helpers beside it (`scripts/_figure_inputs.R`, `scripts/_exemplar_panels.R`)
+and every CSV it reads is committed to the repo (the DE
 inputs under `data/figure_inputs/`, the exemplar + CP1K tables under
 `results/tables/`). You do NOT need the raw Xenium data, the Python pipeline, or
 any external file — just R:

@@ -48,10 +48,12 @@ SETS = [
 def main() -> int:
     quiet = "--quiet" in sys.argv
     stale = 0
+    skipped = []
     for d, label, cmd in SETS:
         if not (d / "MANIFEST.tsv").exists():
+            skipped.append(label)
             if not quiet:
-                print(f"—  {label:<24} no manifest yet ({d})")
+                print(f"—  {label:<24} NOT CHECKED — no manifest at {d}")
             continue
         probs = problems(d)
         n = len({r["file"] for r in read_manifest(d)})
@@ -66,6 +68,14 @@ def main() -> int:
     if stale:
         print(f"\n{stale} of {len(SETS)} sets are stale.")
         return 1
+    if skipped:
+        # Two of the four sets live in the external Xenium repo, so on a clone
+        # they have no manifest to check. Saying "all consistent" there would be
+        # a green light for checks that never ran.
+        print(f"\n{len(SETS) - len(skipped)} of {len(SETS)} sets checked and consistent; "
+              f"{len(skipped)} NOT CHECKED ({', '.join(skipped)}).")
+        print("Set XENIUM_BASE to the Xenium processing repo to check those too.")
+        return 0
     if not quiet:
         print("\nAll provenance manifests are consistent.")
     return 0

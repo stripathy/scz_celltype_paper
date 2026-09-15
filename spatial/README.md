@@ -28,14 +28,14 @@ reference; everything downstream runs from their outputs.
 
 | Step | Script | What |
 |---|---|---|
-| 00 | `pipeline/00_create_h5ad.py` | Raw Xenium `.h5` + boundaries → per-sample h5ad |
-| 01 | `pipeline/01_run_qc.py` | QC flags (`qc_pass`); nothing is ever removed, only flagged |
-| 02 | `pipeline/02_run_mapmycells.py` | MapMyCells/HANN labels against the SEA-AD MTG taxonomy |
-| 02b | `pipeline/02b_run_correlation_classifier.py` | Two-stage correlation classifier → `corr_subclass`, `corr_supertype`, margin QC, doublet flags |
-| 04 | `pipeline/04_run_depth_prediction.py` | Neighbourhood-composition depth model (`K = 50`, three smallest donors held out) → `predicted_norm_depth` |
-| 05 | `pipeline/05_run_spatial_domains.py` | BANKSY spatial domains + depth→layer binning + smoothing |
+| 00 | `code/pipeline/00_create_h5ad.py` | Raw Xenium `.h5` + boundaries → per-sample h5ad |
+| 01 | `code/pipeline/01_run_qc.py` | QC flags (`qc_pass`); nothing is ever removed, only flagged |
+| 02 | `code/pipeline/02_run_mapmycells.py` | MapMyCells/HANN labels against the SEA-AD MTG taxonomy |
+| 02b | `code/pipeline/02b_run_correlation_classifier.py` | Two-stage correlation classifier → `corr_subclass`, `corr_supertype`, margin QC, doublet flags |
+| 04 | `code/pipeline/04_run_depth_prediction.py` | Neighbourhood-composition depth model (`K = 50`, three smallest donors held out) → `predicted_norm_depth` |
+| 05 | `code/pipeline/05_run_spatial_domains.py` | BANKSY spatial domains + depth→layer binning + smoothing |
 
-`pipeline/create_snrnaseq_reference.py` builds the five-donor SEA-AD snRNA-seq
+`code/pipeline/create_snrnaseq_reference.py` builds the five-donor SEA-AD snRNA-seq
 reference used by the panel-resolvability benchmark.
 
 ## Disease analyses
