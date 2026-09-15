@@ -45,7 +45,7 @@ ref=ref.with_columns_obs(pl.col("Subclass").replace({"Astro":"Astrocyte","Endo":
 # -------------------- SST + FIND COHORT SST MARKERS --------------------
 scs_sst=[sc.filter_obs(pl.col("Subclass")=="Sst").with_columns_obs(pl.col("predicted.id").cast(pl.String).alias("Sst_supertype")) for sc in scs]
 combined_sst=concat_obs(scs_sst,dataset_column="batch",dataset_labels=labels,flexible=True)
-sst_markers=combined_sst.find_markers("Sst_supertype"); sst_markers.write_csv(OUT/"cohort_sst_supertype_markers.csv")
+sst_markers=combined_sst.find_markers("Sst_supertype"); sst_markers.write_csv(OUT/"Files/cohort_sst_supertype_markers.csv")
 ref_sst=ref.filter_obs(pl.col("Subclass")=="Sst").with_columns_obs(pl.col("Supertype").cast(pl.String).alias("Sst_supertype"))
 
 # -------------------- SETTINGS --------------------

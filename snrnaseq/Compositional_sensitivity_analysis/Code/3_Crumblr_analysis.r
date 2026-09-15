@@ -44,7 +44,7 @@ run_crumblr <- function(cohort_name,all_meta_counts){
   meta <- df %>% select(all_of(meta_cols)) %>% as.data.frame(); rownames(meta) <- meta$Donor
   meta$Age <- as.numeric(meta$Age); meta$PMI <- as.numeric(meta$PMI)
 
-  dream_formula <- if(cohort_name=="Multiome") ~scale(Age)+Diagnosis+(1|Sex) else ~scale(Age)+scale(PMI)+Diagnosis+(1|Sex)
+  dream_formula <- if(cohort_name=="Multiome") ~scale(Age)+Diagnosis+(Sex) else ~scale(Age)+scale(PMI)+Diagnosis+(Sex)
 
   cobj <- crumblr(counts)
   fit <- eBayes(dream(cobj,dream_formula,meta))
