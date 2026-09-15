@@ -40,7 +40,7 @@ Supplementary-table material: `results/rnascope_subjects_final.csv` (the 54 anal
 | File | Description |
 |---|---|
 | `data/Cell_counts_NU.csv` | Per-site 488/568-nm cell counts (20 sites × 2 sections per subject). R section: 488 = SST, 568 = VIP. |
-| `data/full cell counts(Excel).xlsx` | **Not distributed** (donor clinical records; see KNOWN_ISSUES 24). Subject-to-diagnosis mapping and the original study's per-subject summary counts. |
+| `data/full cell counts(Excel).xlsx` | **Not distributed** (donor clinical records; see `data/README.md`). Subject-to-diagnosis mapping and the original study's per-subject summary counts. |
 | `data/pTable with correct med info.csv` | Demographics (age, sex, PMI). |
 | `data/sst_analysis_data.csv` | Consolidated per-frame dataset built by step 1 (68 subjects, `vip_pass` column). |
 | `results/microscopy/` | Representative-image processing (lipofuscin suppression, curated annotation SVG, marker coordinates); see its README. |

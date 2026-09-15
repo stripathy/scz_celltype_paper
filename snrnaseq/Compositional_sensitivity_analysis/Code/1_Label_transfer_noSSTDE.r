@@ -131,8 +131,8 @@ for(nm in names(cohorts)){
   # not fine for Batiuk: that object came with the donating brain banks' full
   # clinical record, so the dump emitted 299 columns including cause of death,
   # free-text psychiatric and neuropathology narrative, euthanasia status and
-  # dated lab records, repeated on every cell row. See issue 24 in
-  # ../../KNOWN_ISSUES.md. 2_Compile_metadata.r needs only the six below
+  # dated lab records, repeated on every cell row. See the README beside this
+  # directory. 2_Compile_metadata.r needs only the six below
   # (Multiome spells three of them differently), so select and never dump.
   keep <- intersect(
     c("Donor", "Age", "Sex", "Diagnosis", "PMI", "predicted.id",

@@ -9,34 +9,6 @@ submission.
 
 ---
 
-## Repository conventions
-
-### 24. Per-cell exports select columns explicitly
-
-`1_Label_transfer_noSSTDE.r` used to write `Seu_sn@meta.data` whole. Six cohorts'
-objects carried only study variables, but the Batiuk object arrived from the
-donating brain banks with their full record attached, so the export ran to 299
-columns repeated across 140,089 cell rows — 274 MB where 8 MB was needed.
-
-**Select the columns you consume; never write a metadata slot whole.** What an
-upstream object carries is not under this repository's control, and dumping the
-slot ships whatever happens to be in it. The writer now takes the six columns
-`2_Compile_metadata.r` reads (`Donor, Age, Sex, Diagnosis, PMI, predicted.id`,
-plus Multiome's three spellings).
-
-**No per-cell metadata dump is tracked.** All 14 — the 13 cohort files and
-`Final_figures/Data/xenium_metadata.csv`, 2.8 GB together — are git-ignored and
-absent from history. They are intermediates: the compiled table
-`7_cohorts_metadata_NoSST_DEgenes_names.csv` (0.18 MB) is what
-`3_Crumblr_analysis.r` reads and is committed, and Figure 3 reads two small
-derived inputs built by `Final_figures/Code/0_make_xenium_fig_inputs.py`.
-
-The two `reserve/histology/data/` clinical tables are likewise not distributed.
-They are inputs to an analysis that is not in the paper; the code and the derived
-de-identified table remain, and the raw inputs live with the source lab.
-
----
-
 ## Deferred — real, but not blocking submission
 
 One line each; these keep their numbers because component READMEs cite them.

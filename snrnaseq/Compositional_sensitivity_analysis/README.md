@@ -23,6 +23,19 @@ a labelling artefact.
 
 Steps 2–4 mirror `../Compositional_analysis/` exactly; only step 1 differs.
 
+**The step-1 outputs are not tracked.** The 13 per-dataset
+`{dataset}_*SST_DEgenes.csv` files are per-cell dumps running to 2.8 GB
+together; they are git-ignored, and regenerating them means re-running step 1
+against the full Seurat objects. What *is* committed is the compiled table step
+2 produces, `Files/7_cohorts_metadata_NoSST_DEgenes_names.csv` (0.18 MB), which
+is what `3_Crumblr_analysis.r` reads — so steps 3–4 run from a clone.
+
+Step 1 writes only the columns step 2 consumes (`Donor, Age, Sex, Diagnosis,
+PMI, predicted.id`, plus Multiome's three spellings) rather than the whole
+`meta.data` slot. Keep it that way: what an upstream object carries is not
+under this repository's control, and one cohort's arrived with the donating
+brain banks' full clinical record attached.
+
 ### 1 — Re-transfer with the Sst DE genes removed
 
 Reads the subclass meta-DE table from `../snRNAseq_DE/Subclass/`, takes every
