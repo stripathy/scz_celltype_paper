@@ -311,17 +311,28 @@ Computed from this object's donor columns:
 
 ### Br2039 — WM-heavy section
 
-Br2039 (SCZ) has the highest white-matter fraction in the cohort — 41.8% of its
-cells are `layer == "WM"` versus a cohort median of 14.1% — i.e. the section
-captures substantially more subcortical white matter than cortex. **Exclude
-Br2039 from cortical compositional analyses.** It is retained in the object for
-completeness.
+Br2039 (SCZ) has the highest white-matter fraction in the cohort. By the column
+the analysis gate actually uses it is **70.1% `spatial_domain == "WM"` against a
+cohort median of 19.7%**, the next-highest section being 38.8%; by `layer` the
+same section is 41.8% against a median of 14.1%, and by `banksy_domain` 62.1%
+against 17.7%. The three disagree because they segment on different signals, so
+always say which column a WM fraction came from.
+
+**Br2039 is retained in all analyses**, including the cortical compositional
+ones. Restricting to `spatial_domain == "Cortical"` already removes its white
+matter cell by cell, so excluding the whole section discards usable cortex; the
+decision is recorded in `code/modules/constants.py` (`EXCLUDE_SAMPLES = set()`,
+unchanged since the monorepo was scaffolded) and improves concordance with the
+snRNA-seq proportions. The paper's Methods state the cohort as all 24 sections.
 
 ```python
 obs = adata.obs
-cortical = (obs["corr_qc_pass"] & (obs["sample_id"] != "Br2039")
-            & (obs["spatial_domain"] == "Cortical"))
+cortical = obs["corr_qc_pass"] & (obs["spatial_domain"] == "Cortical")
 ```
+
+> An earlier revision of this guide told readers to drop Br2039 here, which
+> contradicted the code and the Methods. Corrected 2026-09-15; see issue 18 in
+> [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md).
 
 ---
 

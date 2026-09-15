@@ -45,16 +45,21 @@ Panels c–f read the Xenium results directly from
 `spatial/output/crumblr/`. They are meant to be the same results, but the wiring
 is a copy on the cluster, not the seam.
 
-Panels d and e read **`Xenium_SCZ_R.rds`**, a Seurat conversion that no script
-in this repo creates and that is not committed. Checked on 2026-09-15: it does
-derive from the canonical object, **not** from the superseded one with MGE and
-CGE transposed. The metadata export beside it (`Data/xenium_metadata.csv`) holds
+Panels d, e and h read Xenium cell metadata through `load_xenium_meta()`. They
+use only metadata and the x/y centroids — no expression matrix — so since
+2026-09-15 the function prefers **`Xenium_SCZ_R.rds`** when it is present (so
+cluster runs are unchanged) and otherwise falls back to the committed
+**`Data/xenium_metadata.csv`**, which makes these panels render from a clone.
+
+`Xenium_SCZ_R.rds` itself is a Seurat conversion that no script in this repo
+creates and that is not committed. Checked on 2026-09-15: it does derive from the
+canonical object, **not** from the superseded one with MGE and CGE transposed. The metadata export beside it (`Data/xenium_metadata.csv`) holds
 1,338,922 cells against the canonical 1,339,151 — a gap of exactly the 229
 duplicate cell names Seurat de-duplicates on conversion — with all 24 samples,
 Br2039 included, and subclass counts agreeing to within 0.02%.
 `Data/xenium_crumblr_results_supertype_neuronal.csv` is byte-identical to
-`spatial/output/crumblr/crumblr_results_supertype_neuronal.csv`. What is still
-missing is the conversion script and a provenance line: issue 3 in
+`spatial/output/crumblr/crumblr_results_supertype_neuronal.csv`
+(md5 `97c546a39016521db5ca58e92afd84ab`). Closed as issue 3 in
 [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
 ## `Code/Figure_1.py` is Python

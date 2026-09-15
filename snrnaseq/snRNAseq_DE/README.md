@@ -46,9 +46,13 @@ For each cell type in each dataset:
 Cell types where `Diagnosis` has fewer than two levels after filtering are
 skipped.
 
-> `log2_cells` (scaled log₂ cells per donor) is computed just before the design
-> matrix but **is not in it** — DE is not adjusted for cells per donor. Issue 5
-> in [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
+> **DE is not adjusted for cells per donor**, by design. A `log2_cells` variable
+> was computed here but never entered the design matrix; it was removed in
+> `c106186`. Confirmed empirically on 2026-09-15: re-running the Sst model
+> without it reproduces the committed per-dataset table **exactly** (McLean,
+> MSSM 1 and Multiome; same gene sets, max |ΔlogFC| 4.5e-14), while adding it
+> drops agreement to r = 0.68-0.81. Closed as issue 5 in
+> [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
 > Cell-type columns are selected by hard-coded position (`colnames(meta)[1:24]`,
 > and `[1:23]` for Multiome, which lacks one subclass) rather than by name.
@@ -87,8 +91,13 @@ their `meta_results_{celltype}.csv`. ⚠️ **It is a reconstruction committed o
 2026-09-13, not the script that produced the published numbers** — the original
 was never in the repo and has not been recovered. It is
 `Supertypes/3_meta_analysis.r` with the cell-type selection inverted; the file's
-own header lists the evidence. Re-running it from independently rebuilt
-pseudobulks recovers 12,490 of the 12,492 committed Sst genes (effect sizes
-r = 0.9968, 161 of 165 FDR < 0.05 genes) but is not bit-exact, because exact
-recovery also needs Nicole's per-dataset gene universes. Issues 2 and 19 in
+own header lists the evidence. It is now committed as `Subclass/3a_meta_per_gene.r`.
+
+Re-running the per-dataset DE reproduces the committed table **exactly** wherever
+the dataset's gene universe is recoverable: McLean, MSSM 1 and Multiome, which are
+already in gene-symbol space, match gene for gene at max |ΔlogFC| 4.5e-14
+(2026-09-15). Datasets needing an identifier remap do not, because dropping
+unmappable genes moves the >= 80% expression filter and hence every library's TMM
+factor — that is the whole of the earlier r = 0.9968 gap, and it is a property of
+the rebuild, not of the pipeline. Issues 2 and 19 in
 [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).

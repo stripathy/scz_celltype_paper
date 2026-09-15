@@ -49,6 +49,11 @@ adc = (pd.read_csv(AD_CRUMBLR)
 m = scz.merge(adc, on="supertype")
 m = m[m.supertype.str.startswith("Sst_")].copy()
 m["group"] = np.where(m.supertype.isin(VULNERABLE), "Vulnerable", "Not depleted")
+# Sort before writing: row order otherwise inherits the SCZ input's order, so an
+# input regenerated with the same values in a different order rewrites this file
+# and trips the provenance verifier for no reason. Nothing downstream depends on
+# the order (it is a scatter).
+m = m.sort_values("supertype").reset_index(drop=True)
 m.to_csv(f"{OUT}/panel_ad_concordance_sst.csv", index=False)
 
 r, rp = stats.pearsonr(m.scz_beta, m.ad_slope)

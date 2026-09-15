@@ -49,7 +49,10 @@ Analysis: Cortical cells → crumblr compositional regression (SCZ vs Control)
 | Step 01: spatial QC (`qc_pass`) | 1,298,687 | 40,464 | 3.0% |
 | **Step 02b: `corr_qc_pass` (default gate)** | **1,225,037** | **114,114** | **8.5%** |
 
-*Cell counts reflect all 24 samples. `corr_qc_pass` combines spatial QC (step 01), the 5th-percentile margin filter, and doublet suspect exclusion. A nuclear doublet resolution step was also trialled; it had negligible impact on downstream biology and its code was removed on 2026-09-04 (tag `pre-prune-2026-09-04`). Br2039 is retained in all analyses despite high white matter content (65%).*
+*Cell counts reflect all 24 samples. `corr_qc_pass` combines spatial QC (step 01), the 5th-percentile margin filter, and doublet suspect exclusion. A nuclear doublet resolution step was also trialled; it had negligible impact on downstream biology and its code was removed on 2026-09-04 (tag `pre-prune-2026-09-04`). Br2039 is retained in all analyses despite high white matter content (70.1% of
+its cells are `spatial_domain == "WM"`, against a cohort median of 19.7%);
+restricting to `spatial_domain == "Cortical"` removes that white matter cell by
+cell, so the section still contributes usable cortex.*
 
 ### 2.2 Centroid construction from HANN exemplars
 

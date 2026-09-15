@@ -49,10 +49,13 @@ manifest on every read and halts the render if a source has moved on.
 The guard has one deliberate blind spot worth knowing: when a recorded source is
 **absent** on the current machine it is skipped and the snapshot is trusted, so
 that a clone with no upstream repos still renders. A snapshot whose source only
-ever existed on one laptop therefore never gets checked. That is how
-`crumblr_input_subclass_corr.csv` stayed three weeks older than the canonical
-Xenium object, and one donor short of it, without anything complaining — issue 18
-in [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md).
+ever existed on one laptop therefore never gets checked. `crumblr_input_subclass_
+corr.csv` sat here unchecked for that reason until 2026-09-15, when it was dropped:
+nothing had read it since the panel-i inset moved to snRNA-seq proportions, and it
+is one of the Xenium sensitivity variants, which are built without Br2039 while the
+four files the paper actually uses (`_neuronal`, `_nonneuronal`, and the two pooled)
+include all 24 donors. The lesson stands for any future snapshot — prefer a source
+path inside the repo, which the guard can always check.
 
 ## Supplementary Fig. S8 — Sst depletion strata
 
