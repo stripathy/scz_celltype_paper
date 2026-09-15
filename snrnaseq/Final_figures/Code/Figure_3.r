@@ -163,17 +163,13 @@ library(dplyr)
 library(ggplot2)
 library(patchwork)
 library(cowplot)
-# Xenium metadata. Panels d/e and h use only cell metadata and the x/y centroids
-# -- no expression matrix -- so the committed CSV is a complete substitute for the
-# Seurat object, which is not in the repo. Prefer the .rds when it is present so
-# runs on the cluster are unchanged; otherwise fall back, and the panels render
-# from a clone. Provenance of both: see Final_figures/README.md.
-load_xenium_meta <- function() {
-  rds <- "Final_figures/Data/Xenium_SCZ_R.rds"
-  if (file.exists(rds)) return(readRDS(rds)@meta.data)
-  read.csv("Final_figures/Data/xenium_metadata.csv", row.names = 1, check.names = FALSE)
-}
-xen_meta <- load_xenium_meta()
+# Xenium inputs. Panels d/e need x/y and labels for two sections; panel h needs
+# one mean depth per Sst supertype. Both are committed here as small derived
+# tables (~5 MB) built by Code/0_make_xenium_fig_inputs.py from the full per-cell
+# export, which is git-ignored -- a 332 MB per-cell dump does not belong in the
+# repository, and neither panel ever needed more than these two slices. Cells are
+# already QC-filtered by the builder.
+xen_sections <- read.csv("Final_figures/Data/xenium_sections_fig3de.csv", check.names = FALSE)
 
 Depleted <- c("Sst_2","Sst_25","Sst_22","Sst_20","Sst_3")
 Unaffected <- c("Sst_11","Sst_23","Sst_9","Sst_13","Sst_19","Sst_5","Sst_10","Sst_4","Sst_1","Sst_12","Sst_7")
@@ -217,8 +213,8 @@ prepare_sample <- function(meta,sample,xlim,ylim,angle,sf){
 xlim_con <- c(200,2300); ylim_con <- c(-5200,-2400)
 xlim_scz <- c(8700,10500); ylim_scz <- c(-5900,-3500)
 
-con_df <- prepare_sample(xen_meta,"Br5931",xlim_con,ylim_con,-4,scale_factor)
-scz_df <- prepare_sample(xen_meta,"Br1139",xlim_scz,ylim_scz,12,scale_factor)
+con_df <- prepare_sample(xen_sections,"Br5931",xlim_con,ylim_con,-4,scale_factor)
+scz_df <- prepare_sample(xen_sections,"Br1139",xlim_scz,ylim_scz,12,scale_factor)
 
 plot_xlim_con <- scale_limits(xlim_con,scale_factor)
 plot_ylim_con <- scale_limits(ylim_con,scale_factor)
@@ -367,14 +363,13 @@ library(dplyr)
 library(ggplot2)
 library(ggrepel)
 
-xen_meta <- load_xenium_meta()   # defined above; CSV fallback when the .rds is absent
 final_results <- read.csv("Compositional_analysis/Files/Meta_Neurons.csv")
 colours <- read.csv("Compositional_analysis/Files/cluster_order_and_colors.csv")
 
-depth_effect <- xen_meta %>%
-  filter(qc_pass %in% c(TRUE,"True"),subclass=="Sst",!is.na(predicted_norm_depth)) %>%
-  group_by(CellType=supertype) %>%
-  summarise(mean_depth=mean(predicted_norm_depth),.groups="drop") %>%
+# Per-supertype mean depth, precomputed by Code/0_make_xenium_fig_inputs.py
+# (QC-passing Sst cells with a depth prediction) -- same quantity this block used
+# to derive from the full per-cell table.
+depth_effect <- read.csv("Final_figures/Data/xenium_sst_supertype_depth.csv") %>%
   inner_join(final_results %>% select(CellType,estimate,padj),by="CellType") %>%
   left_join(colours %>% select(cluster_label,cluster_color),by=c("CellType"="cluster_label"))
 

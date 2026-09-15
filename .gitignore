@@ -81,3 +81,14 @@ Rplots.pdf
 # Hand-editing SVGs of the main figures: the patch-seq traces make Figure 4's
 # ~25 MB. PNG + PDF are the deliverables.
 manuscript/figures/main/*.svg
+
+# ---- Per-cell metadata dumps: never in the repo ----
+# `write.csv(seu@meta.data, ...)` with no column selection emits one row per cell
+# and every column the upstream object happened to carry. That is 2.8 GB across
+# these files, to serve six columns anything downstream actually reads -- and for
+# the Batiuk object it also emitted the donating brain banks' clinical records
+# (KNOWN_ISSUES issue 24). The small derived inputs beside them are committed;
+# these are not. Regenerate on the cluster.
+snrnaseq/Compositional_sensitivity_analysis/Files/*_NoSST_DEgenes.csv
+!snrnaseq/Compositional_sensitivity_analysis/Files/7_cohorts_metadata_NoSST_DEgenes_names.csv
+snrnaseq/Final_figures/Data/xenium_metadata.csv
