@@ -38,13 +38,14 @@ they are recombined into their seven dataset labels in step 2.
 ### 3 — Crumblr
 
 Same neuronal restriction (via `cluster_order_and_colors.csv`) and the same
-per-dataset `dream` fit, **except** that `Sex` enters as `(1|Sex)` where the
-primary analysis uses `(Sex)`.
+per-dataset `dream` fit, including the same fixed-effect `Sex` term.
 
-> That makes S7 differ from Fig. 3a in a second respect beyond the one it is
-> meant to test. Issue 1 in [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md) —
-> worth resolving before submission, since S7's whole job is to be comparable
-> to the primary result.
+> Until 2026-09-15 `Sex` entered here as `(1|Sex)` while the primary analysis
+> used `(Sex)`, so S7 differed from Fig. 3a in a second respect beyond the one
+> it is meant to test. Commit `5133be3` aligned them and re-ran. The results
+> moved slightly and two supertypes crossed FDR 0.10, Sst_25 among them, which
+> contradicts a sentence in the Results — issue 20 in
+> [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
 ### 4 — Meta-analysis
 

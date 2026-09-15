@@ -41,16 +41,14 @@ annotated Xenium objects that `spatial/` produces.
 **Two conventions, not one.** The renderers in `transcriptomic/`, `spatial/`,
 `genetics/` and `snrnaseq/composition_sensitivity/` write into
 `manuscript/figures/` in place and run from committed inputs, so those figures
-regenerate from a clean clone without the raw data — with one exception, Figure
-2, which still reads three files from a working directory on the cluster
-(`KNOWN_ISSUES.md`, issue 15). The renderers in
+regenerate from a clean clone without the raw data. The renderers in
 `snrnaseq/Final_figures/` ran on the Alliance cluster against the full
 per-dataset objects and wrote to a working directory there — their figures are
 **not** in this repo and their chains are archived for reading, not
 re-execution. Each component's README gives the detail.
 
-Open items from the 2026-09-13 audit are collected in
-[`KNOWN_ISSUES.md`](KNOWN_ISSUES.md).
+Items that must be settled before submission are collected in
+[`KNOWN_ISSUES.md`](KNOWN_ISSUES.md), with resolved ones listed at its foot.
 
 ---
 
@@ -109,10 +107,9 @@ supplementary figures S2, S3, S6, S8, S9 and S10 render from committed inputs;
 verified by running all of them on 2026-09-13. Re-running the *analyses* behind
 them needs the external data.
 
-**Figure 2 does not currently render from a clone.** Three inputs it needs are
-not in the repo and live under `/scratch/nendresz/`, which no one else can read;
-the script now stops immediately and names all three. See issue 15 in
-[`KNOWN_ISSUES.md`](KNOWN_ISSUES.md).
+Figure 2 renders from a clone as well, since 2026-09-14: the three inputs that
+had lived under `/scratch/nendresz/` are committed snapshots with `MANIFEST.tsv`
+rows (issue 15, closed).
 
 Two prerequisites, both learned the hard way:
 

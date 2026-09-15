@@ -35,14 +35,12 @@ Rscript scripts/09_composite_figure.R         # the figure
 [`REPRODUCE.md`](REPRODUCE.md). Steps 10 and 12 are only needed when their
 inputs change; their outputs are committed under `results/tables/`.
 
-⚠️ **It no longer regenerates from a clone.** Commit `038490d` (2026-09-09)
-added three reads from `/scratch/nendresz/`, a working directory only its author
-can read: per-cohort donor counts for the forest labels, the Xenium Sst_25 donor
-count, and the mean subclass proportions behind the panel-i inset. The script
-declares all three in an `EXTERNAL` block at the top and stops there with a
-message naming them, rather than failing part-way through the render. Committing
-those three under `data/figure_inputs/` with `MANIFEST.tsv` rows restores the
-clone-only property. See issue 15 in [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md).
+It regenerates from a clean clone. Commit `038490d` (2026-09-09) had briefly
+broken that by reading three files from `/scratch/nendresz/`; all three are now
+committed snapshots under `data/figure_inputs/` with `MANIFEST.tsv` rows, and
+the panel-i inset was rebuilt on snRNA-seq nuclei proportions rather than Xenium
+cell proportions. Closed as issue 15 in
+[`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md).
 
 `00_refresh_figure_inputs.R` resyncs `data/figure_inputs/` from the canonical
 upstream sources and rewrites `MANIFEST.tsv`. `_figure_inputs.R` checks that

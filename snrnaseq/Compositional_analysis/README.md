@@ -48,9 +48,12 @@ drops that term.
 Neuronal: Glutamatergic}`. That file is not committed — see issue 4 in
 [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
 
-> The `(Sex)` term is a plain fixed effect. The two supporting analyses
-> (`Non_neurons/`, `../Compositional_sensitivity_analysis/`) use `(1|Sex)`
-> instead. Logged as issue 1 in [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
+> The `(Sex)` term is a plain fixed effect — bare parentheses in an R formula
+> do nothing. The two supporting analyses (`Non_neurons/`,
+> `../Compositional_sensitivity_analysis/`) used `(1|Sex)` until 2026-09-15 and
+> now match this one. Issue 1 in
+> [`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md), closed; the re-run it forced
+> is issue 20.
 
 ### 3 — `3_meta_analysis.r`
 
@@ -66,8 +69,9 @@ FDR across cell types.
 set (everything not `Neuronal: GABAergic` / `Neuronal: Glutamatergic`), reading
 the same committed counts file. Both steps are in the one script.
 
-Two differences from the primary analysis, both worth knowing: `Sex` enters as
-`(1|Sex)`, and the file has **no extension** (it is R). Issues 1 and 9 in
-[`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md).
+One difference from the primary analysis worth knowing: the file has **no
+extension** (it is R). Issue 9 in
+[`../../KNOWN_ISSUES.md`](../../KNOWN_ISSUES.md). Its `Sex` term matches the
+primary analysis.
 
 Rendered by `../Final_figures/Supplemental/NonNeuron_supplement.r`.
