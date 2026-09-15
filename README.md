@@ -16,23 +16,27 @@ committed figure inputs, and the rendered figures.
 
 ## Finding the code behind a figure
 
-| Figure | Rendered file | Built by | Component |
-|---|---|---|---|
-| **Fig 1a** | not rendered here | `Final_figures/Figure_1a_UMAP.r`, `Figure_1a_Barchart.r` | [`snrnaseq/`](snrnaseq/README.md) |
-| **Fig 2** | `manuscript/figures/main/Fig2_cross_platform_de` | `scripts/09_composite_figure.R` | [`transcriptomic/`](transcriptomic/README.md) |
-| **Fig 3** | not rendered here | `Final_figures/Figure_3.r` | [`snrnaseq/`](snrnaseq/README.md) |
-| **Fig 4** | `manuscript/figures/main/Fig4_scz_genetics_hcn1_sst` | `scripts/figures/scz_sst_hcn1_story.R` | [`genetics/`](genetics/README.md) |
-| **S1** | not rendered here | `Final_figures/Supplemental/Markerplot.py` | [`snrnaseq/`](snrnaseq/README.md) |
-| **S2** | `manuscript/figures/supplementary/S02_xenium_celltype_annotation` | `plot_markers_resolvability_combined.R` | [`spatial/`](spatial/README.md) |
-| **S3** | `.../S03_xenium_merfish_concordance` | `plot_xenium_merfish_composite.R` | [`spatial/`](spatial/README.md) |
-| **S4** | not rendered here | `Final_figures/Supplemental/Supertype_DE.r` | [`snrnaseq/`](snrnaseq/README.md) |
-| **S5** | not rendered here | `Final_figures/Supplemental/NonNeuron_supplement.r` | [`snrnaseq/`](snrnaseq/README.md) |
-| **S6** | `.../S06_composition_pooling` | `02_plot_pooling_heatmap.R` | [`snrnaseq/composition_sensitivity/`](snrnaseq/composition_sensitivity/README.md) |
-| **S7** | not rendered here | `Final_figures/Supplemental/Sensitivity_analysis_Barchart.r` | [`snrnaseq/`](snrnaseq/README.md) |
-| **S8** | `.../S08_sst_strata` | `scripts/fig5/08_figure5.R` | [`transcriptomic/`](transcriptomic/scripts/fig5/README.md) |
-| **S9** | `.../S09_scz_enrichment_seaad125` | `plot_supp_enrichment_seaad125.R` | [`genetics/`](genetics/README.md) |
-| **S10** | `.../S10_genetics_ad_robustness` | `plot_fig4_robustness.R` | [`genetics/`](genetics/README.md) |
-| **T6** | `genetics/results/tables/supp_T6_patchseq_sst_annotations.csv` | `build_supp_table_patchseq_labels.py` | [`genetics/`](genetics/README.md) |
+| Figure | Built by | Component |
+|---|---|---|
+| **Fig 1** | [`Final_figures/Code/Figure_1.py`](snrnaseq/Final_figures/Code/Figure_1.py), [`Figure_1a_Barchart.r`](snrnaseq/Final_figures/Code/Figure_1a_Barchart.r) | [`snrnaseq/`](snrnaseq/README.md) |
+| **Fig 2** | [`scripts/09_composite_figure.R`](transcriptomic/scripts/09_composite_figure.R) | [`transcriptomic/`](transcriptomic/README.md) |
+| **Fig 3** | [`Final_figures/Code/Figure_3.r`](snrnaseq/Final_figures/Code/Figure_3.r) | [`snrnaseq/`](snrnaseq/README.md) |
+| **Fig 4** | [`scripts/figures/scz_sst_hcn1_story.R`](genetics/scripts/figures/scz_sst_hcn1_story.R) | [`genetics/`](genetics/README.md) |
+| **S1** | [`Supplemental/Code/Markerplot.py`](snrnaseq/Final_figures/Supplemental/Code/Markerplot.py) | [`snrnaseq/`](snrnaseq/README.md) |
+| **S2** | [`code/analysis/plot_markers_resolvability_combined.R`](spatial/code/analysis/plot_markers_resolvability_combined.R) | [`spatial/`](spatial/README.md) |
+| **S3** | [`code/analysis/plot_xenium_merfish_composite.R`](spatial/code/analysis/plot_xenium_merfish_composite.R) | [`spatial/`](spatial/README.md) |
+| **S4** | [`Supplemental/Code/Supertype_DE.r`](snrnaseq/Final_figures/Supplemental/Code/Supertype_DE.r) | [`snrnaseq/`](snrnaseq/README.md) |
+| **S5** | [`Supplemental/Code/NonNeuron_supplement.r`](snrnaseq/Final_figures/Supplemental/Code/NonNeuron_supplement.r) | [`snrnaseq/`](snrnaseq/README.md) |
+| **S6** | [`code/02_plot_pooling_heatmap.R`](snrnaseq/composition_sensitivity/code/02_plot_pooling_heatmap.R) | [`snrnaseq/composition_sensitivity/`](snrnaseq/composition_sensitivity/README.md) |
+| **S7** | [`Supplemental/Code/Sensitivity_analysis_Barchart.r`](snrnaseq/Final_figures/Supplemental/Code/Sensitivity_analysis_Barchart.r) | [`snrnaseq/`](snrnaseq/README.md) |
+| **S8** | [`scripts/fig5/08_figure5.R`](transcriptomic/scripts/fig5/08_figure5.R) | [`transcriptomic/`](transcriptomic/scripts/fig5/README.md) |
+| **S9** | [`scripts/figures/plot_supp_enrichment_seaad125.R`](genetics/scripts/figures/plot_supp_enrichment_seaad125.R) | [`genetics/`](genetics/README.md) |
+| **S10** | [`scripts/figures/plot_fig4_robustness.R`](genetics/scripts/figures/plot_fig4_robustness.R) | [`genetics/`](genetics/README.md) |
+| **T6** | [`scripts/figures/build_supp_table_patchseq_labels.py`](genetics/scripts/figures/build_supp_table_patchseq_labels.py) | [`genetics/`](genetics/README.md) |
+
+Rendered figures, where they are in the repo, are under
+[`manuscript/figures/`](manuscript/figures/main/README.md); that folder's README
+says which are present.
 
 Supplementary Methods **SM1** describes the Xenium pipeline in
 [`spatial/`](spatial/README.md). Figures 1b–f are assembled by hand from the
@@ -41,11 +45,10 @@ annotated Xenium objects that `spatial/` produces.
 **Two conventions, not one.** The renderers in `transcriptomic/`, `spatial/`,
 `genetics/` and `snrnaseq/composition_sensitivity/` write into
 `manuscript/figures/` in place and run from committed inputs, so those figures
-regenerate from a clean clone without the raw data. The renderers in
+regenerate from a clean clone without the raw data. Most renderers in
 `snrnaseq/Final_figures/` ran on the Alliance cluster against the full
-per-dataset objects and wrote to a working directory there — their figures are
-**not** in this repo and their chains are archived for reading, not
-re-execution. Each component's README gives the detail.
+per-dataset objects and wrote to a working directory there; those are here to be
+read rather than re-executed. Each component's README gives the detail.
 
 Items that must be settled before submission are collected in
 [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md), with resolved ones listed at its foot.
@@ -121,10 +124,13 @@ Two prerequisites, both learned the hard way:
   (`cd spatial && Rscript code/analysis/<script>.R`), or their relative
   `source()` and input paths miss.
 
-Figure 1a, Figure 3 and supplementary figures S1, S4, S5 and S7 are built by
-[`snrnaseq/Final_figures/`](snrnaseq/Final_figures/README.md) and do **not**
-render from a clone — those scripts ran on the Alliance cluster against the
-full per-dataset objects, with cluster-absolute paths. They are here to be read.
+Figures 1 and 3 and supplementary figures S1, S4 and S5 are built by
+[`snrnaseq/Final_figures/`](snrnaseq/Final_figures/README.md). Most do **not**
+render from a clone — those scripts ran on the Alliance cluster against the full
+per-dataset objects, with cluster-absolute paths, and are here to be read. Two
+exceptions: **S7** renders anywhere (both its inputs are committed), and
+**Figure 3 panels d, e and h** do since 2026-09-15, because they need only the
+committed Xenium metadata rather than the Seurat object.
 The one committed input from that pipeline is the per-donor cell-count matrix
 behind the composition analysis,
 [`snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv`](snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv).
