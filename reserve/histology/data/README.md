@@ -7,8 +7,8 @@ This directory contains the raw input data for the sgACC SST-density re-analysis
 | File | Description |
 |------|-------------|
 | `Cell_counts_NU.csv` | Per-site cell counts for all subjects. Each row is one subject-section-site combination (e.g., `1234 - R - 7`), with columns for 488nm and 568nm channel counts and field-of-view area. 20 sites per section, two sections (L and R) per subject. |
-| `full cell counts(Excel).xlsx` | Authoritative subject-to-diagnosis mapping and Dwight's aggregated cell count summaries (sheet: `full cell counts`). Diagnosis groups: Control, MDD, Bipolar, SCHIZ. |
-| `pTable with correct med info.csv` | Subject demographics and clinical covariates: age, sex, PMI, and medication history. Multiple rows per subject (one per cell type); deduplicated during loading. |
+| `full cell counts(Excel).xlsx` **(not distributed)** | Authoritative subject-to-diagnosis mapping and Dwight's aggregated cell count summaries (sheet: `full cell counts`). Diagnosis groups: Control, MDD, Bipolar, SCHIZ. |
+| `pTable with correct med info.csv` **(not distributed)** | Subject demographics and clinical covariates: age, sex, PMI, and medication history. Multiple rows per subject (one per cell type); deduplicated during loading. |
 
 ## Derived file
 
@@ -21,3 +21,16 @@ This directory contains the raw input data for the sgACC SST-density re-analysis
 - Subject IDs in `Cell_counts_NU.csv` contain known typos that are corrected during loading (683 &rarr; 863, 1159 &rarr; 1157, 1449 &rarr; 1444, 1381 &rarr; 1391).
 - Channel mapping depends on section: R-section 488nm = SST, 568nm = VIP; L-section 488nm = PYR, 568nm = PV.
 - See `code/config.py` for the full list of subject exclusions and ID corrections applied during analysis.
+
+## Not distributed
+
+`full cell counts(Excel).xlsx` and `pTable with correct med info.csv` are not in
+this repository. They hold donor-level clinical records — brain-bank donor
+number, DSM-IV diagnoses as free text, cause and manner of death, medications at
+time of death and substance-dependence flags — for an analysis that is not in the
+paper. Request them from the source lab.
+
+`sst_analysis_data.csv`, the table the analysis actually runs on, is built from
+them by `../code/build_analysis_dataset.py` and carries only study variables
+(subject, section, site, layer, SST, VIP, diagnosis, age, sex, PMI). It is
+committed.

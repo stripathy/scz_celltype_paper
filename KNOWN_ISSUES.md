@@ -9,62 +9,29 @@ submission.
 
 ---
 
-## Must fix before the repo is shared
+## Data that is deliberately not distributed
 
-### 24. Donor clinical records are committed in a per-cell metadata dump
+### 24. Donor-level clinical records
 
-**Found 2026-09-15. Blocking: this is third-party special-category health data,
-and it is already in git history.**
+Per-cell metadata dumps must carry **only study variables**. Two classes of file
+were removed from this repository and from its history because they carried the
+donating brain banks' clinical records — cause and manner of death, psychiatric
+and neuropathology narrative, medication and substance-use flags, and exact lab
+dates — for identifiable donors:
 
-`snrnaseq/Compositional_sensitivity_analysis/Files/Batiuk_NoSST_DEgenes.csv`
-(tracked via git-lfs, 288 MB, 140,089 rows) carries **299 columns**, of which
-roughly 290 are the donating brain banks' full clinical record for 15 donors,
-repeated verbatim on every cell row:
+- the 299-column per-cell metadata dump for the Batiuk cohort, which
+  `Compositional_sensitivity_analysis/Code/1_Label_transfer_noSSTDE.r` produced
+  by writing `Seu_sn@meta.data` whole. That writer now selects only the columns
+  `2_Compile_metadata.r` consumes (`Donor, Age, Sex, Diagnosis, PMI,
+  predicted.id`, plus Multiome's three spellings), and the committed file holds
+  exactly those. The other six cohorts' objects never carried such columns.
+- the two `reserve/histology/data/` inputs behind an analysis that is not in the
+  paper. The code and the derived, de-identified analysis table remain; the raw
+  inputs are available from the source lab on request.
 
-- `Cause_of_death`, `Exact_cause_of_death`, `CNS_Diseases`, `Neuropathology`
-- `Psychiatric_diagnosis`, `Psychiatric_signs`, `First_schizophrenia_symptoms_age`
-- `Compound_abuse`, `Treatments`, `Neuroleptic_treatment_duration_years`,
-  `Electro.convulsive_therapy`
-- **`Euthanasia`** (values Y and N)
-- `Depression`, `Bipolar_disorder`, `Cancer`, `Diabetes`, `Hepatitis` and ~140
-  further comorbidity and medication flags
-- four **exact dates**: `FACS_10x_1st_day_date`, `cDNA_cleanup_preAmp_date`,
-  `library_prep_date`, `Sequencing_date`
-
-Three of those fields are free-text clinical narrative, not codes — measured by
-length rather than read: `Psychiatric_signs` up to 479 characters,
-`Neuropathology` up to 728, `Compound_abuse` up to 1,085.
-
-`Source` is `NBB` (Netherlands Brain Bank), `HBTB`, `OBB` and `Newcastle`, so
-this is EU/UK data and the special-category provisions apply. Exact dates are
-direct identifiers rather than quasi-identifiers.
-
-**This was a bug, not a release decision.** `Code/1_Label_transfer_noSSTDE.r`
-wrote `Seu_sn@meta.data` whole, with no column selection. Six cohorts' objects
-carried only study variables, so their files are clean (157-182 columns, checked);
-the Batiuk object happened to arrive with the brain banks' record attached, so all
-299 columns went out. **Scope is exactly one file** — no other tracked CSV in the
-repo contains these columns.
-
-**Fixed forward on 2026-09-15**: the writer now selects the six columns
-`2_Compile_metadata.r` actually consumes (`Donor, Age, Sex, Diagnosis, PMI,
-predicted.id`, plus Multiome's three spellings) instead of dumping the slot. That
-stops recurrence; it does **not** remove what is already committed.
-
-**Still to decide, and only the PI and the Batiuk data custodians can:** whether
-the file is removed and history rewritten. It cannot be undone by `git rm` alone,
-and rewriting is cheaper before more commits land on it. Note this is **not**
-covered by the authorisation recorded in issue 6, which concerned the 469-donor
-demographic sheet of consortium IDs, ages, sex, diagnosis and PMI. That
-assessment does not describe this file.
-
-Related but separate, and also awaiting the same kind of decision:
-`reserve/histology/data/pTable with correct med info.csv` (tracked, 380 rows, 76
-donors) holds brain-bank donor number, DSM-IV diagnoses as free text, cause and
-manner of death including suicide, medications at time of death and ten
-alcohol/substance dependence flags, for an analysis that is **not in the paper**.
-`reserve/histology/data/full cell counts(Excel).xlsx` adds subject-level
-diagnosis across SCZ, MDD, Bipolar and Control groups.
+**If you add a per-cell or per-donor export, select columns explicitly.** Never
+write a metadata slot whole — what an upstream object carries is not under this
+repository's control.
 
 ---
 
