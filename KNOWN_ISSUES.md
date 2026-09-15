@@ -9,52 +9,31 @@ submission.
 
 ---
 
-## Data that is deliberately not distributed
+## Repository conventions
 
-### 24. Donor-level clinical records
+### 24. Per-cell exports select columns explicitly
 
-Per-cell metadata dumps must carry **only study variables**. Two classes of file
-were removed from this repository and from its history because they carried the
-donating brain banks' clinical records — cause and manner of death, psychiatric
-and neuropathology narrative, medication and substance-use flags, and exact lab
-dates — for identifiable donors:
+`1_Label_transfer_noSSTDE.r` used to write `Seu_sn@meta.data` whole. Six cohorts'
+objects carried only study variables, but the Batiuk object arrived from the
+donating brain banks with their full record attached, so the export ran to 299
+columns repeated across 140,089 cell rows — 274 MB where 8 MB was needed.
 
-- the 299-column per-cell metadata dump for the Batiuk cohort, which
-  `Compositional_sensitivity_analysis/Code/1_Label_transfer_noSSTDE.r` produced
-  by writing `Seu_sn@meta.data` whole. That writer now selects only the columns
-  `2_Compile_metadata.r` consumes (`Donor, Age, Sex, Diagnosis, PMI,
-  predicted.id`, plus Multiome's three spellings), and the committed file holds
-  exactly those. The other six cohorts' objects never carried such columns.
-- the two `reserve/histology/data/` inputs behind an analysis that is not in the
-  paper. The code and the derived, de-identified analysis table remain; the raw
-  inputs are available from the source lab on request.
+**Select the columns you consume; never write a metadata slot whole.** What an
+upstream object carries is not under this repository's control, and dumping the
+slot ships whatever happens to be in it. The writer now takes the six columns
+`2_Compile_metadata.r` reads (`Donor, Age, Sex, Diagnosis, PMI, predicted.id`,
+plus Multiome's three spellings).
 
-**If you add a per-cell or per-donor export, select columns explicitly.** Never
-write a metadata slot whole — what an upstream object carries is not under this
-repository's control.
-
-**No per-cell metadata dump is tracked any more** (2026-09-15). All 14 — the 13
-cohort files and `Final_figures/Data/xenium_metadata.csv`, 2.8 GB together — are
-git-ignored and purged from history. They were intermediates: the compiled table
+**No per-cell metadata dump is tracked.** All 14 — the 13 cohort files and
+`Final_figures/Data/xenium_metadata.csv`, 2.8 GB together — are git-ignored and
+absent from history. They are intermediates: the compiled table
 `7_cohorts_metadata_NoSST_DEgenes_names.csv` (0.18 MB) is what
-`3_Crumblr_analysis.r` reads and is still committed, and Figure 3 now reads two
-small derived inputs built by `Final_figures/Code/0_make_xenium_fig_inputs.py`.
-The pack is down from 5.0 GB to 337 MB, with 1.9 GB of large-file objects behind
-the four DE result tables, which the PI has chosen to keep for now (Zenodo is
-their better long-term home).
+`3_Crumblr_analysis.r` reads and is committed, and Figure 3 reads two small
+derived inputs built by `Final_figures/Code/0_make_xenium_fig_inputs.py`.
 
-⚠️ **Not yet done: the force-push.** Every rewrite so far is local. `origin/main`
-still carries the original history, including the 299-column Batiuk file. Pushing
-requires `git remote add origin …` (filter-repo strips it each run) and
-`--force`, and will invalidate every existing clone — Nicole's included, so she
-must re-clone rather than pull.
-
-⚠️ **Still in history, contrary to what this issue said before:**
-`reserve/histology/data/pTable with correct med info.csv` (DSM-IV diagnoses,
-cause and manner of death, suicide, ten substance-use flags) is reachable from
-commit "Move reviewer-response material into reserve/", along with
-`full cell counts(Excel).xlsx` and an older `histology/data/full cell counts.csv`.
-The untracking happened; the history purge did not. Decide before pushing.
+The two `reserve/histology/data/` clinical tables are likewise not distributed.
+They are inputs to an analysis that is not in the paper; the code and the derived
+de-identified table remain, and the raw inputs live with the source lab.
 
 ---
 
