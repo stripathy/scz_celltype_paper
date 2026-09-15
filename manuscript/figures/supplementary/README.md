@@ -135,8 +135,17 @@ sed -e 's|^setwd(.*)|# setwd neutralised|' \
 Rscript /tmp/render_s7.R
 ```
 
-Needs the `ggtext` R package. The committed render is PNG only; the renderer has
-no `.pdf` output, so one is still needed for submission.
+Needs the `ggtext` R package. For the `.pdf`, swap the `ggsave` line for the
+macOS quartz device — `cairo_pdf` needs X11, which is not installed here, and the
+base `pdf()` device cannot encode the β in the y-axis title:
+
+```r
+quartz(type = "pdf", file = "../manuscript/figures/supplementary/S07_composition_no_sst_de_genes.pdf",
+       width = 21, height = 8); print(p3a); dev.off()
+```
+
+Both formats are committed as of 2026-09-15; the PDF carries live text, verified
+with `pdftotext`.
 
 S8 is rendered by `transcriptomic/scripts/fig5/08_figure5.R` straight into this
 folder; see `transcriptomic/scripts/fig5/README.md` for the pipeline behind it. To

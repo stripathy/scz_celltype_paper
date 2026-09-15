@@ -4,75 +4,9 @@
 resolved is listed at the foot, one line each, so the ~20 component READMEs that
 cite issue numbers still resolve. Numbers are stable and never reused.
 
-Last worked: **2026-09-15**. Two items remain, and both need a person rather than
-a script: one sentence of the Results is now wrong, and one governance decision.
-
----
-
-## Must fix before submission
-
-### 20. One Results sentence no longer matches the S7 figure
-
-Commit `5133be3` (Nicole, 2026-09-15) aligned the sensitivity analysis's `Sex`
-term with the primary analysis, closing issue 1, and re-ran it. Effect sizes
-barely moved — max |Δβ| 0.034 across 109 supertypes — but two supertypes crossed
-FDR 0.10, and one is Sst_25.
-
-The five Sst supertypes depleted in the primary analysis, in the **current** S7:
-
-| supertype | β | p | FDR (new) | FDR (old) |
-|---|---|---|---|---|
-| Sst_2 | −0.268 | 3e-05 | 0.0013 | 0.0013 |
-| Sst_3 | −0.180 | 0.0020 | 0.0371 | 0.0307 |
-| Sst_22 | −0.244 | 0.0028 | 0.0443 | 0.0307 |
-| Sst_20 | −0.212 | 0.0035 | 0.0476 | 0.0459 |
-| **Sst_25** | **−0.205** | **0.0120** | **0.1122** | **0.0899** |
-
-The Results text says this analysis found "**all five Sst supertypes depleted at
-FDR < 0.10**". Against the current file that is **four of five**. `L2/3 IT_7` also
-flipped (0.0867 → 0.1122), so the figure's FDR < 0.10 count goes 10 → 8.
-
-**The figure is already correct and self-consistent.** S7 was re-rendered from the
-current file on 2026-09-15 into
-`manuscript/figures/supplementary/S07_composition_no_sst_de_genes.png`, where
-Sst_25 now draws in the italic-red FDR 0.10–0.20 tier rather than bold red. Only
-the sentence is out of date.
-
-Nothing about the conclusion changes: all five estimates stay negative, all five
-are nominally significant, and all five remain under FDR 0.20, the threshold S7's
-own legend uses for its trend tier.
-
-**To do**, and it needs people, not a re-run:
-
-1. Confirm with Nicole that the re-run is the version the paper reports — the
-   current text was written against the previous numbers.
-2. Reword. "All five depleted, four at FDR < 0.10 and Sst_25 at FDR = 0.11" or
-   "all five at FDR < 0.20" both work and both stay true.
-3. The committed S7 render is PNG only; the renderer has no `.pdf` output, so a
-   vector version is still needed for submission.
-
-### 6. The committed donor metadata is person-level
-
-`Compositional_analysis/Files/7_cohorts_metadata_names.csv` holds donor ID, age,
-sex, diagnosis and PMI for 469 donors. The repo is **private**, so nothing is
-exposed today. This needs an explicit decision before it is shared with reviewers
-or made public.
-
-Assessed 2026-09-15, to make the decision an informed one rather than a worry:
-
-- Donor IDs are the **source consortia's own de-identified identifiers**
-  (`AMPAD_HBCC_*`, `AMPAD_MSSM_*`, `MB*`, `s*`, `CON*`, numeric for Multiome),
-  not anything generated here, and they are the identifiers those consortia
-  already publish against.
-- Ages run **18 to 69** with none at or above 90, because the study's own
-  `Age < 70` filter removes the range that HIPAA safe-harbour treats specially.
-- The columns are age, sex, diagnosis and PMI — the standard demographic table
-  that accompanies published post-mortem snRNA-seq.
-
-So the residual question is not re-identification risk but **whether the data-use
-agreements behind PsychAD/AMP-AD, Batiuk, Fröhlich and MultiomeBrain permit
-redistributing donor-level demographics**. That is a governance call, and only
-the PI can make it.
+Last worked: **2026-09-15**. **No blocking items remain.** The two that needed a
+person were settled that day: the Results text was updated and verified against
+the data, and the PI authorised releasing the donor metadata sheet.
 
 ---
 
@@ -113,3 +47,5 @@ One line each; these keep their numbers because component READMEs cite them.
 | — | `Supertypes/3_meta_analysis.r` did not parse (stray `-`, missing paren), so the committed copy was not the copy that ran. | 2026-09-13 |
 | — | *HCN1* credible-set variants were labelled on the wrong strand; `export_panels_abc.py` now strand-aware with a `dist_to_hcn1_kb` column. | 2026-09-13 |
 | — | Figure 2 panels d, h redrawn for review comment G#123; panel j label collisions resolved. | 2026-09-14, `2623216` |
+| 6 | The committed donor metadata is person-level (469 donors: consortium ID, age, sex, diagnosis, PMI). Assessed as low re-identification risk — IDs are the source consortia's own, ages run 18–69 with none near the safe-harbour threshold, columns are the standard demographic table — leaving only whether the data-use agreements permit redistribution. **PI authorised release of a donor-level metadata sheet with this demographic content.** | 2026-09-15 |
+| 20 | Nicole's `Sex`-alignment rerun moved Sst_25 to FDR 0.1122 in S7, contradicting a Results sentence that claimed all five depleted Sst supertypes at FDR < 0.10. Text updated to "all five Sst supertypes depleted at FDR < 0.20", verified true (max is Sst_25 at 0.1122), and the gene count corrected 345 → 343, also verified: the committed meta table gives exactly 343 unique Sst genes at padj < 0.10 (196 down, 147 up, *SST* included), and `1_Label_transfer_noSSTDE.r:8` derives the exclusion list from that same table, which was re-run in the same commit. S7 re-rendered from the current results to `manuscript/figures/supplementary/S07_composition_no_sst_de_genes.{png,pdf}`. | 2026-09-15 |
