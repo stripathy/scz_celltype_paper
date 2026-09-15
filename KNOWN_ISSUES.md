@@ -33,6 +33,29 @@ dates — for identifiable donors:
 write a metadata slot whole — what an upstream object carries is not under this
 repository's control.
 
+**No per-cell metadata dump is tracked any more** (2026-09-15). All 14 — the 13
+cohort files and `Final_figures/Data/xenium_metadata.csv`, 2.8 GB together — are
+git-ignored and purged from history. They were intermediates: the compiled table
+`7_cohorts_metadata_NoSST_DEgenes_names.csv` (0.18 MB) is what
+`3_Crumblr_analysis.r` reads and is still committed, and Figure 3 now reads two
+small derived inputs built by `Final_figures/Code/0_make_xenium_fig_inputs.py`.
+The pack is down from 5.0 GB to 337 MB, with 1.9 GB of large-file objects behind
+the four DE result tables, which the PI has chosen to keep for now (Zenodo is
+their better long-term home).
+
+⚠️ **Not yet done: the force-push.** Every rewrite so far is local. `origin/main`
+still carries the original history, including the 299-column Batiuk file. Pushing
+requires `git remote add origin …` (filter-repo strips it each run) and
+`--force`, and will invalidate every existing clone — Nicole's included, so she
+must re-clone rather than pull.
+
+⚠️ **Still in history, contrary to what this issue said before:**
+`reserve/histology/data/pTable with correct med info.csv` (DSM-IV diagnoses,
+cause and manner of death, suicide, ten substance-use flags) is reachable from
+commit "Move reviewer-response material into reserve/", along with
+`full cell counts(Excel).xlsx` and an older `histology/data/full cell counts.csv`.
+The untracking happened; the history purge did not. Decide before pushing.
+
 ---
 
 ## Deferred — real, but not blocking submission

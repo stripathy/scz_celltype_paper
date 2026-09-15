@@ -45,11 +45,15 @@ Panels c–f read the Xenium results directly from
 `spatial/output/crumblr/`. They are meant to be the same results, but the wiring
 is a copy on the cluster, not the seam.
 
-Panels d and e read Xenium cell metadata through `load_xenium_meta()`. They
-use only metadata and the x/y centroids — no expression matrix — so since
-2026-09-15 the function prefers **`Xenium_SCZ_R.rds`** when it is present (so
-cluster runs are unchanged) and otherwise falls back to the committed
-**`Data/xenium_metadata.csv`**, which makes these panels render from a clone.
+Panels d, e and h use only cell metadata and the x/y centroids — no expression
+matrix — and since 2026-09-15 they read two small committed inputs rather than a
+per-cell dump: `Data/xenium_sections_fig3de.csv` (the 105,736 cells of Br5931 and
+Br1139, 6.4 MB) for d and e, and `Data/xenium_sst_supertype_depth.csv` (16 rows)
+for h. Both are built by `Code/0_make_xenium_fig_inputs.py` from
+`Data/xenium_metadata.csv`, which is **git-ignored and purged from history** — a
+332 MB per-cell dump does not belong in a repository. Window cell counts are
+unchanged (5,453 and 4,496): the builder applies no QC filter, exactly as these
+panels never did.
 
 `Xenium_SCZ_R.rds` itself is a Seurat conversion that no script in this repo
 creates and that is not committed. Checked on 2026-09-15: it does derive from the
