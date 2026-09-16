@@ -90,6 +90,20 @@ where.
 
 ```bash
 git clone <remote-url> && cd scz_celltype_paper
+git lfs install && git lfs pull        # REQUIRED — see below
+```
+
+**This repository uses Git LFS.** Twenty-three files are stored there, including
+the large per-cohort DE tables under `snrnaseq/snRNAseq_DE/Files/` and
+`Supertypes/Files/`. Without `git lfs pull` those paths hold a 134-byte pointer
+stub instead of the data, and **nothing errors**: `read.csv()` on a pointer
+returns a two-row frame of pointer text, so a script can run to completion on
+garbage. The one guard that does catch it is the figure-input manifest, which
+refuses to draw Figure 2 and reports the source as changed — the symptom that
+led here on 2026-09-16. If a chain behaves strangely, check for stubs first:
+
+```bash
+head -c 40 <path> | grep -q git-lfs && echo "pointer stub, run: git lfs pull"
 ```
 
 Then follow the component README for the figure you want. Figure 2, Figure 4
