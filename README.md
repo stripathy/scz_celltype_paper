@@ -88,12 +88,18 @@ where.
 
 ### Published data (Zenodo)
 
-The data this study generated is deposited at
-**[Zenodo record 22801230](https://zenodo.org/records/22801230)**
-(DOI [10.5281/zenodo.22801230](https://doi.org/10.5281/zenodo.22801230),
-CC-BY-4.0, published 2026-09-16): harmonized per-cell cell-type annotations for
-all eight datasets, and the cell-type-specific differential expression results at
-subclass and supertype resolution.
+The data this study generated is deposited at Zenodo, CC-BY-4.0: harmonized
+per-cell cell-type annotations for all eight datasets, and the cell-type-specific
+differential expression results at subclass and supertype resolution.
+
+| | DOI | Resolves to |
+|---|---|---|
+| **Cite this** | [10.5281/zenodo.22801229](https://doi.org/10.5281/zenodo.22801229) | the concept record — always the newest version |
+| Verified below | [10.5281/zenodo.22801230](https://doi.org/10.5281/zenodo.22801230) | v1, published 2026-09-16 |
+
+The file table and checksums below describe **v1** specifically, which is what
+`00b_figure_inputs_from_zenodo.py` pins and what every claim here was checked
+against.
 
 | File | Size | md5 | Contents |
 |---|---|---|---|

@@ -4,8 +4,39 @@
 resolved is listed at the foot, one line each, so the ~20 component READMEs that
 cite issue numbers still resolve. Numbers are stable and never reused.
 
-**No blocking items remain.** What is left below is real but does not stop
-submission.
+**Nothing blocks submission.** One thing blocks making this repository
+**public** — see the release gate directly below.
+
+---
+
+## Release gate — do not make the repository public until these are done
+
+**Decided 2026-09-16.** The repo is ready except that it documents Zenodo v1,
+whose labels are inconsistent (issue 27). Corrected files are built and waiting
+at `/project/rrg-shreejoy/shreejoy/zenodo_v2_harmonized/`; publishing the code
+before the data means sending readers to a deposit we already know is broken for
+joining.
+
+- [ ] **Nicole publishes Zenodo v2** from the harmonised files. This is the gate.
+- [ ] Update the file table in `README.md` — sizes and md5s there are v1's. New
+      md5s are in `MD5SUMS.txt` beside the harmonised files.
+- [ ] Delete the "Schema notes" paragraph in `README.md`. It exists only to warn
+      about the v1 label mismatches and becomes wrong once v2 lands.
+- [ ] Decide whether `transcriptomic/scripts/00b_figure_inputs_from_zenodo.py`
+      should move to v2. It pins the **v1 version URL** and its md5, so it keeps
+      working either way — repointing is a choice, not a repair. If you do
+      repoint it, update `MD5` and re-run it to confirm it still reports MATCHES.
+- [ ] Close issue 27.
+
+Already handled: the repo cites the **concept** DOI 10.5281/zenodo.22801229,
+which resolves to whatever the newest version is, so the citation does not need
+touching when v2 appears. Only the places that describe v1's *contents* do.
+
+Everything else from the pre-publication audit is settled: LICENSE and
+CITATION.cff are in (issue 24 area), Git LFS is gone (26), the per-donor genotype
+analysis is ignored rather than published, the dead `pre-prune` tag references
+are rewritten, and no secrets, emails or purged clinical records survive in the
+published history.
 
 ---
 

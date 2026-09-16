@@ -32,7 +32,7 @@ references:
     title: >-
       Data related to "Selective depletion of upper-layer somatostatin
       interneuron subtypes in schizophrenia" paper by Endresz et al.
-    doi: 10.5281/zenodo.22801230
+    doi: 10.5281/zenodo.22801229  # concept DOI — resolves to the newest version
     year: 2026
     license: CC-BY-4.0
     authors:
