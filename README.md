@@ -86,6 +86,38 @@ figure inputs each renderer needs, so no figure depends on data you have to
 fetch first. Each component's `data/README.md` lists what to obtain and from
 where.
 
+### Published data (Zenodo)
+
+The data this study generated is deposited at
+**[Zenodo record 22801230](https://zenodo.org/records/22801230)**
+(DOI [10.5281/zenodo.22801230](https://doi.org/10.5281/zenodo.22801230),
+CC-BY-4.0, published 2026-09-16): harmonized per-cell cell-type annotations for
+all eight datasets, and the cell-type-specific differential expression results at
+subclass and supertype resolution.
+
+| File | Size | md5 | Contents |
+|---|---|---|---|
+| `cell_metadata.parquet` | 53.5 MB | `4d51070c637070ec4ab2075d175afbc7` | 3,738,935 cells x 14 columns; 493 donors, 8 datasets (7 snRNA-seq + Xenium); `class` / `subclass` / `supertype`, `diagnosis`, `sex`, `age`, `n_counts`, `n_genes`, `qc_pass`, `spatial_domain` |
+| `DE_subclass.parquet` | 73.7 MB | `5da0d816f713191645dd9bf82ece8dd1` | 2,471,813 rows: `gene, logFC, SE, PValue, FDR, cell_type, cohort`; 48,252 genes x 24 subclasses x 9 cohorts (the 7 datasets, `Meta-analysis`, and `Xenium`) |
+| `DE_supertype.parquet` | 223.5 MB | `4d6029d131eb51cb3846e5a9cc1c4796` | the same at supertype resolution, for the 7 snRNA-seq datasets and the meta-analysis |
+
+**This is the citable route to the large tables that are otherwise in Git LFS.**
+Verified 2026-09-16: the `Meta-analysis` rows of `DE_subclass.parquet` are the
+same data as the committed
+`transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv` — 231,135 rows,
+16,361 genes, 24 cell types, agreeing to 1e-16 — and its per-dataset rows are the
+public form of `snrnaseq/snRNAseq_DE/Files/DE_genes_all_cohorts_subclass.csv`
+(the 301 MB LFS object). `cell_metadata.parquet` is the harmonized annotation set
+behind the composition analyses.
+
+Two schema notes for anyone joining Zenodo to repo files: Zenodo uses the
+`Control` / `SCZ` diagnosis vocabulary and the dataset names `MSSM1` / `MSSM2` /
+`Frohlich`, whereas the in-repo `snrnaseq/` tables use `Control` /
+`Schizophrenia` and `MtSinai` / `MSSM` / `OFC`. The paper's labels are MSSM 1,
+MSSM 2 and Fröhlich.
+
+Supplementary Tables T1–T4 are published with the article, not here.
+
 ## Reproducing
 
 ```bash
@@ -105,6 +137,9 @@ led here on 2026-09-16. If a chain behaves strangely, check for stubs first:
 ```bash
 head -c 40 <path> | grep -q git-lfs && echo "pointer stub, run: git lfs pull"
 ```
+
+If you would rather not fetch LFS at all, the two largest DE tables are also on
+Zenodo in parquet form — see **Published data** above.
 
 Then follow the component README for the figure you want. Figure 2, Figure 4
 and supplementary figures S2, S3, S6, S8, S9 and S10 render from committed
