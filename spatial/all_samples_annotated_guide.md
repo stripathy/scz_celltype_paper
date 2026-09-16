@@ -175,7 +175,8 @@ The other two sets are kept for comparison only.
 ### Nuclear re-segmentation
 
 Populated for all 24 samples from the optional nuclear-resolution step
-(removed 2026-09-04; recoverable from tag `pre-prune-2026-09-04`), which re-counts transcripts inside the
+(removed 2026-09-04 and not carried into the public history; the authors keep a
+pre-prune archive), which re-counts transcripts inside the
 nuclear boundary to re-adjudicate whole-cell doublet calls.
 
 | Column | Type | Description |

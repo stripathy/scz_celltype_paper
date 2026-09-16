@@ -21,8 +21,8 @@ is in [`figure_composite_legend.md`](figure_composite_legend.md).
 Sections 3 and 4 below describe the forest and scatter panels. They were once
 standalone scripts (`07_forest_plots.R`, `08_meta_vs_xenium_scatter.R`) that
 `09` re-implemented internally; the standalones were removed on 2026-09-04 and
-are recoverable from the git tag `pre-prune-2026-09-04`. The methods they
-document are still exactly what `09` does.
+are not in the public history. The methods they document are still exactly what
+`09` does, so nothing is lost by their absence.
 
 ---
 
@@ -116,7 +116,7 @@ project rather than a re-derived p-value. (The two agree closely.)
 Xenium is **never** pooled into the meta-analysis. It is shown only as
 independent replication (the green triangle in 07; the y-axis in 08). This
 preserves the discovery/replication separation — see
-the archived pathway-analysis notes (removed 2026-09-04; tag `pre-prune-2026-09-04`). (An 8-cohort sensitivity pool was explored
+the archived pathway-analysis notes (removed 2026-09-04; not in the public history). (An 8-cohort sensitivity pool was explored
 earlier but is not the primary analysis.)
 
 ### Significance markers

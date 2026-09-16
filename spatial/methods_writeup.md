@@ -4,8 +4,8 @@ This is the long-form account behind **Supplementary Methods SM1**.
 
 > **On the inline figures.** They point into `spatial/output/`, which is
 > git-ignored, so they render only on a machine that has run the pipeline. Some
-> were produced by presentation scripts removed on 2026-09-04; those are
-> recoverable from the git tag `pre-prune-2026-09-04`. The prose stands on its
+> were produced by presentation scripts removed on 2026-09-04, which are not in
+> the public history; ask the authors if you need them. The prose stands on its
 > own, and the numbers it quotes are reproduced by the scripts in
 > `code/analysis/validation/`.
 
@@ -49,7 +49,7 @@ Analysis: Cortical cells → crumblr compositional regression (SCZ vs Control)
 | Step 01: spatial QC (`qc_pass`) | 1,298,687 | 40,464 | 3.0% |
 | **Step 02b: `corr_qc_pass` (default gate)** | **1,225,037** | **114,114** | **8.5%** |
 
-*Cell counts reflect all 24 samples. `corr_qc_pass` combines spatial QC (step 01), the 5th-percentile margin filter, and doublet suspect exclusion. A nuclear doublet resolution step was also trialled; it had negligible impact on downstream biology and its code was removed on 2026-09-04 (tag `pre-prune-2026-09-04`). Br2039 is retained in all analyses despite high white matter content (70.1% of
+*Cell counts reflect all 24 samples. `corr_qc_pass` combines spatial QC (step 01), the 5th-percentile margin filter, and doublet suspect exclusion. A nuclear doublet resolution step was also trialled; it had negligible impact on downstream biology and its code was removed on 2026-09-04 and is not in the public history. Br2039 is retained in all analyses despite high white matter content (70.1% of
 its cells are `spatial_domain == "WM"`, against a cohort median of 19.7%);
 restricting to `spatial_domain == "Cortical"` removes that white matter cell by
 cell, so the section still contributes usable cortex.*

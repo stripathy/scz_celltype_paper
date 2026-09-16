@@ -1,0 +1,64 @@
+Copyright (c) 2026 Nicole Endresz, Maria Eleni Fafouti, Keon Arbabi, Xiaolin Zhou,
+Thomas DeLong, Guillermo Gonzalez-Burgos, Laramie Duncan, Etienne Sibille and
+Shreejoy Tripathy.
+
+This repository holds two kinds of material and licenses them separately, which is
+the usual arrangement for a paper repository: Creative Commons recommends against
+applying CC licenses to software, because they carry no patent grant and no
+source-distribution terms, while CC BY 4.0 is the natural fit for data and prose.
+
+================================================================================
+SOFTWARE — MIT License
+================================================================================
+
+Applies to all source code in this repository: every .R, .r, .py, .sh and .sql
+file, and the build and analysis scripts under any directory.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+================================================================================
+DATA, FIGURES AND DOCUMENTATION — Creative Commons Attribution 4.0 International
+================================================================================
+
+Applies to everything that is not source code: the committed data snapshots
+(.csv, .tsv, .parquet, .json), the rendered figures under manuscript/figures/,
+and the prose (.md).
+
+Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+
+You may share and adapt this material for any purpose, including commercially,
+provided you give appropriate credit, link to the license, and indicate whether
+changes were made. This matches the license on the Zenodo deposit that holds the
+full versions of these tables (DOI 10.5281/zenodo.22801230).
+
+To cite: see CITATION.cff, or cite the paper and the Zenodo DOI.
+
+================================================================================
+THIRD-PARTY AND UPSTREAM MATERIAL
+================================================================================
+
+Neither license above extends to material this repository does not own:
+
+- Human donor data from the seven snRNA-seq cohorts and the Xenium dataset
+  remains governed by the agreements of the consortia that produced it (PsychAD,
+  NIMH/NDA, Synapse, and the individual brain banks). The donor-level tables
+  committed here carry de-identified demographic variables only, released with
+  PI authorisation; they are not a grant of rights over the underlying data.
+- Reference atlases (Allen Institute SEA-AD, MERFISH), GWAS summary statistics,
+  and gene-set collections (MSigDB) carry their own terms from their providers.
+- Third-party packages called by this code are licensed by their own authors.

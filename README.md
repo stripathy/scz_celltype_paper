@@ -186,3 +186,26 @@ rather than the Seurat object.
 The one committed input from that pipeline is the per-donor cell-count matrix
 behind the composition analysis,
 [`snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv`](snrnaseq/Compositional_analysis/Files/7_cohorts_metadata_names.csv).
+
+---
+
+## License
+
+Two licenses, split the usual way for a paper repository — see
+[`LICENSE`](LICENSE) for the full text and the third-party carve-outs.
+
+| Material | License |
+|---|---|
+| Source code (`.R`, `.r`, `.py`, `.sh`) | **MIT** |
+| Committed data snapshots, rendered figures, documentation | **CC BY 4.0**, matching the Zenodo deposit |
+
+Creative Commons recommends against CC licenses for software — they carry no
+patent grant and no source-distribution terms — which is why the code is MIT
+rather than CC BY.
+
+Human donor data from the contributing cohorts stays governed by the consortia's
+own agreements; neither license grants rights over it. The donor-level tables
+committed here carry de-identified demographic variables only.
+
+Cite via [`CITATION.cff`](CITATION.cff), or the paper plus the Zenodo DOI
+[10.5281/zenodo.22801230](https://doi.org/10.5281/zenodo.22801230).

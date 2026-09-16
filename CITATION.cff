@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this code or the committed data, please cite the paper and the Zenodo deposit."
+title: "Analysis code for: Selective depletion of upper-layer somatostatin interneuron subtypes in schizophrenia"
+abstract: >-
+  Code and committed figure inputs for a study of cell-type-specific changes in
+  schizophrenia, combining a seven-dataset snRNA-seq meta-analysis, Xenium spatial
+  transcriptomics, common-variant genetics and patch-seq physiology.
+type: software
+license: MIT
+repository-code: "https://github.com/stripathy/scz_celltype_paper"
+authors:
+  - family-names: Endresz
+    given-names: Nicole
+  - family-names: Fafouti
+    given-names: Maria Eleni
+  - family-names: Arbabi
+    given-names: Keon
+  - family-names: Zhou
+    given-names: Xiaolin
+  - family-names: DeLong
+    given-names: Thomas
+  - family-names: Gonzalez-Burgos
+    given-names: Guillermo
+  - family-names: Duncan
+    given-names: Laramie
+  - family-names: Sibille
+    given-names: Etienne
+  - family-names: Tripathy
+    given-names: Shreejoy
+references:
+  - type: data
+    title: >-
+      Data related to "Selective depletion of upper-layer somatostatin
+      interneuron subtypes in schizophrenia" paper by Endresz et al.
+    doi: 10.5281/zenodo.22801230
+    year: 2026
+    license: CC-BY-4.0
+    authors:
+      - family-names: Endresz
+        given-names: Nicole
+      - family-names: Tripathy
+        given-names: Shreejoy
