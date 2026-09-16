@@ -138,8 +138,29 @@ led here on 2026-09-16. If a chain behaves strangely, check for stubs first:
 head -c 40 <path> | grep -q git-lfs && echo "pointer stub, run: git lfs pull"
 ```
 
-If you would rather not fetch LFS at all, the two largest DE tables are also on
-Zenodo in parquet form — see **Published data** above.
+**You can skip LFS entirely for Figure 2.** The same DE data is published as
+parquet on Zenodo, and a script rebuilds the two snapshots Figure 2 reads:
+
+```bash
+python3 transcriptomic/scripts/00b_figure_inputs_from_zenodo.py           # check only
+python3 transcriptomic/scripts/00b_figure_inputs_from_zenodo.py --write   # rebuild
+```
+
+It downloads `DE_subclass.parquet` (73.7 MB, md5-checked), translates the Zenodo
+schema to the repo's, and reports whether it reproduces the tracked snapshots.
+Verified 2026-09-16 — it does, on every row:
+
+| Rebuilt snapshot | Rows | Worst difference vs tracked |
+|---|---|---|
+| `meta_results_cohorts_subclass_forest.csv` | 143 | 6.7e-16 |
+| `DE_genes_all_cells_scz.csv` | 231,135 | 5.8e-15 |
+
+**What this route cannot give you:** Zenodo publishes `SE` but not `k`, `tau2`
+or `I2`. Figure 2 never reads those, so it is unaffected; `transcriptomic/scripts/sst_strata/`
+(Supplementary **S8**) does read them, so **S8 still needs the Git LFS copy**. The
+script says so before it writes. Confidence intervals are not a problem — it
+derives `ci.lb`/`ci.ub` as `estimate ± 1.959964 × se`, which matches the tracked
+table to 1.4e-8.
 
 Then follow the component README for the figure you want. Figure 2, Figure 4
 and supplementary figures S2, S3, S6, S8, S9 and S10 render from committed

@@ -92,3 +92,6 @@ manuscript/figures/main/*.svg
 snrnaseq/Compositional_sensitivity_analysis/Files/*_NoSST_DEgenes.csv
 !snrnaseq/Compositional_sensitivity_analysis/Files/7_cohorts_metadata_NoSST_DEgenes_names.csv
 snrnaseq/Final_figures/Data/xenium_metadata.csv
+
+# Zenodo downloads cached by transcriptomic/scripts/00b_figure_inputs_from_zenodo.py
+transcriptomic/data/.zenodo_cache/
