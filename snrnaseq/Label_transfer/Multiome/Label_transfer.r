@@ -1,3 +1,7 @@
+# Reference taxonomy: SEA-AD (Gabitto et al. 2024) neurotypical snRNA-seq, whose
+# Supertype labels are what `refdata` transfers. Variables are named *_seaad for
+# that reason; they were called *_hodge until 2026-09-16, which named the wrong
+# atlas (Hodge et al. 2019 is a different taxonomy of a different region).
 setwd("P1_Brain_scope")
 
 library(readr)
@@ -8,11 +12,11 @@ library(ggplot2)
 
 # Load reference
 Counts_ref <- readRDS("/project/rrg-shreejoy/nendresz/raw_counts_ref.rds")
-meta_hodge <- readRDS("/project/rrg-shreejoy/nendresz/Neurotypical_ref_metadata.rds")
+meta_seaad <- readRDS("/project/rrg-shreejoy/nendresz/Neurotypical_ref_metadata.rds")
 
-counts_hodge <- Matrix(as.matrix(Counts_ref), sparse = TRUE)
-rownames(counts_hodge) <- rownames(Counts_ref)
-colnames(counts_hodge) <- colnames(Counts_ref)
+counts_seaad <- Matrix(as.matrix(Counts_ref), sparse = TRUE)
+rownames(counts_seaad) <- rownames(Counts_ref)
+colnames(counts_seaad) <- colnames(Counts_ref)
 
 # Load Multiome counts
 Counts_sn <- readRDS("/scratch/nendresz/P1_Brain_scope/Files/Multiome_matrix.rds")
@@ -25,15 +29,15 @@ rownames(counts_sn) <- rownames(Counts_sn)
 colnames(counts_sn) <- colnames(Counts_sn)
 
 # Match genes
-common_genes <- intersect(colnames(counts_hodge), rownames(counts_sn))
+common_genes <- intersect(colnames(counts_seaad), rownames(counts_sn))
 
-counts_hodge_sub <- counts_hodge[, common_genes]
+counts_seaad_sub <- counts_seaad[, common_genes]
 counts_sn_sub <- counts_sn[common_genes, ]
 
 # Create Seurat objects
-Seu_hodge <- CreateSeuratObject(
-  counts = t(counts_hodge_sub),
-  meta.data = meta_hodge
+Seu_seaad <- CreateSeuratObject(
+  counts = t(counts_seaad_sub),
+  meta.data = meta_seaad
 )
 
 Seu_sn <- CreateSeuratObject(
@@ -41,21 +45,21 @@ Seu_sn <- CreateSeuratObject(
 )
 
 # Normalize + variable features
-Seu_hodge <- NormalizeData(Seu_hodge, scale.factor = 1e6)
-Seu_hodge <- FindVariableFeatures(Seu_hodge, nfeatures = 3000)
+Seu_seaad <- NormalizeData(Seu_seaad, scale.factor = 1e6)
+Seu_seaad <- FindVariableFeatures(Seu_seaad, nfeatures = 3000)
 
 Seu_sn <- NormalizeData(Seu_sn, scale.factor = 1e6)
 Seu_sn <- FindVariableFeatures(Seu_sn, nfeatures = 3000)
 
 # Reference PCA
-Seu_hodge <- ScaleData(Seu_hodge)
-Seu_hodge <- RunPCA(Seu_hodge)
-Seu_hodge <- FindNeighbors(Seu_hodge, dims = 1:30)
-Seu_hodge <- FindClusters(Seu_hodge)
+Seu_seaad <- ScaleData(Seu_seaad)
+Seu_seaad <- RunPCA(Seu_seaad)
+Seu_seaad <- FindNeighbors(Seu_seaad, dims = 1:30)
+Seu_seaad <- FindClusters(Seu_seaad)
 
 # Label transfer
 anchors <- FindTransferAnchors(
-  reference = Seu_hodge,
+  reference = Seu_seaad,
   query = Seu_sn,
   dims = 1:30,
   reference.reduction = "pca"
@@ -63,7 +67,7 @@ anchors <- FindTransferAnchors(
 
 predictions <- TransferData(
     anchorset = anchors,
-  refdata = Seu_hodge$Supertype,
+  refdata = Seu_seaad$Supertype,
   dims = 1:30
 )
 

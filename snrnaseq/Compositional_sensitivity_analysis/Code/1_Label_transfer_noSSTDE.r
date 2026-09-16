@@ -1,3 +1,7 @@
+# Reference taxonomy: SEA-AD (Gabitto et al. 2024) neurotypical snRNA-seq, whose
+# Supertype labels are what `refdata` transfers. Variables are named *_seaad for
+# that reason; they were called *_hodge until 2026-09-16, which named the wrong
+# atlas (Hodge et al. 2019 is a different taxonomy of a different region).
 library(Seurat)
 library(dplyr)
 library(Matrix)
@@ -51,8 +55,8 @@ gc()
 # REFERENCE 
 
 Counts_ref <- readRDS("/project/rrg-shreejoy/nendresz/raw_counts_ref.rds")
-meta_hodge <- readRDS("/project/rrg-shreejoy/nendresz/Neurotypical_ref_metadata.rds")
-meta_hodge <- meta_hodge[rownames(Counts_ref),,drop=FALSE]
+meta_seaad <- readRDS("/project/rrg-shreejoy/nendresz/Neurotypical_ref_metadata.rds")
+meta_seaad <- meta_seaad[rownames(Counts_ref),,drop=FALSE]
 
 options(future.globals.maxSize=Inf)
 
@@ -83,17 +87,17 @@ for(nm in names(cohorts)){
   )
 
   counts_sn <- as(counts_sn[,genes_use,drop=FALSE],"dgCMatrix")
-  counts_hodge <- as(Counts_ref[,genes_use,drop=FALSE],"dgCMatrix")
+  counts_seaad <- as(Counts_ref[,genes_use,drop=FALSE],"dgCMatrix")
 
   # Seurat objects
-  Seu_hodge <- CreateSeuratObject(t(counts_hodge),meta.data=meta_hodge)
+  Seu_seaad <- CreateSeuratObject(t(counts_seaad),meta.data=meta_seaad)
   Seu_sn <- CreateSeuratObject(t(counts_sn),meta.data=meta_sn)
 
-  rm(counts_sn,counts_hodge); gc()
+  rm(counts_sn,counts_seaad); gc()
 
   # Normalize
-  Seu_hodge <- NormalizeData(Seu_hodge,scale.factor=1e6,verbose=FALSE) %>%
-    FindVariableFeatures(nfeatures=min(3000,nrow(Seu_hodge)),verbose=FALSE) %>%
+  Seu_seaad <- NormalizeData(Seu_seaad,scale.factor=1e6,verbose=FALSE) %>%
+    FindVariableFeatures(nfeatures=min(3000,nrow(Seu_seaad)),verbose=FALSE) %>%
     ScaleData(verbose=FALSE)
 
   Seu_sn <- NormalizeData(Seu_sn,scale.factor=1e6,verbose=FALSE) %>%
@@ -102,13 +106,13 @@ for(nm in names(cohorts)){
   # Reference PCA
   npcs_use <- min(30,length(genes_use)-1)
 
-  Seu_hodge <- RunPCA(Seu_hodge,npcs=npcs_use,verbose=FALSE) %>%
+  Seu_seaad <- RunPCA(Seu_seaad,npcs=npcs_use,verbose=FALSE) %>%
     FindNeighbors(dims=1:npcs_use,verbose=FALSE) %>%
     FindClusters(verbose=FALSE)
 
   # Transfer labels
   anchors <- FindTransferAnchors(
-    reference=Seu_hodge,
+    reference=Seu_seaad,
     query=Seu_sn,
     dims=1:npcs_use,
     reference.reduction="pca"
@@ -116,7 +120,7 @@ for(nm in names(cohorts)){
 
   predictions <- TransferData(
     anchorset=anchors,
-    refdata=Seu_hodge$Supertype,
+    refdata=Seu_seaad$Supertype,
     dims=1:npcs_use
   )
 
@@ -144,7 +148,7 @@ for(nm in names(cohorts)){
 
   cat("SAVED:",nm,"\n")
 
-  rm(obj,Seu_hodge,Seu_sn,anchors,predictions,old_predictions,
+  rm(obj,Seu_seaad,Seu_sn,anchors,predictions,old_predictions,
      genes_use,common_genes)
   gc()
 }

@@ -89,6 +89,27 @@ against the full per-dataset objects: paths are cluster-absolute
 `setwd()` naming a working directory that is not part of this repo. They are
 archived here so the analysis can be read and checked, not re-executed.
 
+Concretely, as of 2026-09-16: **31 of the 42 scripts call `setwd()`** and **18
+hard-code a `/scratch/` or `/project/` path**, and the `setwd()` calls name
+**8 different top-level roots** —
+
+| Root named in `setwd()` | Calls |
+|---|---|
+| `scz_celltype_paper` | 19 |
+| `P1_SCZ_paper` | 5 |
+| `OFC_cohort` | 2 |
+| `Supplemental_Analysis_Dan_paper_011725` | 1 |
+| `P1_Brain_scope` | 1 |
+| `PsychAD` | 1 |
+| `PsychENCODE_cohort` | 1 |
+| `P1_SCZ_DE_fresh` | 1 |
+
+— so the working directory a given result came from cannot be read off the code.
+Treat the root as part of the provenance you have to ask about, not as something
+the script tells you. The paths were deliberately left as they ran; rewriting
+them would make the archived code differ from the code that produced the
+numbers.
+
 Environment is selected per script by a `conda activate` comment in the header
 (`crumblr_env`, `de_env`, `r_env_meta_analysis`, `py_anndata_env`, `brisc`).
 

@@ -1,3 +1,7 @@
+# Reference taxonomy: SEA-AD (Gabitto et al. 2024) neurotypical snRNA-seq, whose
+# Supertype labels are what `refdata` transfers. Variables are named *_seaad for
+# that reason; they were called *_hodge until 2026-09-16, which named the wrong
+# atlas (Hodge et al. 2019 is a different taxonomy of a different region).
 
 #Load packages 
 library(readxl)
@@ -15,12 +19,12 @@ setwd("PsychAD")
 # -------------------------
 Counts_ref <- readRDS("/project/rrg-shreejoy/nendresz/raw_counts_ref.rds")
 
-counts_hodge_matrix <- as.matrix(Counts_ref)
-counts_hodge <- Matrix(counts_hodge_matrix, sparse=TRUE)
+counts_seaad_matrix <- as.matrix(Counts_ref)
+counts_seaad <- Matrix(counts_seaad_matrix, sparse=TRUE)
 
-meta_hodge <- readRDS("/project/rrg-shreejoy/nendresz/Neurotypical_ref_metadata.rds")
+meta_seaad <- readRDS("/project/rrg-shreejoy/nendresz/Neurotypical_ref_metadata.rds")
 
-all(rownames(counts_hodge) %in% rownames(meta_hodge))  # Ensure they align
+all(rownames(counts_seaad) %in% rownames(meta_seaad))  # Ensure they align
 
 # -------------------------
 # Loop through subsets
@@ -53,18 +57,18 @@ for (part in 1:20) {
   colnames(counts_sn) <- symbols
 
   # Filter counts matrices
-  common_genes <- intersect(colnames(counts_hodge), colnames(counts_sn))
-  counts_hodge_f <- counts_hodge[, common_genes]
+  common_genes <- intersect(colnames(counts_seaad), colnames(counts_sn))
+  counts_seaad_f <- counts_seaad[, common_genes]
   counts_sn_f <- counts_sn[, common_genes]
 
   # SEURAT INTEGRATION
-  Seu_hodge_for_int <- CreateSeuratObject(counts = t(counts_hodge_f), 
-                                          meta.data = meta_hodge) 
+  Seu_seaad_for_int <- CreateSeuratObject(counts = t(counts_seaad_f), 
+                                          meta.data = meta_seaad) 
   Seu_sn_for_int <- CreateSeuratObject(counts = t(counts_sn_f), meta.data = meta_sn) 
 
-  Seu.list <- c(Seu_hodge_for_int, Seu_sn_for_int)
+  Seu.list <- c(Seu_seaad_for_int, Seu_sn_for_int)
 
-  rm(meta_sn, common_genes, counts_hodge_f, counts_sn_f)
+  rm(meta_sn, common_genes, counts_seaad_f, counts_sn_f)
 
   Seu.list <- lapply(X = Seu.list, FUN = function(x) {
     x <- NormalizeData(x, normalization.method = "LogNormalize", scale.factor = 1000000)
@@ -72,19 +76,19 @@ for (part in 1:20) {
   })
 
   # Extract reference and query datasets
-  Seu_hodge <- Seu.list[[1]]  
+  Seu_seaad <- Seu.list[[1]]  
   Seu_sn <- Seu.list[[2]]     
 
   # Scale, PCA, clustering for reference
-  Seu_hodge <- ScaleData(Seu_hodge)
-  Seu_hodge <- RunPCA(Seu_hodge)
-  Seu_hodge <- FindNeighbors(Seu_hodge, dims = 1:30)
-  Seu_hodge <- FindClusters(Seu_hodge)
+  Seu_seaad <- ScaleData(Seu_seaad)
+  Seu_seaad <- RunPCA(Seu_seaad)
+  Seu_seaad <- FindNeighbors(Seu_seaad, dims = 1:30)
+  Seu_seaad <- FindClusters(Seu_seaad)
 
   # Transfer
-  anchors <- FindTransferAnchors(reference = Seu_hodge, query = Seu_sn, dims = 1:30, 
+  anchors <- FindTransferAnchors(reference = Seu_seaad, query = Seu_sn, dims = 1:30, 
                                  reference.reduction = "pca")
-  predictions <- TransferData(anchorset = anchors, refdata = Seu_hodge$Supertype, dims = 1:30)
+  predictions <- TransferData(anchorset = anchors, refdata = Seu_seaad$Supertype, dims = 1:30)
   Seu_sn <- AddMetaData(Seu_sn, metadata = predictions)
 
 # Extract new metadata
@@ -98,5 +102,5 @@ New_seu <- CreateSeuratObject(counts = t(counts_sn_raw), meta.data = new_meta)
 
   saveRDS(New_seu, paste0("Data/Seu_objs/LT_psychAD_", part, ".rds"))
 
-  rm(New_seu, Seu_sn, Seu_hodge, Seu.list, predictions, anchors)
+  rm(New_seu, Seu_sn, Seu_seaad, Seu.list, predictions, anchors)
 }

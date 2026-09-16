@@ -9,10 +9,10 @@ note below the table.
 
 | Fig | File | Shows | Built by | Run from |
 |----|------|-------|----------|----------|
-| 1a | — | Cohort UMAPs and cell/donor counts | `Figure_1a_UMAP.r`, `Figure_1a_Barchart.r` | `snrnaseq/Final_figures/` |
+| 1a | — | Cohort UMAPs and cell/donor counts | `Code/Figure_1.py`, `Code/Figure_1a_Barchart.r` | `snrnaseq/Final_figures/` |
 | 1b–f | — | Xenium sections, cell-type annotation, laminar segmentation | Assembled by hand; `spatial/` supplies the annotated h5ads it draws on. | — |
 | 2 | `Fig2_cross_platform_de` | Cross-platform differential expression: volcanoes, seven-cohort forests for SST and PVALB, per-donor CP1K, exemplar Xenium cells, DE burden by subclass, snRNA-seq vs Xenium concordance | `09_composite_figure.R` | `transcriptomic/` |
-| 3 | — | Compositional depletion of upper-layer Sst supertypes: abundance bar chart (a), Sst_25 forest (b) and per-donor proportions (c), spatial rendering (d), abundance vs depth (e), snRNA-seq vs Xenium concordance (f) | `Figure_3.r` | `snrnaseq/Final_figures/` |
+| 3 | — | Compositional depletion of upper-layer Sst supertypes: abundance bar chart (a), Sst_25 forest (b) and per-donor proportions (c), spatial rendering (d), abundance vs depth (e), snRNA-seq vs Xenium concordance (f) | `Code/Figure_3.r` | `snrnaseq/Final_figures/` |
 | 4 | `Fig4_scz_genetics_hcn1_sst` | SCZ common-variant enrichment vs depletion, Sst_2 gene drivers, the *HCN1* locus, *HCN1* expression vs patch-seq sag, exemplar morphologies and traces, marker volcano, *CALB1*, and the Alzheimer's comparison | `scz_sst_hcn1_story.R` | `genetics/` |
 
 ```bash

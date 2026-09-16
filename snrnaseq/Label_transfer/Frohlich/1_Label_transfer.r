@@ -1,3 +1,7 @@
+# Reference taxonomy: SEA-AD (Gabitto et al. 2024) neurotypical snRNA-seq, whose
+# Supertype labels are what `refdata` transfers. Variables are named *_seaad for
+# that reason; they were called *_hodge until 2026-09-16, which named the wrong
+# atlas (Hodge et al. 2019 is a different taxonomy of a different region).
 # Load packages
 library(Seurat)
 library(Matrix)
@@ -5,10 +9,10 @@ library(Matrix)
 setwd("OFC_cohort")
 
 # Load reference
-counts_hodge <- Matrix(as.matrix(readRDS("/project/s/shreejoy/nendresz/raw_counts_ref.rds")), sparse=TRUE)
-meta_hodge <- readRDS("/project/s/shreejoy/nendresz/Neurotypical_ref_metadata.rds")
+counts_seaad <- Matrix(as.matrix(readRDS("/project/s/shreejoy/nendresz/raw_counts_ref.rds")), sparse=TRUE)
+meta_seaad <- readRDS("/project/s/shreejoy/nendresz/Neurotypical_ref_metadata.rds")
 
-ref <- CreateSeuratObject(counts=t(counts_hodge), meta.data=meta_hodge)
+ref <- CreateSeuratObject(counts=t(counts_seaad), meta.data=meta_seaad)
 ref <- NormalizeData(ref)
 ref <- FindVariableFeatures(ref)
 ref <- ScaleData(ref)

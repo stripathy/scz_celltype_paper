@@ -79,9 +79,19 @@ counts <- counts[, colnames(counts) %in% neuron_labels, drop = FALSE]
   fit <- dream(cobj, dream_formula, meta)
   fit <- eBayes(fit)
   
+  # The Diagnosis contrast is named after the non-reference factor level, so it is
+  # "DiagnosisSchizophrenia" for this metadata but "DiagnosisSCZ" for a table using
+  # the repo's Control/SCZ vocabulary. Read it off the fit instead of hard-coding.
+  dx_coef <- grep("^Diagnosis", colnames(fit$coefficients), value = TRUE)
+  # Exactly one Diagnosis column means a clean two-level contrast. More than one
+  # means Diagnosis has >2 levels in this fit — which happens if cohorts are pooled,
+  # because Multiome spells its controls "control" and the rest spell them "Control".
+  # Stop rather than silently contrast against the wrong reference.
+  stopifnot(length(dx_coef) == 1)
+  dx_coef <- dx_coef[1]
   res <- topTable(
     fit,
-    coef = "DiagnosisSchizophrenia",
+    coef = dx_coef,
     number = Inf
   ) %>%
     dplyr::select(logFC, AveExpr, t, P.Value, adj.P.Val) %>%

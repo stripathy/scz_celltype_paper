@@ -26,16 +26,17 @@ unique) and writes `*_symbols.rds`. The UMAP and marker-plot scripts read those.
 
 ## Figure 3 panel map
 
-The panel variables are **not** named after their final panel letters. The
-assembly at the foot of `Figure_3.r` is what decides:
+Each panel variable is named after its panel letter (renamed 2026-09-16; `p3c`
+and `p3b` were previously swapped and `p3h` built panel e, so only the assembly
+at the foot of `Figure_3.r` said which was which):
 
 | Panel | Variable | Shows | Main input |
 |---|---|---|---|
 | a | `p3a` | Abundance change per neuronal supertype, meta-analysed | `crumblr_results_final_meta.csv` |
-| b | `p3c` | Sst_25 forest across the seven datasets | `final_results_crumblr_7_cohorts_all.csv` |
-| c | `p3b` | Sst_25 per-donor proportion, Control vs SCZ, with Xenium | `neuron_props_7_cohorts` + Xenium proportions |
+| b | `p3b` | Sst_25 forest across the seven datasets | `final_results_crumblr_7_cohorts_all.csv` |
+| c | `p3c` | Sst_25 per-donor proportion, Control vs SCZ, with Xenium | `neuron_props_7_cohorts` + Xenium proportions |
 | d | `p3d` | Spatial rendering of Sst_25 | `Xenium_SCZ_R.rds` |
-| e | `p3h` | Abundance change vs cortical depth | Xenium crumblr + depth |
+| e | `p3e` | Abundance change vs cortical depth | Xenium crumblr + depth |
 | f | `p3f` | snRNA-seq vs Xenium concordance (Spearman) | Xenium crumblr + 7-dataset meta |
 
 ## Cross-platform inputs

@@ -90,7 +90,7 @@ cohort_order <- c("Batiuk", "MSSM 1", "Fröhlich", "McLean", "HBCC", "Multiome",
 plot_df$Cohort <- factor(plot_df$Cohort, levels = cohort_order)
 annot_df$Cohort <- factor(annot_df$Cohort, levels = cohort_order)
 
-p3b <- ggplot(plot_df, aes(x = Diagnosis, y = Sst_25 * 100)) +
+p3c <- ggplot(plot_df, aes(x = Diagnosis, y = Sst_25 * 100)) +
   geom_boxplot(aes(fill = Diagnosis), alpha = 0.35, outlier.shape = NA, width = 0.55, linewidth = 0.4) +
   geom_jitter(aes(color = Diagnosis), width = 0.12, size = 1, alpha = 0.8) +
   geom_signif(data = annot_df, aes(xmin = xmin, xmax = xmax, annotations = label, y_position = y_position),
@@ -108,7 +108,7 @@ p3b <- ggplot(plot_df, aes(x = Diagnosis, y = Sst_25 * 100)) +
         strip.text = element_text(size = AXIS_TEXT, face = "bold"),
         strip.background = element_rect(fill = "white", color = "black"))
 
-ggsave("Final_figures/Figures/Boxplots3b_with_Xenium.png", p3b, width = 14, height = 8, dpi = 600)
+ggsave("Final_figures/Figures/Boxplots3b_with_Xenium.png", p3c, width = 14, height = 8, dpi = 600)
 
 # Figure 3C
 library(dplyr)
@@ -132,7 +132,7 @@ plot_order <- c("Xenium","Meta-analysis",
                 df_sst25 %>% filter(!Cohort %in% c("Meta-analysis","Xenium")) %>% arrange(estimate) %>% pull(Cohort) %>% as.character())
 df_sst25$Cohort <- factor(df_sst25$Cohort, levels=plot_order)
 
-p3c <- ggplot(df_sst25,aes(Cohort,estimate)) +
+p3b <- ggplot(df_sst25,aes(Cohort,estimate)) +
   geom_hline(yintercept=0,linetype="dashed") +
   geom_vline(xintercept=1.5,linetype="dotted",color="grey85") +
 geom_errorbar(data=filter(df_sst25,!Cohort %in% c("Meta-analysis","Xenium")),aes(ymin=ci_low,ymax=ci_high),width=0,linewidth=.8,color="grey35") +
@@ -155,7 +155,7 @@ theme(axis.text=element_text(size=AXIS_TEXT),axis.title.x=element_text(size=AXIS
       axis.title.y=element_blank(),axis.ticks=element_blank(),panel.grid=element_blank(),
       legend.position = "none")
 
-ggsave("Final_figures/Figures/Forestplot3c.png",p3c,width=10,height=5,dpi=600)
+ggsave("Final_figures/Figures/Forestplot3c.png",p3b,width=10,height=5,dpi=600)
 ######
 
 library(Seurat)
@@ -376,7 +376,7 @@ depth_effect <- read.csv("Final_figures/Data/xenium_sst_supertype_depth.csv") %>
 spearman_test <- cor.test(depth_effect$estimate,depth_effect$mean_depth,method="spearman",exact=FALSE)
 rho_label <- paste0("\u03C1 = ",round(unname(spearman_test$estimate),2),", p = ",format.pval(spearman_test$p.value,digits=2,eps=0.001))
 
-p3h <- ggplot(depth_effect,aes(estimate,mean_depth)) +
+p3e <- ggplot(depth_effect,aes(estimate,mean_depth)) +
   geom_smooth(method="lm",se=FALSE,linetype="dashed",linewidth=.4,color="grey30") +
   geom_vline(xintercept=0,linetype="dotted",linewidth=.3,color="grey40") +
   geom_hline(yintercept=mean(depth_effect$mean_depth),linetype="dotted",linewidth=.3,color="grey40") +
@@ -390,16 +390,16 @@ p3h <- ggplot(depth_effect,aes(estimate,mean_depth)) +
   theme(axis.text=element_text(size=AXIS_TEXT,color="black"),axis.title=element_text(size=AXIS_TITLE,color="black"),
         axis.ticks=element_blank(),panel.grid=element_blank(),legend.position="none")
 
-ggsave("Final_figures/Figures/p3h_Sst_depth_effect.png",p3h,width=8,height=6,dpi=600)
+ggsave("Final_figures/Figures/p3e_Sst_depth_effect.png",p3e,width=8,height=6,dpi=600)
 
 library(cowplot)
 
 top_row <- plot_grid(p3a, labels="a", label_size=26, label_fontface="bold")
 
-middle_row <- plot_grid(p3c, p3b, ncol=2, labels=c("b","c"), rel_widths=c(0.75,2),
+middle_row <- plot_grid(p3b, p3c, ncol=2, labels=c("b","c"), rel_widths=c(0.75,2),
                         label_size=26, label_fontface="bold")
 
-bottom_row <- plot_grid(p3d,plot_grid(p3h,p3f,ncol=1,labels=c("e","f"),
+bottom_row <- plot_grid(p3d,plot_grid(p3e,p3f,ncol=1,labels=c("e","f"),
 align="v",axis="lr",label_size=26,label_fontface="bold"),ncol=2,rel_widths=c(1.5,.8),
 labels=c("d",""),label_size=26,label_fontface="bold")
 

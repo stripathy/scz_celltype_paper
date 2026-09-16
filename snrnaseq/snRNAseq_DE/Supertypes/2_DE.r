@@ -119,11 +119,21 @@ if (nrow(design) <= ncol(design)) {
   vm <- voom(dge, design, plot = FALSE)
   fit <- lmFit(vm, design)
   fit <- eBayes(fit)
+
+  # Diagnosis contrast named after the non-reference level — "DiagnosisSchizophrenia"
+  # here, "DiagnosisSCZ" under the repo's Control/SCZ vocabulary. Read it off the design.
+  dx_coef <- grep("^Diagnosis", colnames(design), value = TRUE)
+  # Exactly one Diagnosis column means a clean two-level contrast. More than one
+  # means Diagnosis has >2 levels in this fit — which happens if cohorts are pooled,
+  # because Multiome spells its controls "control" and the rest spell them "Control".
+  # Stop rather than silently contrast against the wrong reference.
+  stopifnot(length(dx_coef) == 1)
+  dx_coef <- dx_coef[1]
   
   # Extract DE results
   DE <- topTable(
     fit,
-    coef = "DiagnosisSchizophrenia",
+    coef = dx_coef,
     n = Inf,
     adjust.method = "BH"
   )
@@ -243,11 +253,21 @@ if (nrow(design) <= ncol(design)) {
   vm <- voom(dge, design, plot = FALSE)
   fit <- lmFit(vm, design)
   fit <- eBayes(fit)
+
+  # Diagnosis contrast named after the non-reference level — "DiagnosisSchizophrenia"
+  # here, "DiagnosisSCZ" under the repo's Control/SCZ vocabulary. Read it off the design.
+  dx_coef <- grep("^Diagnosis", colnames(design), value = TRUE)
+  # Exactly one Diagnosis column means a clean two-level contrast. More than one
+  # means Diagnosis has >2 levels in this fit — which happens if cohorts are pooled,
+  # because Multiome spells its controls "control" and the rest spell them "Control".
+  # Stop rather than silently contrast against the wrong reference.
+  stopifnot(length(dx_coef) == 1)
+  dx_coef <- dx_coef[1]
   
   # Extract DE results
   DE <- topTable(
     fit,
-    coef = "DiagnosisSchizophrenia",
+    coef = dx_coef,
     n = Inf,
     adjust.method = "BH"
   )

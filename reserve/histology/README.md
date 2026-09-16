@@ -43,6 +43,13 @@ Supplementary-table material: `results/rnascope_subjects_final.csv` (the 54 anal
 | `data/full cell counts(Excel).xlsx` | **Not distributed** (donor clinical records; see `data/README.md`). Subject-to-diagnosis mapping and the original study's per-subject summary counts. |
 | `data/pTable with correct med info.csv` | Demographics (age, sex, PMI). |
 | `data/sst_analysis_data.csv` | Consolidated per-frame dataset built by step 1 (68 subjects, `vip_pass` column). |
+
+`code/config.py` also defines `COORD_DIR = coordinates/`, the per-frame
+stereology coordinate exports from the original sgACC study. Nothing in this
+pipeline reads it — it is a leftover constant. The directory was a symlink into
+`sgACC_cell_depth_analysis/coordinates` on the first author's machine, which
+dangled in every clone, so it was removed on 2026-09-16; recreate it there if a
+future analysis needs those exports.
 | `results/microscopy/` | Representative-image processing (lipofuscin suppression, curated annotation SVG, marker coordinates); see its README. |
 
 ## Requirements

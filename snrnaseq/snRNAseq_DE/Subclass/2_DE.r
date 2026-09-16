@@ -10,6 +10,12 @@ library(dplyr)
 library(EnhancedVolcano)
 library(ggplot2)
 
+# Cell types are every column that is not donor metadata. 1_Pseudobulk.r builds this
+# table as left_join(table(Donor, Subclass), donor metadata), so the cell-type columns
+# come first and the five metadata columns last — but selecting by position ([1:24])
+# silently takes "Donor" as a cell type for any dataset with fewer subclasses.
+META_COLS <- c("Donor", "Age", "Sex", "Diagnosis", "PMI")
+
 bulk_files <- c("Files/McLean_pseudobulk_SCZ_subclass.rds", "Files/MSSM1_pseudobulk_SCZ_subclass.rds", "Files/Frohlich_pseudobulk_SCZ_subclass.rds",
                 "Files/Batiuk_pseudobulk_SCZ_subclass.rds", "Files/MSSM2_pseudobulk_SCZ_subclass.rds", "Files/HBCC_pseudobulk_SCZ_subclass.rds")
 
@@ -33,15 +39,12 @@ colnames(meta) <- gsub("^L5 6", "L5/6", colnames(meta))
 colnames(meta) <- gsub("^Micro PVM", "Micro-PVM", colnames(meta))
 
 
-# get cell types 
-cell_types <- colnames(meta)[1:24]
+# get cell types
+cell_types <- setdiff(colnames(meta), META_COLS)
 print(cell_types)
 
 # total cells per donor
 meta$total_cells <- rowSums(meta[, cell_types])
-cell_types <- colnames(meta)[1:24]
-
-meta$total_cells <- rowSums(meta [1:24])
 
 for (type in cell_types) {
   
@@ -102,11 +105,21 @@ meta <- meta %>%
   vm <- voom(dge, design, plot = FALSE)
   fit <- lmFit(vm, design)
   fit <- eBayes(fit)
+
+  # Diagnosis contrast named after the non-reference level — "DiagnosisSchizophrenia"
+  # here, "DiagnosisSCZ" under the repo's Control/SCZ vocabulary. Read it off the design.
+  dx_coef <- grep("^Diagnosis", colnames(design), value = TRUE)
+  # Exactly one Diagnosis column means a clean two-level contrast. More than one
+  # means Diagnosis has >2 levels in this fit — which happens if cohorts are pooled,
+  # because Multiome spells its controls "control" and the rest spell them "Control".
+  # Stop rather than silently contrast against the wrong reference.
+  stopifnot(length(dx_coef) == 1)
+  dx_coef <- dx_coef[1]
   
   # Extract DE results
   DE <- topTable(
     fit,
-    coef = "DiagnosisSchizophrenia",
+    coef = dx_coef,
     n = Inf,
     adjust.method = "BH"
   )
@@ -138,12 +151,12 @@ colnames(meta) <- gsub("^L2 3", "L2/3", colnames(meta))
 colnames(meta) <- gsub("^L5 6", "L5/6", colnames(meta))
 colnames(meta) <- gsub("^Micro PVM", "Micro-PVM", colnames(meta))
 
-# get cell types 
-cell_types <- colnames(meta)[1:24]
+# get cell types
+cell_types <- setdiff(colnames(meta), META_COLS)
 
 print(cell_types)
 
-meta$total_cells <- rowSums(meta [1:24])
+meta$total_cells <- rowSums(meta[, cell_types])
 
 for (type in cell_types) {
   
@@ -205,11 +218,21 @@ meta <- meta %>%
   vm <- voom(dge, design, plot = FALSE)
   fit <- lmFit(vm, design)
   fit <- eBayes(fit)
+
+  # Diagnosis contrast named after the non-reference level — "DiagnosisSchizophrenia"
+  # here, "DiagnosisSCZ" under the repo's Control/SCZ vocabulary. Read it off the design.
+  dx_coef <- grep("^Diagnosis", colnames(design), value = TRUE)
+  # Exactly one Diagnosis column means a clean two-level contrast. More than one
+  # means Diagnosis has >2 levels in this fit — which happens if cohorts are pooled,
+  # because Multiome spells its controls "control" and the rest spell them "Control".
+  # Stop rather than silently contrast against the wrong reference.
+  stopifnot(length(dx_coef) == 1)
+  dx_coef <- dx_coef[1]
   
   # Extract DE results
   DE <- topTable(
     fit,
-    coef = "DiagnosisSchizophrenia",
+    coef = dx_coef,
     n = Inf,
     adjust.method = "BH"
   )

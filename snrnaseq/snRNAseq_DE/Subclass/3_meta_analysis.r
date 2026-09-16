@@ -10,7 +10,8 @@ cohorts <- c("Batiuk", "Frohlich", "MSSM1", "McLean", "MSSM2", "HBCC", "Multiome
 #Just to get cell types
 meta <- read.csv("Files/Pseudobulk_metadata_subclass_McLean.csv")
 colnames(meta)  <- gsub("\\.", " ", colnames(meta))
-cell_types <- colnames(meta [1:24])
+# every column that is not donor metadata (see 2_DE.r)
+cell_types <- setdiff(colnames(meta), c("Donor", "Age", "Sex", "Diagnosis", "PMI"))
 cell_types <- gsub("^L2 3", "L2_3", cell_types)
 cell_types <- gsub("^L5 6", "L5_6", cell_types)
 cell_types <- gsub("^Micro PVM", "Micro-PVM", cell_types)

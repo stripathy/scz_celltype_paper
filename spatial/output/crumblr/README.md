@@ -23,10 +23,13 @@ Built 2026-05-03 from the April object. Verified: the inputs rebuild from that
 object with **zero differing rows**, and re-running crumblr reproduces the
 committed results to **max |diff| = 1e-15**.
 
-## Everything else here is a sensitivity variant — do not report from it
+## Sensitivity variants — not in this repository, and not the paper's numbers
 
-The other 65 files are alternative QC/label-confidence cuts kept for robustness
-checks. They are **not** the paper's numbers and are not committed.
+The pipeline also produces 65 alternative QC/label-confidence cuts. **None of
+them are committed here**; the table below is a key to their filenames on the
+machines that ran the pipeline, not an inventory of this directory. `git ls-files
+spatial/output/crumblr/` lists everything that is actually present: this README,
+the four canonical inputs and their four results.
 
 | Suffix | What it varies |
 |---|---|
