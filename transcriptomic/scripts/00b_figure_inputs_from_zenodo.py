@@ -31,7 +31,8 @@ Scope, stated plainly:
   * DE_genes_all_cells_scz.csv is rebuilt with estimate/se/pval/padj and derived
     ci.lb/ci.ub, matching to 1.1e-16. It CANNOT carry k, tau2 or I2, which Zenodo
     does not publish. Figure 2 never reads those; sst_strata/ (Supplementary S8)
-    does, so S8 still needs the Git LFS copy.
+    does — from the committed copy of this same file, which has them. So leave the
+    tracked snapshot alone if you intend to run S8.
   * the Xenium-sourced snapshots come from the Xenium processing repo, not
     Zenodo, and are already committed.
 """
@@ -104,7 +105,8 @@ def main():
             if name == "DE_genes_all_cells_scz.csv":
                 print("  WARNING: Zenodo does not publish k, tau2 or I2. This rebuild omits them.")
                 print("           Figure 2 does not use them, but sst_strata/ (Supplementary S8)")
-                print("           does. Do not run S8 against this file — fetch it from Git LFS.")
+                print("           does. Overwriting the tracked snapshot will break S8;")
+                print("           restore it with: git checkout -- " + os.path.relpath(dst))
             df.to_csv(dst, index=False); print(f"  wrote {dst}")
         elif os.path.exists(dst):
             old = pd.read_csv(dst)

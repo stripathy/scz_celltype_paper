@@ -110,11 +110,13 @@ public form of `snrnaseq/snRNAseq_DE/Files/DE_genes_all_cohorts_subclass.csv`
 (the 301 MB LFS object). `cell_metadata.parquet` is the harmonized annotation set
 behind the composition analyses.
 
-Two schema notes for anyone joining Zenodo to repo files: Zenodo uses the
-`Control` / `SCZ` diagnosis vocabulary and the dataset names `MSSM1` / `MSSM2` /
-`Frohlich`, whereas the in-repo `snrnaseq/` tables use `Control` /
-`Schizophrenia` and `MtSinai` / `MSSM` / `OFC`. The paper's labels are MSSM 1,
-MSSM 2 and Fröhlich.
+Schema notes for anyone joining Zenodo to repo files. `cell_metadata.parquet`
+and `DE_subclass.parquet` name the datasets `MSSM1` / `MSSM2` / `Frohlich`, while
+`DE_supertype.parquet` uses the paper labels `MSSM 1` / `MSSM 2` / `Fröhlich` —
+the two DE files differ from each other, so check before joining them. The
+in-repo `snrnaseq/` tables use a third set, `MtSinai` / `MSSM` / `OFC`. Zenodo
+uses the `Control` / `SCZ` diagnosis vocabulary throughout; the in-repo
+composition tables use `Control` / `Schizophrenia`.
 
 Supplementary Tables T1–T4 are published with the article, not here.
 
@@ -125,18 +127,11 @@ git clone <remote-url> && cd scz_celltype_paper
 git lfs install && git lfs pull        # REQUIRED — see below
 ```
 
-**This repository uses Git LFS.** Twenty-three files are stored there, including
-the large per-cohort DE tables under `snrnaseq/snRNAseq_DE/Files/` and
-`Supertypes/Files/`. Without `git lfs pull` those paths hold a 134-byte pointer
-stub instead of the data, and **nothing errors**: `read.csv()` on a pointer
-returns a two-row frame of pointer text, so a script can run to completion on
-garbage. The one guard that does catch it is the figure-input manifest, which
-refuses to draw Figure 2 and reports the source as changed — the symptom that
-led here on 2026-09-16. If a chain behaves strangely, check for stubs first:
-
-```bash
-head -c 40 <path> | grep -q git-lfs && echo "pointer stub, run: git lfs pull"
-```
+**This repository no longer uses Git LFS.** Four large DE tables (~2 GB total)
+were tracked there until 2026-09-16 and have been removed, so a clone is small
+and no reader hits an LFS quota. The data is not lost — it is published as
+parquet on Zenodo, described under **Published data** above. If you have an old
+clone, `git pull` will drop them.
 
 **You can skip LFS entirely for Figure 2.** The same DE data is published as
 parquet on Zenodo, and a script rebuilds the two snapshots Figure 2 reads:
@@ -155,12 +150,14 @@ Verified 2026-09-16 — it does, on every row:
 | `meta_results_cohorts_subclass_forest.csv` | 143 | 6.7e-16 |
 | `DE_genes_all_cells_scz.csv` | 231,135 | 5.8e-15 |
 
-**What this route cannot give you:** Zenodo publishes `SE` but not `k`, `tau2`
-or `I2`. Figure 2 never reads those, so it is unaffected; `transcriptomic/scripts/sst_strata/`
-(Supplementary **S8**) does read them, so **S8 still needs the Git LFS copy**. The
-script says so before it writes. Confidence intervals are not a problem — it
-derives `ci.lb`/`ci.ub` as `estimate ± 1.959964 × se`, which matches the tracked
-table to 1.4e-8.
+**One caveat:** Zenodo publishes `SE` but not `k`, `tau2` or `I2`. Figure 2 never
+reads those, so it is unaffected. `transcriptomic/scripts/sst_strata/`
+(Supplementary **S8**) does read them — but it reads them from the *committed*
+`DE_genes_all_cells_scz.csv`, which carries all three and is an ordinary tracked
+file. So S8 works from a clone either way; just do not overwrite that snapshot
+with `--write` if you intend to run S8. The script warns before it does.
+Confidence intervals are not a problem — it derives `ci.lb`/`ci.ub` as
+`estimate ± 1.959964 × se`, matching the tracked table to 1.4e-8.
 
 Then follow the component README for the figure you want. Figure 2, Figure 4
 and supplementary figures S2, S3, S6, S8, S9 and S10 render from committed

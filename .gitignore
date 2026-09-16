@@ -107,3 +107,10 @@ transcriptomic/data/.zenodo_cache/
 # Ignored so it cannot be committed by accident. Do not un-ignore without a DUA
 # check and explicit PI sign-off on THIS content.
 reserve/genotype/
+
+# Large DE tables, removed from Git LFS 2026-09-16 — published on Zenodo instead
+# (DOI 10.5281/zenodo.22801230). See the root README, section "Published data".
+snrnaseq/snRNAseq_DE/Files/DE_genes_all_cohorts_subclass.csv
+snrnaseq/snRNAseq_DE/Supertypes/Files/DE_all_cohorts_meta_supertype.csv
+snrnaseq/snRNAseq_DE/Supertypes/Files/DE_meta_results_supertype.csv
+snrnaseq/snRNAseq_DE/Supertypes/Files/DE_results_cohorts_supertype.csv

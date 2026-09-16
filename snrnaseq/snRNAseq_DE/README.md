@@ -75,6 +75,18 @@ type.
 | `DE_all_cohorts_meta_supertype.csv` | the two above stacked, datasets renamed to paper labels, `"Meta-analysis"` as a pseudo-dataset — this is what S4 reads |
 | `DE_all_cohorts_meta_supertype_by_subclass_cohort.xlsx` | the same split one sheet per subclass × dataset (supplementary table) |
 
+> **These tables are not in the repository.** They ran to 0.1–1 GB each and were
+> held in Git LFS until 2026-09-16, when they were removed so a clone does not
+> pull ~2 GB. The same results are published as parquet on Zenodo
+> ([10.5281/zenodo.22801230](https://doi.org/10.5281/zenodo.22801230)):
+> `DE_supertype.parquet` carries the supertype results for the seven datasets
+> plus the meta-analysis (7,672,228 rows, 115 supertypes, 42,249 genes), and
+> `DE_subclass.parquet` the subclass equivalent. What this costs in-repo is
+> Supplementary **S4**, whose renderer `Final_figures/Supplemental/Code/Supertype_DE.r`
+> reads `DE_all_cohorts_meta_supertype.csv` — S4 already had no rendered output
+> here (issue 12), and the other readers are cluster pipeline steps that could
+> never run from a clone.
+
 `Subclass/3_meta_analysis.r` *consumes* `meta_results_*.csv` and assembles:
 
 | Output | What |
