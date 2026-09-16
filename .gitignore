@@ -95,3 +95,15 @@ snrnaseq/Final_figures/Data/xenium_metadata.csv
 
 # Zenodo downloads cached by transcriptomic/scripts/00b_figure_inputs_from_zenodo.py
 transcriptomic/data/.zenodo_cache/
+
+# Per-donor genotype-derived analysis — deliberately NOT published (2026-09-16).
+# reserve/genotype/data/donor_table.csv carries, per identifiable donor, 10 genetic
+# ancestry PCs, a superpopulation label, three polygenic risk scores and AD
+# neuropathology (Braak/CERAD). That is derived genotype data, a different
+# sensitivity class from the demographic sheet cleared in KNOWN_ISSUES issue 6, and
+# the upstream genotypes arrive under NDA/Synapse/PsychAD agreements that restrict
+# redistribution of individual-level derived data. The analysis is also reserve/ —
+# not in the paper — so publishing it carries the risk with none of the benefit.
+# Ignored so it cannot be committed by accident. Do not un-ignore without a DUA
+# check and explicit PI sign-off on THIS content.
+reserve/genotype/

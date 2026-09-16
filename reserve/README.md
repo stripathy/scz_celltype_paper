@@ -21,6 +21,22 @@ the submission set, in
 [`../manuscript/figures/not_in_current_version/`](../manuscript/figures/not_in_current_version/),
 so the supplementary folder stays exactly the submission set.
 
+## One analysis is held back from this repository
+
+A polygenic-score analysis (`reserve/genotype/`) exists on the authors' machines
+and is **deliberately not published here**. Its donor table carries, per donor,
+genetic ancestry principal components, a superpopulation label, polygenic risk
+scores and AD neuropathology scores. That is individual-level genotype-derived
+data — a different category from the demographic donor sheet cleared in
+[`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md) issue 6 — and the upstream genotypes
+are governed by data use agreements that restrict redistribution of derived
+individual-level data.
+
+It is listed in `.gitignore` so it cannot be committed by accident. Un-ignoring
+it needs a data-use-agreement check and explicit PI sign-off on that specific
+content, not the demographic clearance. The manuscript makes no polygenic-score
+claim, so nothing in the paper depends on it.
+
 ## The data is not on this machine
 
 The large inputs behind three of these are not held locally, to save disk: the GSE158516 count matrices, the Jens cohort object, and the
