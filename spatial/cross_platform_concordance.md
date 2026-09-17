@@ -1,5 +1,9 @@
 # Cross-Platform Validation
 
+> **On the inline figures and linked reports.** They point into
+> `spatial/output/`, which is git-ignored, so they resolve only on a machine that
+> has run the pipeline. The prose and the numbers it quotes stand on their own.
+
 ## Purpose
 
 This document assesses how well the Xenium spatial transcriptomics measurements agree with independent reference datasets — the SEA-AD MERFISH spatial atlas and a snRNA-seq schizophrenia meta-analysis. It establishes the measurement credibility that underpins all downstream disease analyses. The SCZ compositional results themselves are in `output/crumblr/` (see its README) and in Figure 3.
