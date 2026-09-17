@@ -4,7 +4,8 @@
 The repo's big DE tables live in Git LFS. If you would rather not fetch ~1.6 GB of
 LFS objects, the same data is published as parquet at
 
-    https://zenodo.org/records/22801230   (DOI 10.5281/zenodo.22801230, CC-BY-4.0)
+    https://zenodo.org/records/22802546   (v2; concept DOI 10.5281/zenodo.22801229,
+                                           CC-BY-4.0)
 
 This script downloads DE_subclass.parquet and writes the two snapshots under
 transcriptomic/data/figure_inputs/ that Figure 2 reads, translating the Zenodo
@@ -38,10 +39,10 @@ Scope, stated plainly:
 """
 import argparse, hashlib, os, sys, urllib.request
 
-REC = "https://zenodo.org/records/22801230/files"
+REC = "https://zenodo.org/records/22802546/files"   # v2, the current version
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEST = os.path.join(HERE, "data", "figure_inputs")
-MD5 = {"DE_subclass.parquet": "5da0d816f713191645dd9bf82ece8dd1"}
+MD5 = {"DE_subclass.parquet": "71f19c9c6b8e2cb375b38c55f8e757f6"}
 
 CELLTYPE = {"Astrocyte": "Astro", "Endothelial": "Endo", "Oligodendrocyte": "Oligo",
             "Microglia-PVM": "Micro-PVM", "Lamp5 Lhx6": "Lamp5_Lhx6"}

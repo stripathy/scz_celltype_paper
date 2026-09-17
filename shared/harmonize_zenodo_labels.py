@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Harmonise the cell-type and dataset labels across the three Zenodo parquet files.
 
-The deposit (DOI 10.5281/zenodo.22801230) is correct in its numbers but its three
-files disagree with each other on labels, which makes `cell_metadata.parquet`
-impossible to join to `DE_supertype.parquet` (0 of 115 supertype names match).
-See issue 27 in ../KNOWN_ISSUES.md.
+This produced Zenodo **v2** (10.5281/zenodo.22802546) from v1 (…22801230), whose
+numbers were correct but whose three files disagreed on labels badly enough that
+`cell_metadata.parquet` could not be joined to `DE_supertype.parquet` at all —
+0 of 115 supertype names matched. Kept as the record of how v2 was made, and as
+the statement of the conventions. See issue 27 in ../KNOWN_ISSUES.md.
 
 The authority used here is the SEA-AD palette the annotations actually came from,
 `snrnaseq/cluster_order_and_colors.csv` (Allen Institute, 139 supertypes). It sets

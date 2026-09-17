@@ -78,7 +78,7 @@ type.
 > **These tables are not in the repository.** They ran to 0.1–1 GB each and were
 > held in Git LFS until 2026-09-16, when they were removed so a clone does not
 > pull ~2 GB. The same results are published as parquet on Zenodo
-> ([10.5281/zenodo.22801230](https://doi.org/10.5281/zenodo.22801230)):
+> ([10.5281/zenodo.22801229](https://doi.org/10.5281/zenodo.22801229), currently v2):
 > `DE_supertype.parquet` carries the supertype results for the seven datasets
 > plus the meta-analysis (7,672,228 rows, 115 supertypes, 42,249 genes), and
 > `DE_subclass.parquet` the subclass equivalent. What this costs in-repo is

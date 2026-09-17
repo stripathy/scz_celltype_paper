@@ -4,38 +4,31 @@
 resolved is listed at the foot, one line each, so the ~20 component READMEs that
 cite issue numbers still resolve. Numbers are stable and never reused.
 
-**Nothing blocks submission.** One thing blocks making this repository
-**public** — see the release gate directly below.
+**Nothing blocks submission, and nothing blocks making this repository public.**
+The release gate below is cleared; it is kept as the record of what was checked.
 
 ---
 
-## Release gate — do not make the repository public until these are done
+## Release gate — CLEARED 2026-09-16
 
-**Decided 2026-09-16.** The repo is ready except that it documents Zenodo v1,
-whose labels are inconsistent (issue 27). Corrected files are built and waiting
-at `/project/rrg-shreejoy/shreejoy/zenodo_v2_harmonized/`; publishing the code
-before the data means sending readers to a deposit we already know is broken for
-joining.
+Zenodo **v2** is published ([10.5281/zenodo.22802546](https://doi.org/10.5281/zenodo.22802546))
+and its three files are byte-identical to the harmonised set prepared here — all
+three md5s match. The concept DOI 10.5281/zenodo.22801229 resolves to it.
 
-- [ ] **Nicole publishes Zenodo v2** from the harmonised files. This is the gate.
-- [ ] Update the file table in `README.md` — sizes and md5s there are v1's. New
-      md5s are in `MD5SUMS.txt` beside the harmonised files.
-- [ ] Delete the "Schema notes" paragraph in `README.md`. It exists only to warn
-      about the v1 label mismatches and becomes wrong once v2 lands.
-- [ ] Decide whether `transcriptomic/scripts/00b_figure_inputs_from_zenodo.py`
-      should move to v2. It pins the **v1 version URL** and its md5, so it keeps
-      working either way — repointing is a choice, not a repair. If you do
-      repoint it, update `MD5` and re-run it to confirm it still reports MATCHES.
-- [ ] Close issue 27.
+- [x] **Nicole published Zenodo v2** from the harmonised files.
+- [x] `README.md` file table updated to v2 sizes and checksums.
+- [x] The v1 "Schema notes" warning replaced by the v2 join statement
+      (115/115 supertypes, 24/24 subclasses), keeping only the differences that
+      remain by design — Zenodo's `MSSM1`/`MSSM2`/`Frohlich` and `Control`/`SCZ`
+      against the in-repo `MtSinai`/`MSSM`/`OFC` and `Control`/`Schizophrenia`.
+- [x] `00b_figure_inputs_from_zenodo.py` repointed to v2 and re-run: md5 verified,
+      both snapshots still MATCHES.
+- [x] Issue 27 closed.
 
-Already handled: the repo cites the **concept** DOI 10.5281/zenodo.22801229,
-which resolves to whatever the newest version is, so the citation does not need
-touching when v2 appears. Only the places that describe v1's *contents* do.
-
-Everything else from the pre-publication audit is settled: LICENSE and
-CITATION.cff are in (issue 24 area), Git LFS is gone (26), the per-donor genotype
-analysis is ignored rather than published, the dead `pre-prune` tag references
-are rewritten, and no secrets, emails or purged clinical records survive in the
+Everything else from the pre-publication audit was settled earlier: LICENSE and
+CITATION.cff are in, Git LFS is gone (26), the per-donor genotype analysis is
+gitignored rather than published, the dead `pre-prune` tag references are
+rewritten, and no secrets, emails or purged clinical records survive in the
 published history.
 
 ---
@@ -48,7 +41,6 @@ One line each; these keep their numbers because component READMEs cite them.
 |---|---|---|
 | 11 | Of 42 scripts under `snrnaseq/`, 31 call `setwd()` and 18 hard-code a `/scratch/` or `/project/` path, naming **8 different** top-level roots, so a reader cannot tell which tree a result came from. **Decided 2026-09-16: left as-is and documented** — rewriting the paths would make the archived code differ from the code that produced the numbers. The counts and the full root table are in `snrnaseq/README.md`. | throughout `snrnaseq/` |
 | 12 | Nicole's figure scripts write to cluster paths, not `manuscript/figures/` under an S-number. S7 is fixed; S1, S4 and S5 still have no rendered output here. | `Final_figures/` |
-| 27 | The Zenodo deposit (10.5281/zenodo.22801230) is internally inconsistent in its **labels**, though every number checks out (`DE_subclass.parquet`'s Meta-analysis rows match the committed `DE_genes_all_cells_scz.csv` to 1e-16 over 231,135 rows). Three mismatches, found 2026-09-16 while verifying the deposit before going public: **(a)** `DE_supertype.parquet` supertype names match `cell_metadata.parquet` on **0 of 115** — it writes `L2_3 IT-1` where the metadata writes `L2/3 IT_1`. Three rules reconcile all 115: trailing `-N` → `_N`, `L2_3`/`L5_6` → `L2/3`/`L5/6`, and `Lamp5-Lhx6` → `Lamp5_Lhx6`. As published the annotations cannot be joined to the supertype DE results. **(b)** `DE_supertype.parquet` names datasets `Fröhlich`/`MSSM 1`/`MSSM 2` while the other two files use `Frohlich`/`MSSM1`/`MSSM2`. **(c)** four subclass names differ between `cell_metadata` and `DE_subclass` (`Astro`/`Endo`/`Micro-PVM`/`Oligo` vs the long SEA-AD forms). This matters more since issue 26 removed the LFS tables and made Zenodo the route to them. Raised with Nicole 2026-09-16, and **harmonised files are prepared**: `shared/harmonize_zenodo_labels.py` rewrites the labels against the SEA-AD palette (`snrnaseq/cluster_order_and_colors.csv`), which sets long subclass names and short-prefixed `_N` supertypes. Measured against it, `DE_subclass` needed no change at all, `cell_metadata.subclass` needed 4, and `DE_supertype.cell_type` needed all 115. After the rewrite both cross-file joins are complete (115/115 and 24/24) and every numeric value is byte-identical to v1. Output and checksums are at `/project/rrg-shreejoy/shreejoy/zenodo_v2_harmonized/`. Still needs Nicole to publish a deposit v2; the root README documents the v1 differences meanwhile. | Zenodo deposit |
 
 ---
 
@@ -82,3 +74,4 @@ One line each; these keep their numbers because component READMEs cite them.
 | 22 | `spatial/output/crumblr/README.md` retitled and reworded so the variant table reads as a filename key for the pipeline machines, not an inventory of the directory, and points at `git ls-files` for what is actually present. | 2026-09-16 |
 | 25 | `7_cohorts_metadata_names.csv` spelled Diagnosis three ways (`Control` 293, `Schizophrenia` 171, `control` 5 — all Multiome), so a pooled fit would have produced a three-level factor and a position-picked contrast could silently be wrong. The five lowercase values were normalised to `Control`; nothing else in the file changed. Re-running both crumblr analyses reproduces the committed results to 4.3e-15, and the one manifest row that checksums this file was updated so Figure 2 still renders. `Sex` is also mixed-case (`male`/`female`/`Male`/`Female`) but is harmless: every script that models it calls `tolower()` first, and the two that do not never model on it. | 2026-09-16 |
 | 26 | The repo used Git LFS for four DE tables (~2 GB) and documented it nowhere, so a clone without `git lfs pull` got 134-byte pointer stubs that `read.csv()` parses without erroring. **Resolved by removing LFS entirely on 2026-09-16**: the four files are untracked, `.gitattributes` is deleted (19 of its 23 entries were already stale), and the data is published as parquet on Zenodo. Verified that Fig 2, Fig 4, S6 and S8 all render with the files absent, and `verify_provenance.py` passes. Note that removing LFS objects does **not** reclaim GitHub's LFS storage quota — per GitHub's docs that needs deleting and recreating the repo, or contacting support — but it does drop per-clone bandwidth to zero, which was the risk that mattered. | 2026-09-16 |
+| 27 | The Zenodo deposit's three files disagreed on labels: `DE_supertype.parquet` supertype names matched `cell_metadata.parquet` on **0 of 115**, so the annotations could not be joined to the supertype DE results at all. Every number was correct — only labels were wrong. Harmonised against the SEA-AD palette by `shared/harmonize_zenodo_labels.py`: `DE_subclass` needed no change, `cell_metadata.subclass` needed 4, `DE_supertype.cell_type` needed all 115. Published as **v2**, [10.5281/zenodo.22802546](https://doi.org/10.5281/zenodo.22802546), whose files are byte-identical to the harmonised set (all three md5s match). Both joins now complete, 115/115 and 24/24. | 2026-09-16 |

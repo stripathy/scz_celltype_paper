@@ -95,34 +95,44 @@ differential expression results at subclass and supertype resolution.
 | | DOI | Resolves to |
 |---|---|---|
 | **Cite this** | [10.5281/zenodo.22801229](https://doi.org/10.5281/zenodo.22801229) | the concept record — always the newest version |
-| Verified below | [10.5281/zenodo.22801230](https://doi.org/10.5281/zenodo.22801230) | v1, published 2026-09-16 |
+| Current version | [10.5281/zenodo.22802546](https://doi.org/10.5281/zenodo.22802546) | **v2**, published 2026-09-16 |
 
-The file table and checksums below describe **v1** specifically, which is what
-`00b_figure_inputs_from_zenodo.py` pins and what every claim here was checked
-against.
+The table below describes **v2**, which is what `00b_figure_inputs_from_zenodo.py`
+pins and what every claim here was checked against. v1
+([22801230](https://doi.org/10.5281/zenodo.22801230)) is superseded: its labels
+were inconsistent between files, so `cell_metadata` could not be joined to
+`DE_supertype` at all. Use v2.
 
 | File | Size | md5 | Contents |
 |---|---|---|---|
-| `cell_metadata.parquet` | 53.5 MB | `4d51070c637070ec4ab2075d175afbc7` | 3,738,935 cells x 14 columns; 493 donors, 8 datasets (7 snRNA-seq + Xenium); `class` / `subclass` / `supertype`, `diagnosis`, `sex`, `age`, `n_counts`, `n_genes`, `qc_pass`, `spatial_domain` |
-| `DE_subclass.parquet` | 73.7 MB | `5da0d816f713191645dd9bf82ece8dd1` | 2,471,813 rows: `gene, logFC, SE, PValue, FDR, cell_type, cohort`; 48,252 genes x 24 subclasses x 9 cohorts (the 7 datasets, `Meta-analysis`, and `Xenium`) |
-| `DE_supertype.parquet` | 223.5 MB | `4d6029d131eb51cb3846e5a9cc1c4796` | the same at supertype resolution, for the 7 snRNA-seq datasets and the meta-analysis |
+| `cell_metadata.parquet` | 53.6 MB | `4e72994e55a2e28a1fe189e0652fa826` | 3,738,935 cells x 14 columns; 493 donors, 8 datasets (7 snRNA-seq + Xenium); `class` / `subclass` / `supertype`, `diagnosis`, `sex`, `age`, `n_counts`, `n_genes`, `qc_pass`, `spatial_domain` |
+| `DE_subclass.parquet` | 74.1 MB | `71f19c9c6b8e2cb375b38c55f8e757f6` | 2,471,813 rows: `gene, logFC, SE, PValue, FDR, cell_type, cohort`; 48,252 genes x 24 subclasses x 9 cohorts (the 7 datasets, `Meta-analysis`, and `Xenium`) |
+| `DE_supertype.parquet` | 224.6 MB | `031e59837b74d5f6e9d5e425c1df48d9` | 7,672,228 rows, same columns; 42,249 genes x 115 supertypes x 8 cohorts (the 7 datasets and `Meta-analysis`; no Xenium) |
 
-**This is the citable route to the large tables that are otherwise in Git LFS.**
+**This is the citable route to the large DE tables, which are not in the repo.**
 Verified 2026-09-16: the `Meta-analysis` rows of `DE_subclass.parquet` are the
 same data as the committed
 `transcriptomic/data/figure_inputs/DE_genes_all_cells_scz.csv` — 231,135 rows,
-16,361 genes, 24 cell types, agreeing to 1e-16 — and its per-dataset rows are the
-public form of `snrnaseq/snRNAseq_DE/Files/DE_genes_all_cohorts_subclass.csv`
-(the 301 MB LFS object). `cell_metadata.parquet` is the harmonized annotation set
-behind the composition analyses.
+16,361 genes, 24 cell types, agreeing to 1e-16. `cell_metadata.parquet` is the
+harmonized annotation set behind the composition analyses.
 
-Schema notes for anyone joining Zenodo to repo files. `cell_metadata.parquet`
-and `DE_subclass.parquet` name the datasets `MSSM1` / `MSSM2` / `Frohlich`, while
-`DE_supertype.parquet` uses the paper labels `MSSM 1` / `MSSM 2` / `Fröhlich` —
-the two DE files differ from each other, so check before joining them. The
-in-repo `snrnaseq/` tables use a third set, `MtSinai` / `MSSM` / `OFC`. Zenodo
-uses the `Control` / `SCZ` diagnosis vocabulary throughout; the in-repo
-composition tables use `Control` / `Schizophrenia`.
+**The three files join on cell type in v2** — that is what v2 fixed. Labels
+follow the SEA-AD palette the annotations came from
+([`snrnaseq/cluster_order_and_colors.csv`](snrnaseq/cluster_order_and_colors.csv)),
+which uses long subclass names (`Astrocyte`, `Microglia-PVM`) and short-prefixed
+supertypes (`Astro_1`, `L2/3 IT_1`, `Lamp5_Lhx6_1`):
+
+```
+cell_metadata.supertype  n  DE_supertype.cell_type : 115 of 115
+cell_metadata.subclass   n  DE_subclass.cell_type  :  24 of 24
+```
+
+One difference remains, by design: Zenodo names the datasets `MSSM1` / `MSSM2` /
+`Frohlich` and uses the `Control` / `SCZ` diagnosis vocabulary, while the in-repo
+`snrnaseq/` tables use `MtSinai` / `MSSM` / `OFC` and `Control` / `Schizophrenia`.
+Map those when joining Zenodo to repo files.
+[`shared/harmonize_zenodo_labels.py`](shared/harmonize_zenodo_labels.py) is the
+script that produced v2 and documents the conventions.
 
 Supplementary Tables T1–T4 are published with the article, not here.
 
@@ -210,5 +220,5 @@ Human donor data from the contributing cohorts stays governed by the consortia's
 own agreements; neither license grants rights over it. The donor-level tables
 committed here carry de-identified demographic variables only.
 
-Cite via [`CITATION.cff`](CITATION.cff), or the paper plus the Zenodo DOI
-[10.5281/zenodo.22801230](https://doi.org/10.5281/zenodo.22801230).
+Cite via [`CITATION.cff`](CITATION.cff), or the paper plus the Zenodo concept DOI
+[10.5281/zenodo.22801229](https://doi.org/10.5281/zenodo.22801229).
