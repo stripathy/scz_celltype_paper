@@ -1,8 +1,9 @@
 # scz_celltype_paper
 
-Code and figures for a study of cell-type-specific changes in schizophrenia,
-combining a seven-dataset snRNA-seq meta-analysis, Xenium spatial
-transcriptomics, common-variant genetics and patch-seq physiology.
+Analysis code for **"Selective depletion of upper-layer somatostatin interneuron
+subtypes in schizophrenia"** (Endresz et al.) — a seven-dataset snRNA-seq
+meta-analysis with Xenium spatial transcriptomics, common-variant genetics and
+patch-seq physiology.
 
 **Headline:** upper-layer somatostatin (Sst) interneuron subtypes are
 selectively depleted in schizophrenia, the same subtypes carry the most SCZ
@@ -11,6 +12,20 @@ sag-dominated intrinsic physiology.
 
 The manuscript itself is not in this repo. This is the analysis code, the
 committed figure inputs, and the rendered figures.
+
+## Contact
+
+Questions about the code or the analyses are best raised as a
+[GitHub issue](https://github.com/stripathy/scz_celltype_paper/issues), so the
+answer is visible to whoever asks next.
+
+| | | |
+|---|---|---|
+| **Shreejoy Tripathy** | senior author, corresponding | [@stripathy](https://github.com/stripathy) · shreejoy.tripathy@camh.ca |
+| **Nicole Endresz** | first author; the snRNA-seq meta-analysis in [`snrnaseq/`](snrnaseq/README.md) | [@nendresz-16](https://github.com/nendresz-16) |
+
+Krembil Centre for Neuroinformatics, Centre for Addiction & Mental Health, and
+the University of Toronto.
 
 ---
 

@@ -8,6 +8,11 @@ abstract: >-
 type: software
 license: MIT
 repository-code: "https://github.com/stripathy/scz_celltype_paper"
+contact:
+  - family-names: Tripathy
+    given-names: Shreejoy J.
+    email: shreejoy.tripathy@camh.ca
+    affiliation: "Krembil Centre for Neuroinformatics, CAMH, and University of Toronto"
 authors:
   - family-names: Endresz
     given-names: Nicole
@@ -26,7 +31,7 @@ authors:
   - family-names: Sibille
     given-names: Etienne
   - family-names: Tripathy
-    given-names: Shreejoy
+    given-names: Shreejoy J.
 references:
   - type: data
     title: >-
